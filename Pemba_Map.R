@@ -16,9 +16,9 @@ pbbox
 sq_map <- get_map(location = pbbox, maptype = "satellite", source = "google")
 ##
 ll_means <- sapply(sites[2:3], mean)
-pb_map2 <- get_map(location = ll_means,  maptype =  "toner-lite", source = "google", zoom = 10)
+pb_map2 <- get_map(location = ll_means,  maptype =  "satellite", source = "google", zoom = 10)
 ggmap(pb_map2) + 
   geom_point(data = sites[1:3,], color = "red", size = 4) +
-  geom_text(data = sites[1:3,], aes(label = paste("  ", as.character(Site), sep="")), size=6, hjust = 0, color = "black")
+  geom_text(data = sites[1:3,], aes(label = paste("  ", as.character(Site), sep="")), size=6, hjust = 0, color = "white")
 
 
