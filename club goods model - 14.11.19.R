@@ -350,7 +350,7 @@ mutation_toggle				<- TRUE		# toggles strategy mutation on/off
 main_graphic_toggle 		<- TRUE		# toggles main graphical output on/off
 stock_graphic_toggle		<- TRUE		# toggles resource stock lines on/off	
 preference_graphic_toggle	<- TRUE		# toggles harvest pref lines on/off
-restriction_graphic_toggle	<- FALSE		# toggles restriction votes lines on/off
+restriction_graphic_toggle	<- TRUE		# toggles restriction votes lines on/off
 stint_graphic_toggle		<- TRUE		# toggles implementation of restriction 
 										# lines on/off
 harvest_graphic_toggle		<- TRUE		# toggles total harvest lines on/off
@@ -377,7 +377,7 @@ sqrt_num_group = 5
 
 num_group = sqrt_num_group ^ 2			# number of groups. 
 
-num_year = 100							# simulation length
+num_year = 500						# simulation length
 
 
 r = 0.9                              	# rate of resource reproduction in a 
