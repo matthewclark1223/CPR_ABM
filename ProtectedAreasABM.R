@@ -9,7 +9,7 @@ abm<-function(#Specified parameters
   
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
-  TimeSteps=200,
+  TimeSteps=20,
   ResourceRegenerationPerTimeStep=1.5,
   harvestMax=25){
   
@@ -148,7 +148,7 @@ mtext(paste("Individuals=",Individuals,
  return(output) 
 }
 
-abm(harvestMax = 30)
+abm(harvestMax = 40,ResourceRegenerationPerTimeStep = 1.8,TimeSteps = 50)
 
 
 
