@@ -133,19 +133,36 @@ output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
 
 }
 
-par(mfrow=c(3,1))
-plot(output$percCCProtect, type = 'l',col="green")
-plot(output$percCCWorking, type = 'l',col="brown")
-plot(output$meanPayoff, type = 'l',col="red")
-mtext(paste("Individuals=",Individuals,
-            "  Total Resources=",TotalResourceUnit,
-            "  Percent Protected=",PercProtected,
-            "  Max Harvest=",harvestMax,
-            "  Resource Regeneration=",ResourceRegenerationPerTimeStep,
-            "  Percent Cooperating at start",CoopPercStart ), side=3, outer=TRUE, line=-3,cex=0.8)
+#par(mfrow=c(3,1))
+#plot(output$percCCProtect, type = 'l',col="green")
+#plot(output$percCCWorking, type = 'l',col="brown")
+#plot(output$meanPayoff, type = 'l',col="red")
+#mtext(paste("Individuals=",Individuals,
+ #           "  Total Resources=",TotalResourceUnit,
+  #          "  Percent Protected=",PercProtected,
+   #         "  Max Harvest=",harvestMax,
+    #        "  Resource Regeneration=",ResourceRegenerationPerTimeStep,
+     #       "  Percent Cooperating at start",CoopPercStart ), side=3, outer=TRUE, line=-3,cex=0.8)
+
+library(ggplot2)
+p1<-ggplot(data=output,aes(x=timeStep))+
+  geom_line(aes(y=percCCProtect),size=3,color="#b2df8a")+
+  geom_line(aes(y=percCCWorking),size=3,color="#1f78b4")+
+  ylim(0, 1.0)+theme_classic()+ylab("Percent Carrying Capacity")+
+  scale_colour_manual(name = 'Area', 
+                      values =c('#b2df8a'='#b2df8a','#1f78b4'='#1f78b4'), labels = c('Protected Area','Working Landscape'))+
+  ggtitle("Resource Degredation")
+  
+
+p2<-ggplot(data=output,aes(x=timeStep))+
+  geom_line(aes(y=meanPayoff),size=3,color="#993404")+
+  theme_classic()+ylab("Resource Units")+
+  ggtitle("Mean Individual Payoff")
 
 
- return(output) 
+x<-gridExtra::grid.arrange(p1,p2,ncol=1)
+
+ return(x) 
 }
 
 abm(harvestMax = 40,ResourceRegenerationPerTimeStep = 1.8,TimeSteps = 50)
