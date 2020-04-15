@@ -1,0 +1,110 @@
+---
+title: "Ashley Lagrou VIP Plan"
+author: "Matt Clark"
+date: "4/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+
+
+```
+
+Schedule
+======
+
+| Week| Focus |Deliverable
+:---:|:---:|:---
+4/6/2020 | Protocol | Finished stove efficiency protocol
+4/13/2020 | Data Simulation| Simulated dataset
+4/20/2020 | Plotting | Social Connectivity vs stove outcome plots
+4/27/2020 | Write-up / Catch-up| Brief write-up of results
+5/4/2020 | Lightening talk | Lightening talk 
+
+Weekly Specifics
+======
+
+4/6/2020 - Protocol
+------
+
+What you have now is a really great start. It would be useful however to organize the document into a more readable format and provide some more detail. i would suggest that you go back and read the methods of the McCracken and Smith paper that I sent you awhile back. On pages 740 - 741 they provide a level of methodological detail that would be good for this protocol. I also think somewhere in there they conclude that the water boiling test alone is virtually useless (maybe I'm wrong), so just double check that. 
+
+
+4/13/2020 - Data Simulation
+------
+
+Often in science, we simulate the data that we *think* we will collect in the field before we actually do it. The reason for doing this is that you can build in the effects that you expect to see and make sure that your statistics can actually detect them. For a complicated, messy project like this one, data simulation is especially important. You'll be taking the first crack at the simulation for this project.
+
+There are a few key functions that I rely on really heavily for data simulation.
+Here's a primer on each of them.
+
+# Sample
+```{r}
+x<-1:10
+sample(x,3,replace=TRUE) #randomly selects a specified number of observations out of a vector
+x<-c("John","Jacob","Jackson","Jeffrey")
+sample(x,3,replace=TRUE) 
+```
+
+# Rep
+```{r}
+rep(2,10) #replecated the first argument, the number of times of the second
+
+rep("I Love Learning R!",10)
+```
+
+# pulling from a distribution (rpois, rnorm, rbeta, rbinom, runif, rgamma)
+```{r}
+rpois(10,5) #pull 10 samples from a poisson distribution with a mean of 5. Poisson gives positive integers
+
+hist(rpois(1000,5))
+```
+rnorm, rbeta, rbinom, runif, rgamma sample data randomly from a normal, beta, binomial, uniform, and gamma distributions respectively. Your choice of distribution will matter greatly here. If you don't know what one of them is, you can Google it or ask. They all take slightly different arguments, so make sure to use the ?command in r to see how to use each. 
+
+
+Here's some code to get you started. 
+```{r}
+#Make a vector of stove Id's
+namevec<-vector()
+for (i in 1:100){ #paste "ID" onto the numbers 1 through 100
+  namevec[i]<-paste0("ID",i)}
+
+
+#could we make these variables in any better way?
+dat<-data.frame(stoveID=namevec, #stove ID comes from the name vector we just made
+  copiedFrom=c(rep("Original",10),sample(namevec[1:10],90,replace = T)), #10 original stoves, 90 copied stoves randomly selected
+  location = rep(NA,100), #not sure how to fill this quite yet
+  VisSimModel = rbeta(100,35,75), #visiual similarity.
+  BoilTime = sort(rnorm(100,10,2)),
+  WaterVol = runif(100,15,20),
+  WoodStart = sort(runif(100,300,600)),
+  WoodEnd = sort(runif(100,50,250)),
+  MonthBuilt= sample(1:12,100,replace=T),
+  YearBuilt= c(rep(2015,5),rep(2017,5),sample(2016:2020,90,replace=T)),
+  UsePerDay = sort(rpois(100,2)),
+  UseTotalEstimate = rep(NA,100),
+  stdPmEsmssions = rnorm(100,0,1),
+  GeogDistModel = sort(rgamma(100,75,6)),
+  SocialDistModel = c(rep(1,55),rep(2,30),rep(3,15)),
+  GeneticDistModel = rep(NA,100),
+  GenderBuilder = sample(c(rep("Female",8),rep("Male",2)),100,replace=T),
+  GenderModel =sample(c(rep("Female",8),rep("Male",2)),100,replace=T),
+  Use = sample(c("Commercial","Family","Both"),100,replace=T))
+
+
+```
+
+Based on your knowledge of how the fuel efficiency tests will work, I want you to modify this code above to be more reflective of what the completed datasheet may actually look like. 
+
+
+4/20/2020 - Plotting
+------
+
+Plotting is an important first step to understanding your data. It should always be your first stop once you have clean data in hand. 
+
+We will be using the ggplot2 package in R for all of our plotting
+```{r}
+library(ggplot2)
+```
+
