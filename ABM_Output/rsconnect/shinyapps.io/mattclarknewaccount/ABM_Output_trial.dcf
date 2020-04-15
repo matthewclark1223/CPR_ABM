@@ -1,0 +1,12 @@
+name: ABM_Output_trial
+title: ABM_Output_trial
+username:
+account: mattclarknewaccount
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2124244
+bundleId: 3018966
+url: https://mattclarknewaccount.shinyapps.io/ABM_Output_trial/
+when: 1586982647.30153
+asMultiple: FALSE
+asStatic: FALSE
