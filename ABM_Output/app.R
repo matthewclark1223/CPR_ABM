@@ -74,10 +74,9 @@ server <- function(input, output) {
         PercWorking= 1-PercProtected #percent of resource in a working landscape
         TotalResourceWorking = PercWorking*TotalResourceUnit #number of resources in the working landscape starting
         TotalResourceProtected = PercProtected*TotalResourceUnit #number of resources in the protected landscape starting
-        CoopNumStart= CoopPercStart*Individuals #number of individuals cooperating fully at t0
-        
-        DefNumStart= (1-CoopPercStart)*Individuals #number of individuals defecting at t0
-        PercTimeProtected = c(rep(0,CoopNumStart),rbeta(DefNumStart+1,1,2)) #percent of their foraging time each indv spends in the PA
+        CoopNumStart= as.integer(CoopPercStart*Individuals) #number of individuals cooperating fully at t0
+        DefNumStart= Individuals - CoopNumStart#number of individuals defecting at t0
+        PercTimeProtected = c(rep(0,CoopNumStart),rbeta(DefNumStart,1,2)) #percent of their foraging time each indv spends in the PA
         PercTimeWorking = (1-PercTimeProtected)#percent of their foraging time each indv spends in the working landscape
         
         agents<-data.frame(PercTimeProtected,
