@@ -3,7 +3,9 @@
 abm<-function(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
-  TotalResourceUnit=10000, #total available resource units
+  TotalCarryingCapacity=10000, #total available resource units
+  
+  StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
   
   PercProtected=0.3, #percent of the total resource that's in a protected area
   
@@ -15,8 +17,8 @@ abm<-function(#Specified parameters
   
   ## Set parameters
   PercWorking= 1-PercProtected #percent of resource in a working landscape
-  TotalResourceWorking = PercWorking*TotalResourceUnit #number of resources in the working landscape starting
-  TotalResourceProtected = PercProtected*TotalResourceUnit #number of resources in the protected landscape starting
+  TotalResourceWorking = PercWorking*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the working landscape starting
+  TotalResourceProtected = PercProtected*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the protected landscape starting
   CoopNumStart= as.integer(CoopPercStart*Individuals) #number of individuals cooperating fully at t0
   DefNumStart= Individuals - CoopNumStart#number of individuals defecting at t0
   PercTimeProtected = c(rep(0,CoopNumStart),rbeta(DefNumStart,1,2)) #percent of their foraging time each indv spends in the PA
@@ -137,7 +139,7 @@ plot(output$percCCProtect, type = 'l',col="green")
 plot(output$percCCWorking, type = 'l',col="brown")
 plot(output$meanPayoff, type = 'l',col="red")
 mtext(paste("Individuals=",Individuals,
-            "  Total Resources=",TotalResourceUnit,
+            "  Total Resources=",TotalCarryingCapacity,
             "  Percent Protected=",PercProtected,
           "  Max Harvest=",harvestMax,
            "  Resource Regeneration=",ResourceRegenerationPerTimeStep,
@@ -148,7 +150,7 @@ mtext(paste("Individuals=",Individuals,
  return(output) 
 }
 
-abm(harvestMax = 40,ResourceRegenerationPerTimeStep = 1.5,TimeSteps = 50,CoopPercStart = 0.4)
+abm(harvestMax = 40,ResourceRegenerationPerTimeStep = 1.5,TimeSteps = 50,CoopPercStart = 0.4,StartPercCarryingCapacity = 0.5)
 
 
 

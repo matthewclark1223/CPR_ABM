@@ -18,8 +18,10 @@ ui <- fluidPage(
                         min = 10,
                         max = 1000,
                         value = 100),
-           sliderInput("totResources","Total Resources Max",
+           sliderInput("totCareCapac","Total Carrying Capacity Landscape",
                        min = 100,max=100000,value=10000),
+           sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
+                       min=0.1,max=1.0,value=0.75),
            sliderInput("timeSteps",
                        "Time Steps",
                        min = 10,
@@ -57,10 +59,13 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
     
+    
     abm<-function(#Specified parameters
         Individuals=100, #number of total resource users in a population
         
-        TotalResourceUnit=10000, #total available resource units
+        TotalCarryingCapacity=10000, #total available resource units
+        
+        StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
         
         PercProtected=0.3, #percent of the total resource that's in a protected area
         
@@ -72,8 +77,8 @@ server <- function(input, output) {
         
         ## Set parameters
         PercWorking= 1-PercProtected #percent of resource in a working landscape
-        TotalResourceWorking = PercWorking*TotalResourceUnit #number of resources in the working landscape starting
-        TotalResourceProtected = PercProtected*TotalResourceUnit #number of resources in the protected landscape starting
+        TotalResourceWorking = PercWorking*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the working landscape starting
+        TotalResourceProtected = PercProtected*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the protected landscape starting
         CoopNumStart= as.integer(CoopPercStart*Individuals) #number of individuals cooperating fully at t0
         DefNumStart= Individuals - CoopNumStart#number of individuals defecting at t0
         PercTimeProtected = c(rep(0,CoopNumStart),rbeta(DefNumStart,1,2)) #percent of their foraging time each indv spends in the PA
@@ -221,15 +226,18 @@ server <- function(input, output) {
         # generate bins based on input$bins from ui.R
        individuals<-input$individuals
        totRecources<-input$totResources
+       TotalCarryingCapacity<-input$totCareCapac
+       StartPercCarryingCapacity<-input$StartPercCarryingCapacity
        timeSteps<-input$timeSteps
        percProtect<-input$percProtect
        startCooperators<-input$startCooperators
        resourceRegen<-input$resourceRegen
        maxHarvest<-input$maxHarvest
 
-        abm(Individuals = individuals, TotalResourceUnit =totRecources, 
+        abm(Individuals = individuals, TotalCarryingCapacity =TotalCarryingCapacity, 
             PercProtected=percProtect, CoopPercStart=startCooperators,
-            ResourceRegenerationPerTimeStep=resourceRegen,harvestMax= maxHarvest,TimeSteps=timeSteps )
+            ResourceRegenerationPerTimeStep=resourceRegen,harvestMax= maxHarvest,
+            TimeSteps=timeSteps,StartPercCarryingCapacity=StartPercCarryingCapacity )
     })
 }
 
