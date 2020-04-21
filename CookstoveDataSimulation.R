@@ -38,7 +38,7 @@ dat<-data.frame(stoveID=namevec,
   YearBuilt= c(rep(2015,5),rep(2017,5),sample(2016:2020,90,replace=T)),
   UsePerDay = sort(rpois(100,2)),
   UseTotalEstimate = rep(NA,100),
-  stdPmEsmssions = rnorm(100,0,1),
+  stdPmEmissions = rnorm(100,0,1),
   GeogDistModel = sort(rgamma(100,75,6)),
   SocialDistModel = c(rep(1,55),rep(2,30),rep(3,15)),
   GeneticDistModel = rep(NA,100),
@@ -47,5 +47,35 @@ dat<-data.frame(stoveID=namevec,
   Use = sample(c("Commercial","Family","Both"),100,replace=T))
 
 head(dat)
-
 write.csv(dat,file="SimulatedStoveData.csv")
+
+
+dat$totwoodburned<-dat$WoodStart-dat$WoodEnd
+
+library(ggplot2)
+
+ggplot(data=dat,aes(x=as.character(YearBuilt), y=stdPmEmissions))+
+  geom_boxplot()+
+  geom_jitter(color="purple")
+
+ggplot(data=dat,aes(x=VisSimModel, y=stdPmEmissions))+
+  geom_line()
+
+
+ggplot(data=dat,aes(x=YearBuilt, y=stdPmEmissions))+
+  geom_smooth(method="lm",se=F)
+#PM emissions by the year built. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
