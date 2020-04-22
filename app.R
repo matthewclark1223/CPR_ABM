@@ -77,8 +77,10 @@ server <- function(input, output) {
         
         ## Set parameters
         PercWorking= 1-PercProtected #percent of resource in a working landscape
-        TotalResourceWorking = PercWorking*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the working landscape starting
-        TotalResourceProtected = PercProtected*TotalCarryingCapacity*StartPercCarryingCapacity #number of resources in the protected landscape starting
+        TotalCCResourceProtected=PercProtected*TotalCarryingCapacity #total resource units in carrying capacity of protected area
+        TotalCCResourceWorking=PercWorking*TotalCarryingCapacity #total resource units in carrying capacity of working area
+        StartResourceWorking = TotalCCResourceWorking*StartPercCarryingCapacity #number of resources in the working landscape starting
+        StartResourceProtected = TotalCCResourceProtected*StartPercCarryingCapacity #number of resources in the protected landscape starting
         CoopNumStart= as.integer(CoopPercStart*Individuals) #number of individuals cooperating fully at t0
         DefNumStart= Individuals - CoopNumStart#number of individuals defecting at t0
         PercTimeProtected = c(rep(0,CoopNumStart),rbeta(DefNumStart,1,2)) #percent of their foraging time each indv spends in the PA
@@ -89,8 +91,8 @@ server <- function(input, output) {
                            PayoffProtectedLastTime = rep(NA,Individuals),
                            PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
         
-        ProtectPerDefect<-as.integer(TotalResourceProtected/DefNumStart) #protected area resources per each individual harvesting there
-        WorkingPerTotal<-as.integer(TotalResourceWorking/Individuals) #working landscape resources per individual
+        ProtectPerDefect<-as.integer(StartResourceProtected/DefNumStart) #protected area resources per each individual harvesting there
+        WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
         
         for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
             agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
@@ -116,10 +118,10 @@ server <- function(input, output) {
         
         output$meanTimeProtect[1] <- mean(agents$PercTimeProtected)  #fill it with the outouts from time 1
         output$meanTimeWorking[1]  <- mean(agents$PercTimeWorking) 
-        output$NumResourcesProtect[1] <- TotalResourceProtected-sum(agents$PayoffProtectedLastTime) 
-        output$NumResourcesWorking[1] <- TotalResourceWorking-sum(agents$PayoffWorkingLastTime) 
-        output$percCCProtect[1]  <- output$NumResourcesProtect[1]/TotalResourceProtected
-        output$percCCWorking[1]  <- output$NumResourcesWorking[1]/TotalResourceWorking
+        output$NumResourcesProtect[1] <- StartResourceProtected-sum(agents$PayoffProtectedLastTime) 
+        output$NumResourcesWorking[1] <- StartResourceWorking-sum(agents$PayoffWorkingLastTime) 
+        output$percCCProtect[1]  <- output$NumResourcesProtect[1]/TotalCCResourceProtected
+        output$percCCWorking[1]  <- output$NumResourcesWorking[1]/TotalCCResourceWorking
         output$meanPayoff[1]  <- mean(agents$PayoffTotalLastTime) 
         
         
@@ -164,9 +166,9 @@ server <- function(input, output) {
             #make sure they dont regenerate past their carrying capacity
             
             NewProtectedResourcesTotal<-output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep
-            NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalResourceProtected,NewProtectedResourcesTotal, TotalResourceProtected)
+            NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
             NewWorkingResourcesTotal<-output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep
-            NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalResourceWorking,NewWorkingResourcesTotal,TotalResourceWorking)
+            NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
             
             ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,])) #protected area resources per each individual harvesting there  
             WorkingPerTotal<-as.integer(NewWorkingResourcesTotal/Individuals)
@@ -184,15 +186,15 @@ server <- function(input, output) {
             
             agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
             
-            output$meanTimeProtect[t] <- mean(agents$PercTimeProtected)  #fill it with the outouts from time 1
-            output$meanTimeWorking[t]  <- mean(agents$PercTimeWorking) 
-            output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
-            output$NumResourcesWorking[t]  <- NewWorkingResourcesTotal-sum(agents$PayoffWorkingLastTime)
-            output$percCCProtect[t]  <- output$NumResourcesProtect[t]/TotalResourceProtected
-            output$percCCWorking[t]  <- output$NumResourcesWorking[t]/TotalResourceWorking
-            output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
-            
-        }
+output$meanTimeProtect[t] <- mean(agents$PercTimeProtected)  #fill it with the outouts from time 1
+output$meanTimeWorking[t]  <- mean(agents$PercTimeWorking) 
+output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
+output$NumResourcesWorking[t]  <- NewWorkingResourcesTotal-sum(agents$PayoffWorkingLastTime)
+output$percCCProtect[t]  <- output$NumResourcesProtect[t]/TotalCCResourceProtected
+output$percCCWorking[t]  <- output$NumResourcesWorking[t]/TotalCCResourceWorking
+output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
+
+}
         
         
         p1<-ggplot(data=output,aes(x=timeStep))+
