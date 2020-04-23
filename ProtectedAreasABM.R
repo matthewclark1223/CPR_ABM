@@ -136,10 +136,11 @@ output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
 
 }
 
-par(mfrow=c(3,1))
+par(mfrow=c(4,1))
 plot(output$percCCProtect, type = 'l',col="green")
 plot(output$percCCWorking, type = 'l',col="brown")
 plot(output$meanPayoff, type = 'l',col="red")
+plot(output$meanTimeWorking, type = 'l',col="purple")
 mtext(paste("Individuals=",Individuals,
             "  Total Resources=",TotalCarryingCapacity,
             "  Percent Protected=",PercProtected,
@@ -152,7 +153,6 @@ mtext(paste("Individuals=",Individuals,
  return(output) 
 }
 
-abm(harvestMax = 1,ResourceRegenerationPerTimeStep = 1.5,TimeSteps = 50,CoopPercStart = 0.5,StartPercCarryingCapacity = 0.2)
 
 
 abm()

@@ -1,60 +1,64 @@
-
-
-
 library(shiny)
 library(ggplot2)
+library(shinythemes)
 
 # Define UI for application that draws a histogram
-ui <- fluidPage(
 
-    # Application title
-    titlePanel("AbmOutput"),
+ui<-shinyUI(navbarPage("Protected Areas ABM",
+                       theme = shinytheme("flatly"),
+                       tabPanel("AbmOutput",
+                                # plot the map
+                                fluidRow(column(12,
+                                                h1("AbmOutput"),
+                                                p("Instructions Go Here"),
+                                                br(),
+                                                strong("Important information goes here"))),
+                                
+                                hr(),
+                                fluidRow(sidebarPanel(width = 3,
+                                                      
+                                                      helpText("Help Text"),
+                                                      sliderInput("individuals",
+                                                                  "Number of individuals:",
+                                                                  min = 10,
+                                                                  max = 1000,
+                                                                  value = 100),
+                                                      sliderInput("totCareCapac","Total Carrying Capacity Landscape",
+                                                                  min = 100,max=100000,value=10000),
+                                                      sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
+                                                                  min=0.1,max=1.0,value=0.75),
+                                                      sliderInput("timeSteps",
+                                                                  "Time Steps",
+                                                                  min = 10,
+                                                                  max = 1000,
+                                                                  value = 100),
+                                                      sliderInput("percProtect",
+                                                                  "Percent of Resources Protected",
+                                                                  min = 0.01,
+                                                                  max = 0.99,
+                                                                  value = 0.20),
+                                                      sliderInput("startCooperators",
+                                                                  "Starting Obligatory Cooperators",
+                                                                  min = 0.1,
+                                                                  max = 0.95,
+                                                                  value = 0.9),
+                                                      sliderInput("resourceRegen",
+                                                                  "Resource Regeneration Rate",
+                                                                  min = 1.1,
+                                                                  max = 1.9,
+                                                                  value = 1.5),
+                                                      sliderInput("maxHarvest",
+                                                                  "Max individual harvest per time step",
+                                                                  min = 10,
+                                                                  max = 100,
+                                                                  value = 30)),
+                                         
+                                         
+                                         mainPanel(plotOutput("distPlot",width="1000px",height = "800px"))))))
 
-    # Sidebar with a slider input for number of bins     
-    sidebarLayout(
-        sidebarPanel(
-            sliderInput("individuals",
-                        "Number of individuals:",
-                        min = 10,
-                        max = 1000,
-                        value = 100),
-           sliderInput("totCareCapac","Total Carrying Capacity Landscape",
-                       min = 100,max=100000,value=10000),
-           sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
-                       min=0.1,max=1.0,value=0.75),
-           sliderInput("timeSteps",
-                       "Time Steps",
-                       min = 10,
-                       max = 1000,
-                       value = 100),
-           sliderInput("percProtect",
-                       "Percent of Resources Protected",
-                       min = 0.01,
-                       max = 0.99,
-                       value = 0.20),
-           sliderInput("startCooperators",
-                       "Starting Obligatory Cooperators",
-                       min = 0.1,
-                       max = 0.95,
-                       value = 0.9),
-           sliderInput("resourceRegen",
-                       "Resource Regeneration Rate",
-                       min = 1.1,
-                       max = 1.9,
-                       value = 1.5),
-           sliderInput("maxHarvest",
-                       "Max individual harvest per time step",
-                       min = 10,
-                       max = 100,
-                       value = 30)
-        ),
 
-        # Show a plot of the generated distribution
-        mainPanel(
-           plotOutput("distPlot")
-        )
-    )
-)
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -186,15 +190,15 @@ server <- function(input, output) {
             
             agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
             
-output$meanTimeProtect[t] <- mean(agents$PercTimeProtected)  #fill it with the outouts from time 1
-output$meanTimeWorking[t]  <- mean(agents$PercTimeWorking) 
-output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
-output$NumResourcesWorking[t]  <- NewWorkingResourcesTotal-sum(agents$PayoffWorkingLastTime)
-output$percCCProtect[t]  <- output$NumResourcesProtect[t]/TotalCCResourceProtected
-output$percCCWorking[t]  <- output$NumResourcesWorking[t]/TotalCCResourceWorking
-output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
-
-}
+            output$meanTimeProtect[t] <- mean(agents$PercTimeProtected)  #fill it with the outouts from time 1
+            output$meanTimeWorking[t]  <- mean(agents$PercTimeWorking) 
+            output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
+            output$NumResourcesWorking[t]  <- NewWorkingResourcesTotal-sum(agents$PayoffWorkingLastTime)
+            output$percCCProtect[t]  <- output$NumResourcesProtect[t]/TotalCCResourceProtected
+            output$percCCWorking[t]  <- output$NumResourcesWorking[t]/TotalCCResourceWorking
+            output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
+            
+        }
         
         
         p1<-ggplot(data=output,aes(x=timeStep))+
@@ -211,8 +215,12 @@ output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
             theme_classic()+ylab("Resource Units")+
             ggtitle("Mean Individual Payoff")
         
+        p3<-ggplot(data=output,aes(x=timeStep))+
+            geom_line(aes(y=meanTimeWorking),size=3,color="#756bb1")+
+            theme_classic()+ylab("Mean Percent Time in Working landscape")+
+            ggtitle("Time allocation (Cooperation vs Defection)")
         
-        x<-gridExtra::grid.arrange(p1,p2,ncol=1)
+        x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
         
         return(x) 
         
@@ -225,17 +233,17 @@ output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
     
     
     output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-       individuals<-input$individuals
-       totRecources<-input$totResources
-       TotalCarryingCapacity<-input$totCareCapac
-       StartPercCarryingCapacity<-input$StartPercCarryingCapacity
-       timeSteps<-input$timeSteps
-       percProtect<-input$percProtect
-       startCooperators<-input$startCooperators
-       resourceRegen<-input$resourceRegen
-       maxHarvest<-input$maxHarvest
-
+        
+        individuals<-input$individuals
+        totRecources<-input$totResources
+        TotalCarryingCapacity<-input$totCareCapac
+        StartPercCarryingCapacity<-input$StartPercCarryingCapacity
+        timeSteps<-input$timeSteps
+        percProtect<-input$percProtect
+        startCooperators<-input$startCooperators
+        resourceRegen<-input$resourceRegen
+        maxHarvest<-input$maxHarvest
+        
         abm(Individuals = individuals, TotalCarryingCapacity =TotalCarryingCapacity, 
             PercProtected=percProtect, CoopPercStart=startCooperators,
             ResourceRegenerationPerTimeStep=resourceRegen,harvestMax= maxHarvest,
