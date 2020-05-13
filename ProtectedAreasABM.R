@@ -12,8 +12,9 @@ abm<-function(#Specified parameters
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
   TimeSteps=20,
-  ResourceRegenerationPerTimeStep=1.5,
-  harvestMax=25){
+  ResourceRegenerationPerTimeStep=1.15,
+  harvestMax=25,
+  ProbOfMobility=0.2){
   
   ## Set parameters
   PercWorking= 1-PercProtected #percent of resource in a working landscape
@@ -105,11 +106,25 @@ agents<-data.frame(PercTimeProtected,   #new agent dataframe to fill
 #New resource pools to pull from
 #make sure they dont regenerate past their carrying capacity
 
-NewProtectedResourcesTotal<-output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep
+NewProtectedResourcesTotal<-round(output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep,digits=0)
 NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
-NewWorkingResourcesTotal<-output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep
+NewWorkingResourcesTotal<-round(output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep,digits=0)
 NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
 
+##Resource mobility
+LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
+LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+
+#do the accounting on entering vs leaving individuals
+NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
+NewProtectedResourcesTotal<-NewProtectedResourcesTotal-LeaveProtected+LeaveWorking
+
+#Make sure they dont go over the CC again
+NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+
+
+##calculate available resources per individual
 ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,])) #protected area resources per each individual harvesting there  
 WorkingPerTotal<-as.integer(NewWorkingResourcesTotal/Individuals)
 
@@ -136,17 +151,7 @@ output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
 
 }
 
-#par(mfrow=c(4,1))
-#plot(output$percCCProtect, type = 'l',col="green")
-#plot(output$percCCWorking, type = 'l',col="brown")
-#plot(output$meanPayoff, type = 'l',col="red")
-#plot(output$meanTimeWorking, type = 'l',col="purple")
-#mtext(paste("Individuals=",Individuals,
- #           "  Total Resources=",TotalCarryingCapacity,
-  #          "  Percent Protected=",PercProtected,
-   #       "  Max Harvest=",harvestMax,
-    #       "  Resource Regeneration=",ResourceRegenerationPerTimeStep,
-     #       "  Percent Cooperating at start",CoopPercStart ), side=3, outer=TRUE, line=-3,cex=0.8)
+
 p1<-ggplot(data=output,aes(x=timeStep))+
   geom_line(aes(y=percCCProtect),size=3,color="#b2df8a")+
   geom_line(aes(y=percCCWorking),size=3,color="#1f78b4")+
@@ -174,7 +179,7 @@ x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
 
 
 
-abm()
+abm(TimeSteps=80,ProbOfMobility = 0.8,PercProtected = 0)
 
 
 

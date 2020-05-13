@@ -26,7 +26,7 @@ ui<-shinyUI(navbarPage("Protected Areas ABM",
                                                       sliderInput("totCareCapac","Total Carrying Capacity Landscape",
                                                                   min = 100,max=100000,value=10000),
                                                       sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
-                                                                  min=0.1,max=1.0,value=0.75),
+                                                                  min=0.01,max=1.0,value=0.65),
                                                       sliderInput("timeSteps",
                                                                   "Time Steps",
                                                                   min = 10,
@@ -34,24 +34,29 @@ ui<-shinyUI(navbarPage("Protected Areas ABM",
                                                                   value = 100),
                                                       sliderInput("percProtect",
                                                                   "Percent of Resources Protected",
-                                                                  min = 0.01,
+                                                                  min = 0.00,
                                                                   max = 0.99,
-                                                                  value = 0.20),
+                                                                  value = 0.4),
                                                       sliderInput("startCooperators",
                                                                   "Starting Obligatory Cooperators",
-                                                                  min = 0.1,
-                                                                  max = 0.95,
+                                                                  min = 0.0,
+                                                                  max = 0.99,
                                                                   value = 0.9),
                                                       sliderInput("resourceRegen",
                                                                   "Resource Regeneration Rate",
-                                                                  min = 1.1,
-                                                                  max = 1.9,
+                                                                  min = 1.01,
+                                                                  max = 1.99,
                                                                   value = 1.5),
+                                                      sliderInput("ProbOfMobility",
+                                                                  "Probability of resource mobility",
+                                                                  min = 0.00,
+                                                                  max = 1,
+                                                                  value = 0.2),
                                                       sliderInput("maxHarvest",
                                                                   "Max individual harvest per time step",
                                                                   min = 10,
                                                                   max = 100,
-                                                                  value = 30)),
+                                                                  value = 17)),
                                          
                                          
                                          mainPanel(plotOutput("distPlot",width="1000px",height = "800px"))))))
@@ -69,15 +74,16 @@ server <- function(input, output) {
         
         TotalCarryingCapacity=10000, #total available resource units
         
-        StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
+        StartPercCarryingCapacity = 0.6, #amount of resources available in the landscape at the start in proportion to CC
         
-        PercProtected=0.3, #percent of the total resource that's in a protected area
+        PercProtected=0.00, #percent of the total resource that's in a protected area
         
         CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
         
         TimeSteps=20,
-        ResourceRegenerationPerTimeStep=1.5,
-        harvestMax=25){
+        ResourceRegenerationPerTimeStep=1.15,
+        harvestMax=25,
+        ProbOfMobility=0.2){
         
         ## Set parameters
         PercWorking= 1-PercProtected #percent of resource in a working landscape
@@ -169,11 +175,25 @@ server <- function(input, output) {
             #New resource pools to pull from
             #make sure they dont regenerate past their carrying capacity
             
-            NewProtectedResourcesTotal<-output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep
+            NewProtectedResourcesTotal<-round(output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep,digits=0)
             NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
-            NewWorkingResourcesTotal<-output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep
+            NewWorkingResourcesTotal<-round(output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep,digits=0)
             NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
             
+            ##Resource mobility
+            LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
+            LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+            
+            #do the accounting on entering vs leaving individuals
+            NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
+            NewProtectedResourcesTotal<-NewProtectedResourcesTotal-LeaveProtected+LeaveWorking
+            
+            #Make sure they dont go over the CC again
+            NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+            NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+            
+            
+            ##calculate available resources per individual
             ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,])) #protected area resources per each individual harvesting there  
             WorkingPerTotal<-as.integer(NewWorkingResourcesTotal/Individuals)
             
@@ -243,11 +263,13 @@ server <- function(input, output) {
         startCooperators<-input$startCooperators
         resourceRegen<-input$resourceRegen
         maxHarvest<-input$maxHarvest
+        ProbOfMobility<-input$ProbOfMobility
         
         abm(Individuals = individuals, TotalCarryingCapacity =TotalCarryingCapacity, 
             PercProtected=percProtect, CoopPercStart=startCooperators,
             ResourceRegenerationPerTimeStep=resourceRegen,harvestMax= maxHarvest,
-            TimeSteps=timeSteps,StartPercCarryingCapacity=StartPercCarryingCapacity )
+            TimeSteps=timeSteps,StartPercCarryingCapacity=StartPercCarryingCapacity,
+            ProbOfMobility=ProbOfMobility )
     })
 }
 
