@@ -23,6 +23,9 @@ ui<-shinyUI(navbarPage("Protected Areas ABM",
                                                                   min = 10,
                                                                   max = 1000,
                                                                   value = 100),
+                                                      selectInput("LearningStrategy","Learning Strategy",
+                                                                  c("Success Bias" = "Success Bias",
+                                                                    "Conformist"= "Conformist")),
                                                       sliderInput("totCareCapac","Total Carrying Capacity Landscape",
                                                                   min = 100,max=100000,value=10000),
                                                       sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
@@ -74,11 +77,13 @@ server <- function(input, output) {
         
         TotalCarryingCapacity=10000, #total available resource units
         
-        StartPercCarryingCapacity = 0.6, #amount of resources available in the landscape at the start in proportion to CC
+        StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
         
-        PercProtected=0.00, #percent of the total resource that's in a protected area
+        PercProtected=0.3, #percent of the total resource that's in a protected area
         
         CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
+        
+        LearningStrategy = "Success Bias", #options are Success Bias & Conformist
         
         TimeSteps=20,
         ResourceRegenerationPerTimeStep=1.15,
@@ -146,22 +151,33 @@ server <- function(input, output) {
             LastTimePercWorking<-LastTimeAgents$PercTimeWorking  #pull out the previous working foraging times as vector
             
             PercTimeProtected<-rep(NA,length(PercTimeProtected))  #nullify the previous perc time protected vector so we can fill it later and be confident the values changed
-            for (j in 1:nrow(LastTimeAgents)){  
-                ThisAgent<-LastTimeAgents[j,]      #modify the foraging strategy of each agent individualls
-                OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
-                ThisAgentPayoff<-ThisAgent$PayoffTotalLastTime   #payoff last time period for this agent
-                OtherAgentSpecific<-OtherAgents[sample(nrow(OtherAgents),1),] #choose a specific agent for them to get paired up with
-                OtherAgentPayoff<-OtherAgentSpecific$PayoffTotalLastTime  #Payoff the other agent recieved
-                OtherAgentPercProtect<-OtherAgentSpecific$PercTimeProtected #strategy of other agent
-                ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
-                
-                PercTimeProtected[j]<-ifelse(ThisAgentPayoff >=OtherAgentPayoff,ThisAgent$PercTimeProtected,
-                                             (ThisAgentPercProtect+((OtherAgentPercProtect-ThisAgentPercProtect)/2))) #vector of new strategies
-                
-                #if this agent did better than the randomly selected agent then they keep their strategy
-                #if they did worse thnan they modify their strategy to be the difference between their previou sstrategy and the randomly selected agent
-                
-            }
+            
+            if(LearningStrategy == "Success Bias"){ 
+                for (j in 1:nrow(LastTimeAgents)){  
+                    ThisAgent<-LastTimeAgents[j,]      #modify the foraging strategy of each agent individually
+                    OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
+                    ThisAgentPayoff<-ThisAgent$PayoffTotalLastTime   #payoff last time period for this agent
+                    OtherAgentSpecific<-OtherAgents[sample(nrow(OtherAgents),1),] #choose a specific agent for them to get paired up with
+                    OtherAgentPayoff<-OtherAgentSpecific$PayoffTotalLastTime  #Payoff the other agent recieved
+                    OtherAgentPercProtect<-OtherAgentSpecific$PercTimeProtected #strategy of other agent
+                    ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
+                    
+                    PercTimeProtected[j]<-ifelse(ThisAgentPayoff >=OtherAgentPayoff,ThisAgent$PercTimeProtected,
+                                                 (ThisAgentPercProtect+((OtherAgentPercProtect-ThisAgentPercProtect)/2))) #vector of new strategies
+                    
+                    #if this agent did better than the randomly selected agent then they keep their strategy
+                    #if they did worse thnan they modify their strategy to be the difference between their previou sstrategy and the randomly selected agent
+                    
+                }}
+            if(LearningStrategy == "Conformist"){
+                for (j in 1:nrow(LastTimeAgents)){  
+                    ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
+                    OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
+                    OtherAgentsPercProtect<-mean(OtherAgents$PercTimeProtected )# mean strategy of other agents
+                    ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
+                    
+                    PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
+                }}
             
             PercTimeWorking<- 1-PercTimeProtected   #time foraging in the working landscape
             
@@ -255,6 +271,7 @@ server <- function(input, output) {
     output$distPlot <- renderPlot({
         
         individuals<-input$individuals
+        LearningStrategy <- input$LearningStrategy
         totRecources<-input$totResources
         TotalCarryingCapacity<-input$totCareCapac
         StartPercCarryingCapacity<-input$StartPercCarryingCapacity
@@ -269,7 +286,7 @@ server <- function(input, output) {
             PercProtected=percProtect, CoopPercStart=startCooperators,
             ResourceRegenerationPerTimeStep=resourceRegen,harvestMax= maxHarvest,
             TimeSteps=timeSteps,StartPercCarryingCapacity=StartPercCarryingCapacity,
-            ProbOfMobility=ProbOfMobility )
+            ProbOfMobility=ProbOfMobility,LearningStrategy = LearningStrategy )
     })
 }
 
