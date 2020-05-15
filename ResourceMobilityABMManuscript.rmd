@@ -1,0 +1,36 @@
+---
+title: "Resource Mobility & Protected Areas Efficacy"
+author: "Matt Clark"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: html_document
+---
+
+# Abstract 
+
+
+
+
+
+
+# Introduction 
+-Protected areas are widely used. Both marine and terrestrial
+-Provide a source of species and should be adopted widely based on theory (beneficial "technology")
+-They are not always adopted, especially over time.
+-Adoption/cooperation is a key factor which influences the success (social & ecological) of any given area. 
+-People will adopt/cooperate more readily if adoption/cooperation yeilds immediate, noticable benefits to them
+-It makes sense logically that protected areas will provide more immediate benefits to individuals if the resources are highly mobile
+-While it makes sense logically, we need to formally show this. 
+-We need to formally show it both in terms of the spatial/ecological aspect, but also in terms of the social adoption component. 
+-Extending this hypothesis, we think that highly mobile resources should require a smaller refuge, especially if these resources are quickly regnerating.
+-Because these systems consist of two interacting groups (both with subgroups) all of which are evolving every time step, equation based models can not accurately depic the system. Differential equation for example try to find an equilibrium point in a changing system, which is not the goal of this study.
+-Using a dynamic model will allow us test our logic and intuition about how these system works.
+
+-p1 Resource mobility will increase the efficacy (social & ecological) of protected areas
+-p2 Protected area size will also increase efficacy 
+-p3 Resource mobility and PA size will complement each other 
+-p4 Resource regeneration rate will decrease necessary mobility and PA size
+-p5 Different learning strategies will affect these dynamics, but the overall predictions will hold true.
+
+### additional?
+-We have a database of all protected areas in the world (~kinda)
+-Check if there's any correlation between % of resource protected and resource mobility
