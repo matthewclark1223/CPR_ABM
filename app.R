@@ -173,7 +173,8 @@ server <- function(input, output) {
                 for (j in 1:nrow(LastTimeAgents)){  
                     ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
                     OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
-                    OtherAgentsPercProtect<-mean(OtherAgents$PercTimeProtected )# mean strategy of other agents
+                    OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
+                    OtherAgentsPercProtect<-mean(OtherAgentsSample$PercTimeProtected )# mean strategy of other agents
                     ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
                     
                     PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
