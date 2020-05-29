@@ -40,8 +40,8 @@ abm<-function(#Specified parameters
   for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
     agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
     agents[i,4]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
-    agents[i,4]<-ifelse(agents[i,4]>harvestMax,harvestMax,agents[i,4])
-    agents[i,3]<- ifelse(agents[i,4]<= harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
+    agents[i,4]<-ifelse(agents[i,4]>=harvestMax,harvestMax,agents[i,4])
+    agents[i,3]<- ifelse(agents[i,4]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
     agents[i,3]<-ifelse(agents[i,3]>harvestMax-agents[i,4],harvestMax-agents[i,4],agents[i,3])
   } #see what they get from the working landscape first
   
@@ -146,8 +146,8 @@ abm<-function(#Specified parameters
     for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
       agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
       agents[i,4]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
-      agents[i,4]<-ifelse(agents[i,4]>harvestMax,harvestMax,agents[i,4])
-      agents[i,3]<- ifelse(agents[i,4]<= harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
+      agents[i,4]<-ifelse(agents[i,4]>=harvestMax,harvestMax,agents[i,4])
+      agents[i,3]<- ifelse(agents[i,4]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
       agents[i,3]<-ifelse(agents[i,3]>harvestMax-agents[i,4],harvestMax-agents[i,4],agents[i,3])
     } #see what they get from the working landscape first
     
@@ -193,4 +193,4 @@ abm<-function(#Specified parameters
 
 
 
-abm(TimeSteps=80,ProbOfMobility = 0.8,LearningStrategy = "Conformist")
+abm()
