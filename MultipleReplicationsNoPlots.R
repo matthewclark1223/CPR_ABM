@@ -182,44 +182,8 @@ abm<-function(#Specified parameters
       outputmeanPayoff[t,r]  <- mean(agents$PayoffTotalLastTime)
       
     }
-    par(mfrow=c(2,2))
     
-    #mean payoff
-    plot(rowMeans(outputmeanPayoff), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,harvestMax), lwd = 3, main = "Mean Payoff")
     
-    for (j in 1:Runs) {  
-      
-      lines(outputmeanPayoff[,j], type = 'l')  # add lines for each run, up to r_max
-      
-    }
-    
-    #% CC protected
-    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Average time in working (coop)")
-    
-    for (j in 1:Runs) {  
-      
-      lines(outputmeanTimeWorking[,j], type = 'l')  # add lines for each run, up to r_max
-      
-    }
-    
-    #% CC protected
-    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Percent CC Protected")
-    
-    for (j in 1:Runs) {  
-      
-      lines(outputpercCCProtect[,j], type = 'l')  # add lines for each run, up to r_max
-      
-    }
-    
-    #% CC working
-    plot(rowMeans(outputpercCCWorking), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Percent CC Working")
-    
-    for (j in 1:Runs) {  
-      
-      lines(outputpercCCWorking[,j], type = 'l')  # add lines for each run, up to r_max
-      
-    }
-
     
   }
   outputmeanPayoff$Timestep<-c(1:TimeSteps)
@@ -255,13 +219,9 @@ FillData<-expand.grid(PercProtected=seq(0.1,0.9,0.05), ResourceMobility=seq(0.1,
 FillData$ProtectedCC<-rep(NA,nrow(FillData))
 
 for (i in 1:nrow(FillData)){
-abm(Runs=10,Individuals = 100,
-    PercProtected = FillData[i,]$PercProtected, 
-    ProbOfMobility = FillData[i,]$ResourceMobility)
-FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)  
+  abm(Runs=10,Individuals = 100,
+      PercProtected = FillData[i,]$PercProtected, 
+      ProbOfMobility = FillData[i,]$ResourceMobility)
+  FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)  
   
 }
-  
-
-  
-
