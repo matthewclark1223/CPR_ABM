@@ -214,21 +214,22 @@ abm(Runs=5)
 #fill a dataframe with the means
 
 
-FillData<-expand.grid(PercProtected=seq(0.1,0.3,0.05), ResourceMobility=seq(0.1,0.3,0.05))
+FillData<-expand.grid(PercProtected=seq(0.05,0.95,0.05), ResourceMobility=seq(0.05,0.95,0.05))
 FillData$ProtectedCC<-rep(NA,nrow(FillData))
 FillData$WorkingCC<-rep(NA,nrow(FillData))
 FillData$MeanPayoff<-rep(NA,nrow(FillData))
 FillData$meanTimeWorking<-rep(NA,nrow(FillData))
 
-##na's being produces sometimes??? why?????
+
+#Script for running on HES Bowl computer
 for (i in 1:nrow(FillData)){
-  abm(Runs=5,Individuals = 100,TimeSteps = 50,harvestMax = 17,
+  abm(Runs=50,Individuals = 100,TimeSteps = 100,harvestMax = 17,
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility)
-  FillData[i,3]<-apply(FullOutput$percCCProtect[50,1:5],1,mean) 
-  FillData[i,4]<-apply(FullOutput$percCCWorking[50,1:5],1,mean)  
-  FillData[i,5]<-apply(FullOutput$meanPayoff[50,1:5],1,mean)  
-  FillData[i,6]<-apply(FullOutput$meanTimeWorking[50,1:5],1,mean)   #[Timesteps,1:Runs]
+  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:5],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:5],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:5],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:50],1,mean)   #[Timesteps,1:Runs]
   print(nrow(FillData))
   print(i)
 }
