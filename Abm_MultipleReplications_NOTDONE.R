@@ -7,7 +7,7 @@ abm<-function(#Specified parameters
   
   StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
   
-  PercProtected=0.3, #percent of the total resource that's in a protected area
+  PercProtected=0.15, #percent of the total resource that's in a protected area
   
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
@@ -16,7 +16,7 @@ abm<-function(#Specified parameters
   TimeSteps=75,
   ResourceRegenerationPerTimeStep=1.5,
   harvestMax=15,
-  ProbOfMobility=0.2){
+  ProbOfMobility=0.15){
   
   ## Create output dfs
   
@@ -64,7 +64,7 @@ abm<-function(#Specified parameters
     
     for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
       agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
-      agents[i,4]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
+      agents[i,4]<-rbinom(1,as.integer(WorkingPerTotal),agent2$PercTimeWorking)
       agents[i,4]<-ifelse(agents[i,4]>=harvestMax,harvestMax,agents[i,4])
       agents[i,3]<- ifelse(agents[i,4]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
       agents[i,3]<-ifelse(agents[i,3]>harvestMax-agents[i,4],harvestMax-agents[i,4],agents[i,3])
@@ -145,7 +145,7 @@ abm<-function(#Specified parameters
       
       ##Resource mobility
       LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
-      LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+      LeaveProtected<-rbinom(1,as.integer(NewProtectedResourcesTotal),ProbOfMobility)#number of resources which leave the working area
       
       #do the accounting on entering vs leaving individuals
       NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
@@ -163,7 +163,7 @@ abm<-function(#Specified parameters
       
       for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
         agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
-        agents[i,4]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
+        agents[i,4]<-rbinom(1,as.integer(WorkingPerTotal),agent2$PercTimeWorking)
         agents[i,4]<-ifelse(agents[i,4]>=harvestMax,harvestMax,agents[i,4])
         agents[i,3]<- ifelse(agents[i,4]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
         agents[i,3]<-ifelse(agents[i,3]>harvestMax-agents[i,4],harvestMax-agents[i,4],agents[i,3])
