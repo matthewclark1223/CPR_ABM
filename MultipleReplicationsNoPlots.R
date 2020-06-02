@@ -223,5 +223,6 @@ for (i in 1:nrow(FillData)){
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility)
   FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)  
-  
+  print(nrow(FillData))
+  print(i)
 }
