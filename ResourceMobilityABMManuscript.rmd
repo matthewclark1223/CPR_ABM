@@ -34,3 +34,28 @@ output: html_document
 ### additional?
 -We have a database of all protected areas in the world (~kinda)
 -Check if there's any correlation between % of resource protected and resource mobility
+
+
+
+### Model Description
+*Starting conditions
+Our agent based model represents a simplistic world where there is one homogenous group of agents who harvest resources from a landscape. This landscape is zoned into two patches, working and protected. Resources move between these patches at each time step with a probability designated in the model setup. At time = 0, the protected and working landscapes are both at an equal, designated percent carrying capacity. At each time step, agents aim to maximize their harvest up until a designated harvest max. At time = 0, agents are assigned as either obligatory cooperators or as having the ability to defect to a small degree (spend a small portion of therir time harvesting from the protected landscape). 
+
+*Agent attributes and behavior
+
+
+*Environment attribtes and behavior
+
+
+*Key Processes
+At time step one, all agents harvest first spend their initial percentage of effort harvesting from the working landscape. If agents reach harvest max, they do not harvest from the protected landscape. If they do not reach harvest max, they will spend the rest of their effort harvesting from the protected area. They will harvest up to the harvest max if possible. The resulting resources in both landscapes are multiplied by the regeneration factor, not past the carrying capacity of the landscape. If agents are following a success biased learning strategy, they are paired with another agent at random and compare strategies. If one agent preformed worse than another in the first time step, the underpreforming agent will adopt a strategy in-between their pervious strategy and the strategy of the agent who outpreformed them. If agents are following a conformist strategy, they are grouped with 5 other agents at random at each time step, and adopt the mean strategy of all agents in their group. This process repeats for all time steps. 
+
+
+*Outputs
+
+
+
+
+
+
+
