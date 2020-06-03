@@ -222,13 +222,13 @@ FillData$meanTimeWorking<-rep(NA,nrow(FillData))
 
 ##na's being produces sometimes??? why?????
 for (i in 1:nrow(FillData)){
-  abm(Runs=3,Individuals = 100,TimeSteps = 100,harvestMax = 17,
+  abm(Runs=20,Individuals = 100,TimeSteps = 100,harvestMax = 17,
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility)
-  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:3],1,mean) 
-  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:3],1,mean)  
-  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:3],1,mean)  
-  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:3],1,mean)   #[Timesteps,1:Runs]
+  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:20],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:20],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:20],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:20],1,mean)   #[Timesteps,1:Runs]
   print(nrow(FillData))
   print(i)
 }
@@ -248,13 +248,13 @@ FillData$meanTimeWorking<-rep(NA,nrow(FillData))
 
 ##na's being produces sometimes??? why?????
 for (i in 1:nrow(FillData)){
-  abm(Runs=3,Individuals = 100,TimeSteps = 100,harvestMax = 17,LearningStrategy = "Conformist",
+  abm(Runs=20,Individuals = 100,TimeSteps = 100,harvestMax = 17,LearningStrategy = "Conformist",
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility)
-  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:3],1,mean) 
-  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:3],1,mean)  
-  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:3],1,mean)  
-  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:3],1,mean)   #[Timesteps,1:Runs]
+  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:20],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:20],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:20],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:20],1,mean)   #[Timesteps,1:Runs]
   print(nrow(FillData))
   print(i)
 }
@@ -263,4 +263,80 @@ ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= Pro
   geom_tile()+scale_fill_viridis()
 
 write.csv(FillData,file="ModelResultsConformityBias.csv")
+
+
+
+#environmental degredation and PA size success
+FillData<-expand.grid(PercProtected=seq(0.1,0.9,0.1), StartPercCC=seq(0.1,0.9,0.1))
+FillData$ProtectedCC<-rep(NA,nrow(FillData))
+FillData$WorkingCC<-rep(NA,nrow(FillData))
+FillData$MeanPayoff<-rep(NA,nrow(FillData))
+FillData$meanTimeWorking<-rep(NA,nrow(FillData))
+
+
+for (i in 1:nrow(FillData)){
+  abm(Runs=5,Individuals = 100,TimeSteps = 50,harvestMax = 17,
+      PercProtected = FillData[i,]$PercProtected, StartPercCarryingCapacity =  FillData[i,]$StartPercCC,
+      ProbOfMobility = 0.5)
+  FillData[i,3]<-apply(FullOutput$percCCProtect[50,1:5],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[50,1:5],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[50,1:5],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[50,1:5],1,mean)   #[Timesteps,1:Runs]
+  print(nrow(FillData))
+  print(i)
+}
+
+SD_Success<-FillData
+ggplot(data=SD_Success, mapping=aes(x=PercProtected, y=StartPercCC, fill= ProtectedCC)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Success, mapping=aes(x=PercProtected, y=StartPercCC, fill= WorkingCC)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Success, mapping=aes(x=PercProtected, y=StartPercCC, fill= MeanPayoff)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Success, mapping=aes(x=PercProtected, y=StartPercCC, fill= meanTimeWorking)) + 
+  geom_tile()+scale_fill_viridis()
+
+
+#environmental degredation and PA size conform
+
+FillData<-expand.grid(PercProtected=seq(0.1,0.9,0.1), StartPercCC=seq(0.1,0.9,0.1))
+FillData$ProtectedCC<-rep(NA,nrow(FillData))
+FillData$WorkingCC<-rep(NA,nrow(FillData))
+FillData$MeanPayoff<-rep(NA,nrow(FillData))
+FillData$meanTimeWorking<-rep(NA,nrow(FillData))
+
+
+for (i in 1:nrow(FillData)){
+  abm(Runs=5,Individuals = 100,TimeSteps = 50,harvestMax = 17,LearningStrategy = "Conformist",
+      PercProtected = FillData[i,]$PercProtected, StartPercCarryingCapacity =  FillData[i,]$StartPercCC,
+      ProbOfMobility = 0.5)
+  FillData[i,3]<-apply(FullOutput$percCCProtect[50,1:5],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[50,1:5],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[50,1:5],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[50,1:5],1,mean)   #[Timesteps,1:Runs]
+  print(nrow(FillData))
+  print(i)
+}
+
+SD_Conform<-FillData
+ggplot(data=SD_Conform, mapping=aes(x=PercProtected, y=StartPercCC, fill= ProtectedCC)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Conform, mapping=aes(x=PercProtected, y=StartPercCC, fill= WorkingCC)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Conform, mapping=aes(x=PercProtected, y=StartPercCC, fill= MeanPayoff)) + 
+  geom_tile()+scale_fill_viridis()
+ggplot(data=SD_Conform, mapping=aes(x=PercProtected, y=StartPercCC, fill= meanTimeWorking)) + 
+  geom_tile()+scale_fill_viridis()
+
+
+
+#harvest max
+
+
+
+
+
+
+
+
 
