@@ -5,7 +5,7 @@ abm<-function(#Specified parameters
   
   TotalCarryingCapacity=10000, #total available resource units
   
-  StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
   
   PercProtected=0.15, #percent of the total resource that's in a protected area
   
@@ -220,29 +220,47 @@ FillData$WorkingCC<-rep(NA,nrow(FillData))
 FillData$MeanPayoff<-rep(NA,nrow(FillData))
 FillData$meanTimeWorking<-rep(NA,nrow(FillData))
 
-
-#Script for running on HES Bowl computer
+##na's being produces sometimes??? why?????
 for (i in 1:nrow(FillData)){
-  abm(Runs=50,Individuals = 100,TimeSteps = 100,harvestMax = 17,
+  abm(Runs=3,Individuals = 100,TimeSteps = 100,harvestMax = 17,
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility)
-  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:5],1,mean) 
-  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:5],1,mean)  
-  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:5],1,mean)  
-  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:50],1,mean)   #[Timesteps,1:Runs]
+  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:3],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:3],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:3],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:3],1,mean)   #[Timesteps,1:Runs]
   print(nrow(FillData))
   print(i)
 }
 
+library(ggplot2)
+library(viridis)
+ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= ProtectedCC)) + 
+  geom_tile()+scale_fill_viridis()
 
+write.csv(FillData,file="ModelResultsSuccessBias.csv")
 
+FillData<-expand.grid(PercProtected=seq(0.05,0.95,0.05), ResourceMobility=seq(0.05,0.95,0.05))
+FillData$ProtectedCC<-rep(NA,nrow(FillData))
+FillData$WorkingCC<-rep(NA,nrow(FillData))
+FillData$MeanPayoff<-rep(NA,nrow(FillData))
+FillData$meanTimeWorking<-rep(NA,nrow(FillData))
 
-
+##na's being produces sometimes??? why?????
+for (i in 1:nrow(FillData)){
+  abm(Runs=3,Individuals = 100,TimeSteps = 100,harvestMax = 17,LearningStrategy = "Conformist",
+      PercProtected = FillData[i,]$PercProtected, 
+      ProbOfMobility = FillData[i,]$ResourceMobility)
+  FillData[i,3]<-apply(FullOutput$percCCProtect[100,1:3],1,mean) 
+  FillData[i,4]<-apply(FullOutput$percCCWorking[100,1:3],1,mean)  
+  FillData[i,5]<-apply(FullOutput$meanPayoff[100,1:3],1,mean)  
+  FillData[i,6]<-apply(FullOutput$meanTimeWorking[100,1:3],1,mean)   #[Timesteps,1:Runs]
+  print(nrow(FillData))
+  print(i)
+}
 
 ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= ProtectedCC)) + 
   geom_tile()+scale_fill_viridis()
 
+write.csv(FillData,file="ModelResultsConformityBias.csv")
 
-
-
-apply(FullOutput$meanTimeWorking[75,1:10],1,mean)
