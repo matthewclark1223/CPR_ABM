@@ -14,31 +14,37 @@ initOutputSuccess<-read.csv("~/Pemba Project/ModelResultsSuccessBias.csv")
 initOutputConform<-read.csv("~/Pemba Project/ModelResultsConformityBias.csv")
 
 
-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= ProtectedCC)) + 
+p1<-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= ProtectedCC)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Success Bias -- Protected CC")
 
 ggplot(data=initOutputConform, mapping=aes(x=PercProtected, y=ResourceMobility, fill= ProtectedCC)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Conform Bias -- Protected CC")
 
 
-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= WorkingCC)) + 
+p2<-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= WorkingCC)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Success Bias -- Working CC")
 
 ggplot(data=initOutputConform, mapping=aes(x=PercProtected, y=ResourceMobility, fill= WorkingCC)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Conform Bias -- Working CC")
 
-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= MeanPayoff)) + 
+p3<-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= MeanPayoff)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Success Bias -- Mean Payoff")
 
 ggplot(data=initOutputConform, mapping=aes(x=PercProtected, y=ResourceMobility, fill= MeanPayoff)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Conform Bias -- Mean Payoff")
 
-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanTimeWorking)) + 
+p4<-ggplot(data=initOutputSuccess, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanTimeWorking)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Success Bias -- Cooperation")
 
 ggplot(data=initOutputConform, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanTimeWorking)) + 
   geom_tile()+scale_fill_viridis()+ggtitle("Conform Bias -- Cooperation")
 
+
+ggplot(initOutputSuccess,aes(x=ResourceMobility,y=ProtectedCC))+geom_point()
+
+
+
+gridExtra::grid.arrange(p1,p2,p3,p4, nrow=2)
 
 
 

@@ -17,12 +17,12 @@ output: html_document
 -Provide a source of species and should be adopted widely based on theory (beneficial "technology")
 -They are not always adopted, especially over time.
 -Adoption/cooperation is a key factor which influences the success (social & ecological) of any given area. 
--People will adopt/cooperate more readily if adoption/cooperation yeilds immediate, noticable benefits to them
+-People will adopt/cooperate more readily if adoption/cooperation yields immediate, noticeable benefits to them
 -It makes sense logically that protected areas will provide more immediate benefits to individuals if the resources are highly mobile
 -While it makes sense logically, we need to formally show this. 
 -We need to formally show it both in terms of the spatial/ecological aspect, but also in terms of the social adoption component. 
--Extending this hypothesis, we think that highly mobile resources should require a smaller refuge, especially if these resources are quickly regnerating.
--Because these systems consist of two interacting groups (both with subgroups) all of which are evolving every time step, equation based models can not accurately depic the system. Differential equation for example try to find an equilibrium point in a changing system, which is not the goal of this study.
+-Extending this hypothesis, we think that highly mobile resources should require a smaller refuge, especially if these resources are quickly regenerating.
+-Because these systems consist of two interacting groups (both with subgroups) all of which are evolving every time step, equation based models can not accurately depict the system. Differential equation for example try to find an equilibrium point in a changing system, which is not the goal of this study.
 -Using a dynamic model will allow us test our logic and intuition about how these system works.
 
 -p1 Resource mobility will increase the efficacy (social & ecological) of protected areas
@@ -35,24 +35,29 @@ output: html_document
 -We have a database of all protected areas in the world (~kinda)
 -Check if there's any correlation between % of resource protected and resource mobility
 
+-When to use permeable working landscapes and when to use sectioned off protected areas?
 
 
 ### Model Description
-*Starting conditions
-Our agent based model represents a simplistic world where there is one homogenous group of agents who harvest resources from a landscape. This landscape is zoned into two patches, working and protected. Resources move between these patches at each time step with a probability designated in the model setup. At time = 0, the protected and working landscapes are both at an equal, designated percent carrying capacity. At each time step, agents aim to maximize their harvest up until a designated harvest max. At time = 0, agents are assigned as either obligatory cooperators or as having the ability to defect to a small degree (spend a small portion of therir time harvesting from the protected landscape). 
+* Starting conditions
+Our agent based model represents a simplistic world where there is one homogeneous group of agents who harvest resources from a landscape. This landscape is zoned into two patches, working and protected. Resources move between these patches at each time step with a probability designated in the model setup. At time = 0, the protected and working landscapes are both at an equal, designated percent carrying capacity. At each time step, agents aim to maximize their harvest up until a designated harvest max. At time = 0, agents are assigned as either obligatory cooperators or as having the ability to defect to a small degree (spend a small portion of their time harvesting from the protected landscape). 
 
-*Agent attributes and behavior
+The independent variables of interest are: Resource mobility, protected area size, learning strategy, and resource regeneration rate.
+
+* Agent attributes and behavior
+Agents "choose" to spend a given percent of their time harvesting from the protected area (defecting) and a percent of their time harvesting from the working landscape (defecting). Full defection is when the average percent of time agents spend in the protected area is equal to the percent of the landscape protected (i.e. they do not treat the protected area any differently than the working landscape).
+
+* Environment attributes and behavior
+At every time step, both areas lost the number of resources that agents harvest from them. The areas then regenerate resources according to the regeneration rate per time step and lastly, the resources move from one area to the other with probability p pulled from a binomial distribution. 
+
+* Key Processes
+At time step one, all agents harvest first spend their initial percentage of effort harvesting from the working landscape. If agents reach harvest max, they do not harvest from the protected landscape. If they do not reach harvest max, they will spend the rest of their effort harvesting from the protected area. They will harvest up to the harvest max if possible. The resulting resources in both landscapes are multiplied by the regeneration factor, not past the carrying capacity of the landscape. Resources move between the protected and working landscapes with a probability proportional to designated probability of mobility. If agents are following a success biased learning strategy, they are paired with another agent at random and compare strategies. If one agent preformed worse than another in the first time step, the under preforming agent will adopt a strategy in-between their previous strategy and the strategy of the agent who outperformed them. If agents are following a conformist strategy, they are grouped with 5 other agents at random at each time step, and adopt the mean strategy of all agents in their group. This process repeats for all time steps. 
 
 
-*Environment attribtes and behavior
+* Outputs
+The dependent variables of interest are: Cooperative behavior, protected area degradation, working landscape degradation, and mean payoff to individuals.
 
-
-*Key Processes
-At time step one, all agents harvest first spend their initial percentage of effort harvesting from the working landscape. If agents reach harvest max, they do not harvest from the protected landscape. If they do not reach harvest max, they will spend the rest of their effort harvesting from the protected area. They will harvest up to the harvest max if possible. The resulting resources in both landscapes are multiplied by the regeneration factor, not past the carrying capacity of the landscape. Resources move between the protected and working landscapes with a probability proportional to designated probability of mobility. If agents are following a success biased learning strategy, they are paired with another agent at random and compare strategies. If one agent preformed worse than another in the first time step, the underpreforming agent will adopt a strategy in-between their pervious strategy and the strategy of the agent who outpreformed them. If agents are following a conformist strategy, they are grouped with 5 other agents at random at each time step, and adopt the mean strategy of all agents in their group. This process repeats for all time steps. 
-
-
-*Outputs
-
+We can run any number of runs for any combination of variables. 
 
 
 

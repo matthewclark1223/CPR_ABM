@@ -1,11 +1,11 @@
-abmnp<-function(#Specified parameters
+abm<-function(#Specified parameters
   
   Runs=3,
   Individuals=100, #number of total resource users in a population
   
   TotalCarryingCapacity=10000, #total available resource units
   
-  StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
   
   PercProtected=0.15, #percent of the total resource that's in a protected area
   
@@ -182,8 +182,44 @@ abmnp<-function(#Specified parameters
       outputmeanPayoff[t,r]  <- mean(agents$PayoffTotalLastTime)
       
     }
+    par(mfrow=c(2,2))
     
+    #mean payoff
+    plot(rowMeans(outputmeanPayoff), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,harvestMax), lwd = 3, main = "Mean Payoff")
     
+    for (j in 1:Runs) {  
+      
+      lines(outputmeanPayoff[,j], type = 'l')  # add lines for each run, up to r_max
+      
+    }
+    
+    #% CC protected
+    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Average time in working (coop)")
+    
+    for (j in 1:Runs) {  
+      
+      lines(outputmeanTimeWorking[,j], type = 'l')  # add lines for each run, up to r_max
+      
+    }
+    
+    #% CC protected
+    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Percent CC Protected")
+    
+    for (j in 1:Runs) {  
+      
+      lines(outputpercCCProtect[,j], type = 'l')  # add lines for each run, up to r_max
+      
+    }
+    
+    #% CC working
+    plot(rowMeans(outputpercCCWorking), type = 'l', ylab = "y label", xlab = "x label", ylim=c(0,1), lwd = 3, main = "Percent CC Working")
+    
+    for (j in 1:Runs) {  
+      
+      lines(outputpercCCWorking[,j], type = 'l')  # add lines for each run, up to r_max
+      
+    }
+
     
   }
   outputmeanPayoff$Timestep<-c(1:TimeSteps)
@@ -202,12 +238,30 @@ abmnp<-function(#Specified parameters
                    NumResourcesProtect=outputNumResourcesProtect,
                    NumResourcesWorking=outputNumResourcesWorking,
                    percCCProtect=outputpercCCProtect,
-                   percCCWorking=outputpercCCWorking)
+                   percCCWorking=outputpercCCWorking,
+                   meanPayoff=outputmeanPayoff)
   
   FullOutput<<-FullOutput
   
   
 }
 
-abmnp(Runs=5)
+abm(Runs=10)
+
+#fill a dataframe with the means
+
+FillData<-data.frame(PercProtected=seq(0.1,0.9,0.05),ResourceMobility=seq(0.1,0.9,0.05))
+FillData<-expand.grid(PercProtected=seq(0.1,0.9,0.05), ResourceMobility=seq(0.1,0.9,0.05))
+FillData$ProtectedCC<-rep(NA,nrow(FillData))
+
+for (i in 1:nrow(FillData)){
+abm(Runs=10,Individuals = 100,
+    PercProtected = FillData[i,]$PercProtected, 
+    ProbOfMobility = FillData[i,]$ResourceMobility)
+FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)  
+  
+}
+  
+
+  
 
