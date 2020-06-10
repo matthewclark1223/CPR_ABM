@@ -97,16 +97,29 @@ abm<-function(#Specified parameters
         #if they did worse thnan they modify their strategy to be the difference between their previou sstrategy and the randomly selected agent
         
       }}
+    #if(LearningStrategy == "Conformist"){
+     # for (j in 1:nrow(LastTimeAgents)){  
+      #  ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
+       # OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
+        #OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
+        #OtherAgentsPercProtect<-mean(OtherAgentsSample$PercTimeProtected )# mean strategy of other agents
+        #ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
+        
+        #PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
+      #}}
+    
     if(LearningStrategy == "Conformist"){
       for (j in 1:nrow(LastTimeAgents)){  
         ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
         OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
         OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
-        OtherAgentsPercProtect<-mean(OtherAgentsSample$PercTimeProtected )# mean strategy of other agents
-        ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
-        
-        PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
-      }}
+        ThisAgentPercProtect<-ThisAgent$PercTimeProtected
+        if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect ==0.0){PercTimeProtected[j]<-rbeta(1,1,2)}
+        if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect >0.0){PercTimeProtected[j]<-ThisAgentPercProtect}
+        if(length(which(OtherAgentsSample$PercTimeProtected==0.0))>2){PercTimeProtected[j]<-0.0}
+    }}
+    
+    
     
     PercTimeWorking<- 1-PercTimeProtected   #time foraging in the working landscape
     
@@ -139,7 +152,8 @@ abm<-function(#Specified parameters
     
     
     ##calculate available resources per individual
-    ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,])) #protected area resources per each individual harvesting there  
+    if(nrow(agents[agents$PercTimeProtected>0,])==0){ProtectPerDefect<-NewProtectedResourcesTotal}
+    if(nrow(agents[agents$PercTimeProtected>0,])!=0){ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,]))}
     WorkingPerTotal<-as.integer(NewWorkingResourcesTotal/Individuals)
     
     
@@ -193,4 +207,5 @@ abm<-function(#Specified parameters
 
 
 
-abm()
+abm(LearningStrategy = "Conformist",CoopPercStart=0.5)
+
