@@ -116,15 +116,26 @@ abmnp<-function(#Specified parameters
           
         }}
       #if(LearningStrategy == "Conformist"){
-       # for (j in 1:nrow(LastTimeAgents)){  
-        #  ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
-         # OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
-          #OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
-        #  OtherAgentsPercProtect<-mean(OtherAgentsSample$PercTimeProtected )# mean strategy of other agents
-         # ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
-          
-        #  PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
-        #}}
+      # for (j in 1:nrow(LastTimeAgents)){  
+      #  ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
+      # OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
+      #OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
+      #OtherAgentsPercProtect<-mean(OtherAgentsSample$PercTimeProtected )# mean strategy of other agents
+      #ThisAgentPercProtect<-ThisAgent$PercTimeProtected  #strategy of this agent
+      
+      #PercTimeProtected[j]<-(ThisAgentPercProtect+((OtherAgentsPercProtect-ThisAgentPercProtect)/2)) #vector of new strategies
+      #}}
+      
+      #   if(LearningStrategy == "Conformist"){
+      #    for (j in 1:nrow(LastTimeAgents)){  
+      #     ThisAgent<-LastTimeAgents[j,]      #Pull out each specific agent
+      #    OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
+      #   OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
+      #  ThisAgentPercProtect<-ThisAgent$PercTimeProtected
+      # if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect ==0.0){PercTimeProtected[j]<-rbeta(1,1,2)}
+      #if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect >0.0){PercTimeProtected[j]<-ThisAgentPercProtect}
+      #    if(length(which(OtherAgentsSample$PercTimeProtected==0.0))>2){PercTimeProtected[j]<-0.0}
+      #  }}
       
       if(LearningStrategy == "Conformist"){
         for (j in 1:nrow(LastTimeAgents)){  
@@ -132,8 +143,9 @@ abmnp<-function(#Specified parameters
           OtherAgents<-LastTimeAgents[-j,]   #dataframe of ther agents for them to copy from
           OtherAgentsSample<-OtherAgents[c(sample(1:nrow(OtherAgents),5)),] #haphazardly chose 5 here...look into lit to find good number!!!
           ThisAgentPercProtect<-ThisAgent$PercTimeProtected
-          if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect ==0.0){PercTimeProtected[j]<-rbeta(1,1,2)}
-          if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 & ThisAgentPercProtect >0.0){PercTimeProtected[j]<-ThisAgentPercProtect}
+          if(length(which(OtherAgentsSample$PercTimeProtected>0.0))>2 ){
+            PercTimeProtected[j]<-mean(OtherAgentsSample[OtherAgentsSample$PercTimeProtected!=0.0,]$PercTimeProtected )# mean strategy of other agents
+          }
           if(length(which(OtherAgentsSample$PercTimeProtected==0.0))>2){PercTimeProtected[j]<-0.0}
         }}
       
