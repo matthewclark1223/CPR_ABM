@@ -270,7 +270,7 @@ abm<-function(#Specified parameters
   
 }
 
-abm(Runs=3,CoopPercStart = 0.8, ProbOfMobility=0.45 )
+abm(Runs=10,CoopPercStart = 0.8, ProbOfMobility=0.45 )
 
 #fill a dataframe with the means
 
@@ -287,6 +287,10 @@ FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)
 }
   
 
-#try with parallel
-library(parellel)
+
+
+
+
+
+
 
