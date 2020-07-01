@@ -287,6 +287,5 @@ FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)
 }
   
 
-#try with parallel
-library(parellel)
+
 
