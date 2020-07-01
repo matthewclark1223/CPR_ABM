@@ -131,6 +131,9 @@ abm<-function(#Specified parameters
         if(length(which(OtherAgentsSample$PercTimeProtected==0.0))>2){PercTimeProtected[j]<-0.0}
       }}
     
+    
+    
+    
     PercTimeWorking<- 1-PercTimeProtected   #time foraging in the working landscape
     
     
