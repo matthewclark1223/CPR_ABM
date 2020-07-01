@@ -65,47 +65,60 @@ Sdat<-data.frame(#initial survey data
                 S1.5.3 =  rep(NA,40), #come back make match with copied or not (1.5.0)
                 S1.5.4 =  rep(NA,40)) #come back make match with copied or not (1.5.0)
                 
-                
-                
-            
-  copiedFrom=c(rep("Original",10),sample(namevec[1:10],90,replace = T)),
-  location = rep(NA,100),
-  VisSimModel = rbeta(100,35,75),
-  BoilTime = sort(rnorm(100,10,2)),
-  WaterVol = runif(100,15,20),
-  WoodStart = sort(runif(100,300,600)),
-  WoodEnd = sort(runif(100,50,250)),
-  MonthBuilt= sample(1:12,100,replace=T),
-  YearBuilt= c(rep(2015,5),rep(2017,5),sample(2016:2020,90,replace=T)),
-  UsePerDay = sort(rpois(100,2)),
-  UseTotalEstimate = rep(NA,100),
-  stdPmEmissions = rnorm(100,0,1),
-  GeogDistModel = sort(rgamma(100,75,6)),
-  SocialDistModel = c(rep(1,55),rep(2,30),rep(3,15)),
-  GeneticDistModel = rep(NA,100),
-  GenderBuilder = sample(c(rep("Female",8),rep("Male",2)),100,replace=T),
-  GenderModel =sample(c(rep("Female",8),rep("Male",2)),100,replace=T),
-  Use = sample(c("Commercial","Family","Both"),100,replace=T))
+#1.3.1
+for (i in 1:length(Sdat$S1.3.1)){
+  Sdat[i,]$S1.3.1<- ifelse(Sdat[i,]$S1.3.0 == FALSE,sample(c("NGO","Friend","Family"),1,prob =c(0.8,0.1,0.1) ),NA)  
+}
+#1.3.2            
+for (i in 1:length(Sdat$S1.3.2)){
+    Sdat[i,]$S1.3.2<-ifelse(is.na(Sdat[i,]$S1.3.1) ,sample(2016:2020,1),2015)   
+  } 
+#1.4.0
+Sdat$S1.4.0<-ifelse(is.na(Sdat$S1.3.1),TRUE,           
+                    ifelse(Sdat$S1.3.1 == "NGO",FALSE,TRUE)) 
+#1.4.2
+for (i in 1:length(Sdat$S1.4.2)){
+  Sdat[i,]$S1.4.2<-ifelse(Sdat[i,]$S1.4.0 == TRUE ,sample(c("Friend","Family"),1),NA)   
+} 
+#1.4.3
+for (i in 1:length(Sdat$S1.4.3)){
+  Sdat[i,]$S1.4.3<-ifelse(Sdat[i,]$S1.4.0 == TRUE ,rpois(1,3),NA)   
+}
 
-head(dat)
-write.csv(dat,file="SimulatedStoveData.csv")
+#1.4.4
+#come back to this
+
+#1.5.2
+for (i in 1:length(Sdat$S1.5.2)){
+  Sdat[i,]$S1.5.2<-ifelse(Sdat[i,]$S1.5.0 == TRUE ,sample(c("Friend","Family"),1),NA)   
+} 
+
+#1.5.3
+for (i in 1:length(Sdat$S1.5.3)){
+  Sdat[i,]$S1.5.3<-ifelse(Sdat[i,]$S1.5.0 == TRUE ,rpois(1,3),NA)   
+}
+
+#1.5.4
+#come back to this
 
 
-dat$totwoodburned<-dat$WoodStart-dat$WoodEnd
-
-library(ggplot2)
-
-ggplot(data=dat,aes(x=as.character(YearBuilt), y=stdPmEmissions))+
-  geom_boxplot()+
-  geom_jitter(color="purple")
-
-ggplot(data=dat,aes(x=VisSimModel, y=stdPmEmissions))+
-  geom_line()
 
 
-ggplot(data=dat,aes(x=YearBuilt, y=stdPmEmissions))+
-  geom_smooth(method="lm",se=F)
-#PM emissions by the year built. 
+#Make efficiency test data frame
+Tdat<-data.frame(#initial stove data
+
+
+)
+
+
+
+
+
+
+
+
+  
+
 
 
 
