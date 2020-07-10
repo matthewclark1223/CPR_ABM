@@ -150,7 +150,7 @@ T.S.13 = rep(1.5,40),
 #test outputs
 T.1.1 =  rep(chron::times("11:00:00"),40),
 T.1.2 =  rep(chron::times("11:00:00")+chron::times("00:30:00"),40),
-T.1.3 =  rpois(10,5), 
+T.1.3 =  rpois(40,1), 
 T.1.4 =  rpois(40,100),
 T.1.5 =  rep("XXX",40), #make a result of starting pot + water
 
@@ -169,8 +169,9 @@ Tdat$T.1.5<-(Tdat$T.S.13+Tdat$T.S.10)-sample(rgamma(100,0.8,1),1)
 
 dat<-merge.data.frame(Sdat, Tdat, by.x = "S1.1.6", by.y = "T.S.3")
 
-
-
+dat$thermalEfficiency<- (4.186*(dat$T.S.10*1000)*(60 * 24 * as.numeric(times(dat$T.1.2-dat$T.1.1)))+2260*((dat$T.S.10-(dat$T.1.5-dat$T.S.13/1000)*1000))) / 
+  (((dat$T.S.8-dat$T.1.3)*1000)*(1-dat$T.S.4/100)*15400 - ((dat$T.S.8-dat$T.1.3)*1000) * dat$T.S.4/100 *(4.186* (100 -dat$T.S.11) * 2260) -28400*(dat$T.1.4 - dat$T.S.12))
+#this should be checked!! ^^^
 
   
 
