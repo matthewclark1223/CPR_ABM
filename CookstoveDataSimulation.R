@@ -169,11 +169,56 @@ Tdat$T.1.5<-(Tdat$T.S.13+Tdat$T.S.10)-sample(rgamma(100,0.8,1),1)
 
 dat<-merge.data.frame(Sdat, Tdat, by.x = "S1.1.6", by.y = "T.S.3")
 
+##create thermal efficiency outcome dependent on 
+
+dat$ModelDistance<-rgamma(nrow(dat),3)
+dat$ModelDistance<-ifelse(dat$S1.4.0 == TRUE,dat$ModelDistance,NA)
+
+dat$ModelComm<-rpois(nrow(dat),3)
+dat$ModelComm<-ifelse(dat$S1.4.0 == TRUE,dat$ModelComm,NA)
+
+
+N <- nrow(dat)
+
+phi<-0.5
+intercept<-0.05
+mu<-(plogis(intercept-0.15*dat$ModelDistance))
+dat$efficiency <- rbeta(N, mu * phi, (1 - mu) * phi)
+
+plot(dat$ModelDistance,dat$efficiency)
+
+fit1 <- rstanarm::stan_betareg(efficiency ~ ModelDistance, data = dat, link = "logit",
+                               cores = 3, chains=3)
+
+round(coef(fit1),2)
+
+
+#multiple predictors
+N <- nrow(dat)
+
+phi<-0.5
+intercept<-0.05
+mu<-(plogis(intercept-0.15*dat$ModelDistance+0.25*dat$ModelComm))
+dat$efficiency <- rbeta(N, mu * phi, (1 - mu) * phi)
+
+plot(dat$ModelDistance,dat$efficiency)
+plot(dat$ModelComm,dat$efficiency)
+fit2 <- rstanarm::stan_betareg(efficiency ~ ModelDistance+ModelComm, data = dat, link = "logit",
+                               cores = 3, chains=3)
+
+round(coef(fit2),2)
+
+
+
+
+## calc from collected variables
 dat$thermalEfficiency<- (4.186*(dat$T.S.10*1000)*(60 * 24 * as.numeric(times(dat$T.1.2-dat$T.1.1)))+2260*((dat$T.S.10-(dat$T.1.5-dat$T.S.13/1000)*1000))) / 
   (((dat$T.S.8-dat$T.1.3)*1000)*(1-dat$T.S.4/100)*15400 - ((dat$T.S.8-dat$T.1.3)*1000) * dat$T.S.4/100 *(4.186* (100 -dat$T.S.11) * 2260) -28400*(dat$T.1.4 - dat$T.S.12))
 #this should be checked!! ^^^
 
-  
+ 
+
+ 
 
 
 
