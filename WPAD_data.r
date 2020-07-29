@@ -1,5 +1,4 @@
 x<-read.csv("~/Pemba Project/WDPA_Jul2020-csv.csv")
-head(dat)
 #let's cut down the data so that it's faster to work with
 dat<-x[,c(12,13,15,17,18,20)]
 names(dat)

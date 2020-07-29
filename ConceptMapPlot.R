@@ -41,6 +41,7 @@ dat<-summarySE(dat, measurevar="Percentage", groupvars=c("var"))
 
 install.packages("extrafont")
 library(extrafont)
+library(tidyverse)
 font_import()
 loadfonts(device="win")       #Register fonts for Windows bitmap output
 fonts()  
