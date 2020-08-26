@@ -270,7 +270,7 @@ abm<-function(#Specified parameters
   
 }
 
-abm(Runs=10,CoopPercStart = 0.8, ProbOfMobility=0.45 )
+abm(Runs=5,CoopPercStart = 0.8, ProbOfMobility=0.45, PercProtected = 0.25 )
 
 #fill a dataframe with the means
 
