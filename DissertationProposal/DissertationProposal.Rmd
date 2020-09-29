@@ -1,0 +1,122 @@
+--- 
+title: Cultural Evolution of Conservation Behavior at the Intersection of Working
+  Landscapes and Protected Areas
+author: "Matt Clark"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+    extra_dependencies: "subfig"
+  bookdown::pdf_document2:
+    toc: yes
+  bookdown::html_document2:
+    toc: yes
+fontsize: 12pt
+link-citations: yes
+csl: AmJBot.csl
+subtitle: Dissertation Proposal for Committee Review
+bibliography: [References/Dissertationproposal.bib]
+---
+```{r packages, include=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+library(rmarkdown)
+library(bookdown)
+library(formattable)
+library(kableExtra)
+library(dplyr)
+library(magrittr)
+library(prettydoc)
+library(htmltools)
+library(knitcitations)
+library(devtools)
+library(tidyverse)
+library(scales)
+library(extrafont)
+
+```
+
+```{r setup, include=FALSE, cache=TRUE, message = FALSE, warning=FALSE}
+# Chunk options: see http://yihui.name/knitr/options/ ###
+
+## Text results
+#opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE, include = TRUE)
+
+## Code decoration
+#opts_chunk$set(tidy = TRUE, tidy.opts = list(blank = FALSE, width.cutoff = 60), highlight = TRUE)
+
+## Caching code
+knitr::opts_chunk$set(cache = 2, cache.path = "Cache/")
+
+## Plots
+#opts_chunk$set(fig.path = "Figures_MS/", dev=c('pdf', 'png'), dpi = 300)
+
+## Locate figures as close as possible to requested position (=code)
+knitr::opts_chunk$set(fig.pos = 'H')
+```
+
+# Summary
+Area-based conservation is critical for stemming global biodiversity loss. As such, each year billions of dollars are spent to protect key areas. It is common however, for these areas to fail to reach their stated conservation goals. The most chronic causes of conservation project failure are the human dimensions. Conversely, historic conservation successes are also attributed to widespread human adoption of conservation behaviors. Research examining how and why conservation practices are adopted has been quite limited; suffering from a bias toward the reporting of successful projects and highly context dependent drivers and outcomes. This dissertation seeks to demonstrate and better understand the underlying mechanisms which underpin social adoption of conservation practices in and around protected areas. Toward this aim, this project will combine insights from cultural group selection theory with empirical research on Pemba Island, Tanzania to achieve three primary objectives. 
+
+1. Develop a dynamic model to generate predictions regarding if and how conservation norms can emerge and persist via competition between groups.
+2. Empirically test theoretical predictions of group conservation adoption as a function of group competition and individual costs and benefits. 
+3. Using the ongoing spread of an improved efficiency cookstove design, specifically examine how the nature of interpersonal relationships may modify conservation behaviors as they spread within groups. 
+
+Globally, we have expended a tremendous amount of resources to identify conservation goals which will deliver the greatest benefits to biodiversity and ecosystem function. For these benefits to come to fruition however, conservation initiatives must be adopted at a rate which exceeds ecological degradation. This research will bring together cultural evolutionary science and ecology to identify the key mechanisms of conservation adoption.  
+
+
+# Introduction
+## Phenomenon
+Human prosperity is unequivocally linked to the persistence of diverse, self-sustaining ecosystems through our dependence on ecosystem services and consumption of renewable resources. Until approximately 50 years ago, the rate of overall ecological regeneration exceeded our rates of consumption and destruction of earth’s renewable resources (GFN, 2019). Today, on average, we degenerate these resources at a rate 56% faster than regeneration (Lin et al., 2020). This is particularly concerning as renewable resources regenerate at a rate proportional to the resource stock remaining (Beltratti et al., 1993). Thus, overuse of earth’s renewable resources creates a positive feedback loop where scarcity slows regeneration and further perpetuates scarcity (Regev et al., 1998). 
+
+The capacity of an ecosystem to provision renewable resources largely hinges on an area’s biodiversity (Haines-Young & Potschin, 2010, Redford, 1995). As such, biodiversity is the key metric used to determine the integrity of an ecosystem and a key conservation target (Parrish et al., 2003). Each year, an ever growing proportion of earth’s marine and terrestrial areas are sectioned off to protect local biodiversity (hotspots), the flow of genetic diversity across a landscape (corridors), and human access to renewable resources (forest concessions, fisheries, etc.) (UNEP-WCMC & IUCN 2020). These area-based conservation initiatives are from hereon referred to as protected areas. 
+
+Protected areas have proven to be a powerful tool for sustaining biodiversity and ecosystem function at a landscape scale while also ensuring continued access to renewable resources for local human populations (@adams_biodiversity_2004) (Leverington et al., 2010). While high-profile protected area successes are salient in the conservation narrative, these areas also commonly fail to reach their intended biodiversity targets. The ubiquity of these failures is highly speculative as unsuccessful protected area initiatives go largely unreported (Bottrill et al., 2011; Sutherland et al., 2004). Despite a high degree of uncertainty in the prevalence of protected area failures, the cause is more often than not a lack of social buy-in and adherence to protected area regulations (Catalano et al., 2019). 
+
+Community adoption of protected area regulations may emerge and persist as a group norm, emerge only for a short period of time, or may never emerge within a given group (Rogers, 2010; Simon et al., 2012). These behaviors are characterized as individually costly, yet beneficial at the group level. Given that the human dimensions are most often the crux of successful conservation, the field of conservation social science has been developed to better understand which social factors are pertinent to conservation success (Bennett et al., 2017). This body of work has shown that where group norms around the adoption of protected areas have emerged, they persist via group conformity, especially where clear group identities are present (Ostrom, 1990; Richerson & Boyd, 2001). What is less understood however, is the emergence and initial adoption of conservation behaviors. 
+
+Research on the diffusion of conservation behaviors suffers from a lack of generalizability. Case studies tend to be highly context dependent and offer little mechanistic insight into the emergence and spread of these behaviors. Excitingly, parallel to the development of conservation social science, the field of evolutionary anthropology has developed the theory of cultural group selection as a mechanistic explanation for the adoption of individually costly, group beneficial behaviors. 
+
+## Primer on cultural group selection
+The largely untested theory of cultural group selection poses a mechanism for the emergence and spread of individually costly yet group beneficial behaviors such as warfare or religious donations (Boyd & Richerson, 2010). Cultural group selection suggests that groups who develop individually costly yet group beneficial norms will outcompete groups who do not. As an individual’s behavior is flexible, individuals will either migrate from less to more successful groups or directly copy the cooperative behavior of others in visibly successful cooperative groups (Henrich, 2004). This change in the frequency of behavioral traits is analogous to the perpetuation of beneficial alleles in genetic natural selection. In these contexts, selective pressures still push individuals towards selfish behaviors like freeriding, but cooperative norms will emerge if group selection pressures outweigh those of individual selection overall (McElreath & Boyd, 2008; Okasha, 2004; Price, 1972). 
+
+Existing cultural group selection theory is highly abstract, relying on simple, analytical models of nonspecific behaviors (Boyd et al., 2011; Lehmann et al., 2008). Current theory therefore does not offer predictions about the emergence and adoption of conservation norms specifically. Conservation behaviors are fundamentally different from generic cooperative behaviors as they operate under the sink/source dynamics of renewable, mobile resources as well as variable resource regeneration rates. As such, cultural group selection theory must be extended to include these dynamics in order to be effectively applied to conservation. 
+
+Applying cultural group selection to the adoption of conservation behaviors
+Protected areas are an ideal microcosm for studying and applying cultural group selection. Protected areas have the potential to support resource sustainability and local livelihoods at the group level, but require costly cooperation from individuals (Adams et al., 2004). While this tradeoff is straightforward in theory, the social and ecological outcomes of protected area establishment vary significantly in practice (Naughton-Treves et al., 2005). Agrawal and Redford (2006) argue that this is because protected areas are often created as “a shot in the dark,” with little attention paid to the mechanisms which cause protected areas to be widely adopted and subsequently successful. Under cultural group selection theory, we expect that the key mechanism which drives the adoption of protected areas is the balance between the individual and group level selection pressures for cooperation or defection. Therefore, not only do protected areas represent a system where cultural group selection theory can be studied empirically, but principles of cultural group selection may also provide a way forward for predicting and shaping the success of protected areas on the ground. 
+
+## Fidelity of behavioral transmission
+The final component of behavioral adoption that is necessary to understand and shape effective conservation is the fidelity of behavioral transmission. In situations where behaviors do emerge and spread within a population, as the behavior is transmitted along the chain of individuals, it may be modified considerably to the point where the behavioral outcome is unrecognizable (Lewis & Laland, 2012; McGuigan et al., 2011). This phenomenon is of particular interest to conservation science where the outcomes of behavioral adoption are of greater interest than the behaviors themselves. Theoretical insights and controlled empirical research on transmission fidelity suggests that behavioral outcomes are more likely to be retained during transmission when the copying individual has greater access to the demonstrator (King & Cowlishaw, 2007; Muthukrishna et al., 2016). These insights are crucial for practitioners aiming to implement long-lasting, effective conservation projects, but must first be tested empirically in a conservation context where an individual’s access to a behavioral demonstration is realistic and outcomes of adopted behaviors have real impacts for individuals, communities, and the environment.
+
+## Dissertation objectives
+The overarching question this research seeks to answer is: What are the underlying social mechanisms which cause conservation behaviors to emerge and spread efficiently within populations?
+ 
+-Objective 1: Create a dynamic, agent-based model which extends theories of cultural group selection into the contexts of conservation. Formally test the intuition that between group imitation can lead to the spread of community wide protected area adoption whereas solitary groups may fail to cooperate under identical environmental constraints such as resource degradation, regeneration, and mobility.
+
+-Objective 2: Calculate theoretical adoption probabilities of protected areas known as Community Forest Management Agreements (CoFMAs) for each ward on Pemba Island, Tanzania. Probabilities are based on the salience of group cultural identities and the costs and benefits of CoFMAs to individuals and groups. Compare theoretical predictions to the presence or absence of CoFMAs in reality. 
+
+-Objective 3: Quantitatively examine how social and physical access to a behavioral demonstration during behavioral transmission affects both the copying fidelity as well as the performance of copied behavior. This project will make use of the ongoing spread of fuel efficient cookstove technology on Pemba Island, Tanzania.
+
+# Chapter 1
+## Background
+
+
+# Chapter 2
+
+
+
+# Chapter 3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
