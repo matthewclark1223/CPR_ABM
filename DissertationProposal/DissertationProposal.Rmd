@@ -4,11 +4,11 @@ title: Cultural Evolution of Conservation Behavior at the Intersection of Workin
 author: "Matt Clark"
 date: "`r Sys.Date()`"
 output:
+  bookdown::pdf_document2:
+    toc: yes
   pdf_document:
     toc: yes
     extra_dependencies: "subfig"
-  bookdown::pdf_document2:
-    toc: yes
   bookdown::html_document2:
     toc: yes
 fontsize: 12pt
@@ -68,7 +68,11 @@ Globally, we have expended a tremendous amount of resources to identify conserva
 ## Phenomenon
 Human prosperity is unequivocally linked to the persistence of diverse, self-sustaining ecosystems through our dependence on ecosystem services and consumption of renewable resources. Until approximately 50 years ago, the rate of overall ecological regeneration exceeded our rates of consumption and destruction of earth’s renewable resources (GFN, 2019). Today, on average, we degenerate these resources at a rate 56% faster than regeneration (Lin et al., 2020). This is particularly concerning as renewable resources regenerate at a rate proportional to the resource stock remaining (Beltratti et al., 1993). Thus, overuse of earth’s renewable resources creates a positive feedback loop where scarcity slows regeneration and further perpetuates scarcity (Regev et al., 1998). 
 
-The capacity of an ecosystem to provision renewable resources largely hinges on an area’s biodiversity (Haines-Young & Potschin, 2010, Redford, 1995). As such, biodiversity is the key metric used to determine the integrity of an ecosystem and a key conservation target (Parrish et al., 2003). Each year, an ever growing proportion of earth’s marine and terrestrial areas are sectioned off to protect local biodiversity (hotspots), the flow of genetic diversity across a landscape (corridors), and human access to renewable resources (forest concessions, fisheries, etc.) (UNEP-WCMC & IUCN 2020). These area-based conservation initiatives are from hereon referred to as protected areas. 
+The capacity of an ecosystem to provision renewable resources largely hinges on an area’s biodiversity (Haines-Young & Potschin, 2010, Redford, 1995). As such, biodiversity is the key metric used to determine the integrity of an ecosystem and a key conservation target (Parrish et al., 2003). Each year, an ever growing proportion of earth’s marine and terrestrial areas are sectioned off to protect local biodiversity (hotspots), the flow of genetic diversity across a landscape (corridors), and human access to renewable resources (forest concessions, fisheries, etc.) (Figure \@ref(fig:paNumber)) (UNEP-WCMC & IUCN 2020). These area-based conservation initiatives are from hereon referred to as protected areas. 
+
+```{r paNumber, echo=FALSE, fig.cap="Number of newly established  no-take protected areas reported by the IUCN 2020", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/Number.png")
+```
 
 Protected areas have proven to be a powerful tool for sustaining biodiversity and ecosystem function at a landscape scale while also ensuring continued access to renewable resources for local human populations (@adams_biodiversity_2004) (Leverington et al., 2010). While high-profile protected area successes are salient in the conservation narrative, these areas also commonly fail to reach their intended biodiversity targets. The ubiquity of these failures is highly speculative as unsuccessful protected area initiatives go largely unreported (Bottrill et al., 2011; Sutherland et al., 2004). Despite a high degree of uncertainty in the prevalence of protected area failures, the cause is more often than not a lack of social buy-in and adherence to protected area regulations (Catalano et al., 2019). 
 
@@ -90,26 +94,169 @@ The final component of behavioral adoption that is necessary to understand and s
 ## Dissertation objectives
 The overarching question this research seeks to answer is: What are the underlying social mechanisms which cause conservation behaviors to emerge and spread efficiently within populations?
  
--Objective 1: Create a dynamic, agent-based model which extends theories of cultural group selection into the contexts of conservation. Formally test the intuition that between group imitation can lead to the spread of community wide protected area adoption whereas solitary groups may fail to cooperate under identical environmental constraints such as resource degradation, regeneration, and mobility.
+* Objective 1: Create a dynamic, agent-based model which extends theories of cultural group selection into the contexts of conservation. Formally test the intuition that between group imitation can lead to the spread of community wide protected area adoption whereas solitary groups may fail to cooperate under identical environmental constraints such as resource degradation, regeneration, and mobility.
 
--Objective 2: Calculate theoretical adoption probabilities of protected areas known as Community Forest Management Agreements (CoFMAs) for each ward on Pemba Island, Tanzania. Probabilities are based on the salience of group cultural identities and the costs and benefits of CoFMAs to individuals and groups. Compare theoretical predictions to the presence or absence of CoFMAs in reality. 
+* Objective 2: Calculate theoretical adoption probabilities of protected areas known as Community Forest Management Agreements (CoFMAs) for each ward on Pemba Island, Tanzania. Probabilities are based on the salience of group cultural identities and the costs and benefits of CoFMAs to individuals and groups. Compare theoretical predictions to the presence or absence of CoFMAs in reality. 
 
--Objective 3: Quantitatively examine how social and physical access to a behavioral demonstration during behavioral transmission affects both the copying fidelity as well as the performance of copied behavior. This project will make use of the ongoing spread of fuel efficient cookstove technology on Pemba Island, Tanzania.
+* Objective 3: Quantitatively examine how social and physical access to a behavioral demonstration during behavioral transmission affects both the copying fidelity as well as the performance of copied behavior. This project will make use of the ongoing spread of fuel efficient cookstove technology on Pemba Island, Tanzania.
 
-# Chapter 1
+# Chapter 1: Theoretical Advances for Applying Cultural Group Selection Theory to Area-Based Conservation. 
 ## Background
+Over the last 20-30 years, both the number and size of new no-take protected areas created each year have increased steadily (Figures \@ref(fig:paNumber) & \@ref(fig:paSize)) (UNEP-WCMC & IUCN 2020). During this time period, the stated mission of most protected areas has shifted as well. Due to the overlap between biodiversity and low income populations, as well as the price and availability of land, protected areas are largely adjacent to, or even contain, low income communities (Fisher & Christopher, 2007; Naughton-Treves et al., 2005). With this recognition, their objectives now commonly include community development goals alongside conservation targets. 
+
+```{r paSize, echo=FALSE, fig.cap="Size of newly established no-take protected areas reported by the IUCN 2020", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/Size.png")
+```
+
+Joint conservation and community development initiatives are a popular prescription for combating climate change and global biodiversity loss (Tallis et al., 2008). These dual-objective projects attempt to mitigate concerns of environmental neocolonialism and resource disenfranchisement of local populations (Hall & Tucker, 2004; Langholz & Lassoie, 2001). Importantly, protected areas which explicitly seek to bolster the livelihoods of local populations actually show greater conservation success than those that do not (Fisher & Christopher, 2007). Protected areas then represent a considerable opportunity for “win-win” projects which support global conservation and poverty alleviation (Adams et al., 2004). 
+  
+Protected areas, while well intentioned, often fail to meet both their stated social and ecological goals (Christie, 2004; Watson et al., 2014). In fact, a study of protected areas in South Asia found them to be ecologically equivalent to adjacent unprotected lands (Clark et al., 2013). It’s unsurprising that the success of protected areas in reaching both social and ecological targets has been linked to the degree of local support and adherence to regulations (Bennett & Dearden, 2014; Christie, 2005). 
+
+The degree of local buy-in for protected areas is not random. The scale of implementation is highly correlated with the percentage of individuals who adopt protected area regulations. A 2019 study demonstrated that nationally implemented initiatives had 84-100% buy-in from local populations, while locally established areas saw adoption from 0.13 - 51% of potential adopters (Mills et al., 2019). These findings are particularly worrying given a global decline in government support for land conservation (Watson et al., 2014). 
+
+With the recognition that local adoption is a difficult and necessary component of conservation success, human dimensions have become a major focus of conservation research (Bennett et al., 2017). This body of work has largely relied on case studies of conservation projects to draw correlations between social phenomena and conservation outcomes. As such, findings from conservation social science tend to offer little mechanistic insights for how conservation behaviors spread within and between groups. Recently however, theories from cultural group selection have been identified as a potentially useful tool to better elucidate the mechanisms which underpin local buy-in for conservation initiatives (Brooks et al., 2018).
+  
+
+Cultural group selection theorizes that individuals will adopt behaviors which adhere to protected area regulations if the group benefits of doing so allow their cultural group to outcompete other groups (Rindos et al., 1985). Under this framework, multiple competing groups are actually required for community adoption of protected area regulations to emerge (Richerson et al., 2016). 
+
+While the theory and principles of cultural group selection are relatively well established, they are yet to be tested mechanistically in the context of protected area adoption. With this in mind, this project aims to demonstrate how the presence of multiple competing groups can facilitate the adoption of adherence to protected areas. In this chapter I will develop a dynamic, agent-based model to test the logic of how protected area norms can emerge under very simple sets of rules in the presence of multiple competing groups, but fail to emerge for solitary groups under identical environmental contexts. 
+
+### Question:
+Can between group competition provoke protected area adoption where solitary groups may fail to adopt? 
+
+### Predictions:
+* P1: Adoption of protected area adherence will only emerge under the presence of multiple competing groups. 
+
+* P2: Where it already exists, protected area adherence will perpetuate in populations even in solitary groups given group conformity.
+
+* P3: Greater degrees of resource mobility will increase the frequency in which the adoption of protected area adherence emerges in the community(ies).
+
+## Research Design 
+
+An agent-based modeling framework is ideal for demonstrating the theory of cultural group selection regarding protected area norms, because it allows such group level properties to emerge out of simple decision rules for each individual (Railsback & Grimm, 2012; Wilensky & Rand, 2015). This design mirrors our real-world understanding of the important system components.
+
+### Model Description
+
+```{r conceptDiagram, echo=FALSE, fig.cap="Concept diagram of agent-based model scheduling under single group dynamics", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/ConceptDiagram.png")
+```
+
+## Preliminary Work
+
+```{r abmOutput, echo=FALSE, fig.cap="Fifteen example runs of the current, single-group agent based model", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/ABM_Output.png")
+```
+
+## Expected Products
+I plan to communicate the findings of this project both to the academic community and to non-scientists. The insights gained from this model will be published in a peer reviewed, academic journal such as Environmental Modeling and Software. This paper will show logically how we expect that protected areas function in the context of community level cooperative conservation. An example of how this model may inform implementation of protected areas for various resource mobilities or starting resource degradation is displayed in figure (XXX).
+
+To make this model readily available to a general audience however, I will update the online application provided above to better reflect the final version of the model. In this application I will also embed a graphical display of the model function as a .gif that displays key outputs at each timestep of the model. This will allow users to better internalize the implications of the model and to better apply them to real world conservation. 
 
 
-# Chapter 2
+
+# Chapter 2: Effects of inter-group resource competition and selection on community adoption of costly conservation policy. 
+
+## Background
+Cultural group selection offers specific predictions about when individually costly, yet group beneficial norms will be favored by selection (Molleman et al., 2013). One such prediction is that the presence of multiple competing groups is the key to the development of norms for sustainable resource use (Waring et al., 2017). Under this prediction, selection acts both on individuals and on groups of individuals. When the ratio of group benefit to individual cost of cooperation outweighs the individual fitness consequences of cooperation, those behaviors will be favored by selection. Groups who develop cooperative norms around natural resource use will outcompete other groups, who may then copy the cooperative institutions established by the more successful groups (Boyd & Richerson, 2010; Henrich, 2004). 
+
+While these predictions are theoretically sound, they must be tested empirically. Two such studies have begun to test the basis of cultural group selection in the natural world. The first demonstrated that culture offers greater fodder for group selection than do genetics. Researchers estimated the total variance in both cultural and genetic traits within and between groups of individuals. The proportion of variance in an allele or trait found between groups is referred to as genetic Fst or cultural Fst respectively. Findings indicate that between human groups, there is greater differentiation in culture than genes, indicating that group selection will act more readily on cultural traits (Bell et al., 2009). 
+
+A second empirical study tested the prediction that large scale human cooperation is in fact a product of competition between cultural groups. Researchers created pair-wise estimates of cultural Fst between 12 ethnic groups. These estimates of cultural differentiation were combined with a survey of individual willingness to cooperate with members of the other groups. Results of this study showed a strong association between cultural similarity and willingness to cooperate. This research indicates that the presence of variable cultural groups influences within-group cooperative behavior (Handley & Mathew, 2020).
+
+This project aims to extend the empirical study of cultural group selection to cooperation around environmental problems explicitly. Given the theoretical capacity for cultural group selection to provide solutions to pressing environmental issues of collective action, these predictions must be validated experimentally so that they might be implemented effectively. 
+
+Conservation via protected areas represents an ideal study system for testing the environmental applications of cultural group selection in the real world. Ignoring the regional to global scale ecosystem service benefits of protected areas, the units of the individual costs and group benefits of protected area adoption are directly comparable (i.e. fuelwood growth/use). This comparability will allow us to use established methods of measuring multilevel selection pressures to quantitatively predict if protected areas are likely to be selected for in each group. Finally, this project will compare the calculated selection pressures for protected area adoption from each group against the observed adoption of community managed protected areas.
+
+
+## Research Design
+
+## Preliminary Work
+This project benefits from preliminary work done by our collaborators at the Max Planck Institute for Evolutionary Anthropology (MPI). MPI researchers conducted a preliminary qualitative survey and coalition of oral histories with the assistance of Department of Forestry staff to confirm anecdotally that competition between wards has led to CoFMA adoption at the ward level. These researchers have also visited wards across the island and recorded which wards have adopted CoFMAs and which have not. These adoption characteristics will be compared against the adoption characteristics recorded in my work as a form of data validation.
+
+## Expected Outputs
+The primary outputs of data collection and analysis in this project will produce binary predictions of protected area adoption for each study ward, as well as the calculated strength of selection for protected area adoption for each study ward. I will compare these calculated adoption likelihoods and selection strengths against actual adoption rates of community managed protected areas. (Figure \@ref(fig:aelPress)) shows an example of what the results of this study might look like. The findings of this study will be submitted for publication in a peer reviewed, academic journal. 
+
+
+```{r selPress, echo=FALSE, fig.cap="Simulated data showing protected area adoption vs calculated selection pressure for group adoption of protected areas.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch3/SelPressureAdopt.png")
+```
+
+# Chapter 3: Social influences on transmission fidelity in household level diffusion of beneficial technology.
+
+## Background
+Forests sequester 2 billion tons of atmospheric CO2 each year, while also providing fuel to 40% of the world’s rural poor — fuelwood produces more renewable energy than solar, wind, and hydroelectric sources combined (SOFO, 2018). Household fuel production and global carbon sequestration are often seen as conflicting forest benefits. Solutions to mitigate this tradeoff include expanding markets for non-timber forest products and technological advances like solar panels (McShane et al., 2011). Given limited funding, these projects are not intended to solve problems in their entirety, but rather to seed innovations that catalyze broad change. Many of these initiatives, however, fail to spread and produce long-term benefits for local livelihoods or forest conservation because they do not account for underlying social dynamics (Keppel et al., 2012; Oates, 1999; Stringer & Reed, 2007).  
+
+This project will examine the spread of fuel-efficient cookstoves on Pemba Island, Tanzania (see Figure \@ref(fig:stovePic)). An improved stove design which increases fuel efficiency by up to 50%, was seeded in three communities on the island in 2015 (Lung & Espira, 2019; Sakthivadivel & Iniyan, 2018). The improved design has been subsequently copied throughout the communities and is thought to reduce deforestation and the time individuals — primarily women and children — must spend harvesting fuelwood.
+
+```{r stovePic, echo=FALSE, fig.cap="Example of an improved, fuel efficient cookstove on Pemba Island, Tanzania. Image from Same Mwanga Environmental Conservation Advisory Organization", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch3/cookstove.jpg")
+```
+
+While this project will inform effective implementation of household level conservation projects on the ground, it will also provide important insights for understanding behavioral adoption more generally. While the ubiquity and utility of behavioral imitation, or copying, is well documented, the fidelity of behavioral imitation varies circumstantially (Lyons et al., 2007; McGuigan et al., 2011). In a foundational study, researchers show that learned behavior is reconstructed and assimilated with an individual’s prior experiences, rather than replicated directly (Bartlett, 1932). Behavioral reconstruction creates variation in copied behaviors (Horner et al., 2006). Replication variation is thought to be greatly influenced by environmental factors, including social context (Mesoudi & Whiten, 2008). 
+
+Both theoretical and experimental studies have examined the relationship between transmission fidelity and environmental influences. Theoretical work suggests that increasing transmission fidelity should be associated with greater reliance on social learning (Boyd & Henrich, 2002; Nakahashi et al., 2012). This theory has also been validated experimentally (Muthukrishna et al., 2016). When coupled with the theoretical prediction that social learning should increase with greater access to behavioral demonstrators, it follows logically that transmission fidelity should increase with imitator access to the behavioral model (King & Cowlishaw, 2007).
+
+While transmission fidelity can vary significantly given the context, it is often unclear what effect this variation has on the outcomes of imitated behavior. Theoretical models have shown that even small changes in transmission fidelity can have strong impacts on population-level behavioral outcomes (Lewis & Laland, 2012). Alternatively, some behaviors require only very low-fidelity replication to achieve identical outcomes (Enquist et al., 2010). In fact, it is likely that if a behavior is under strong environmental constraints then individual learning should help correct errors in the transmission process.   
+
+Currently, we do not yet understand how various forms of access to behavioral demonstration may affect transmission fidelity. Secondly, relatively little empirical research has examined the relationship between transmission fidelity and behavioral outcomes (Mesoudi & Whiten, 2008). This research will directly measure the impact of geographic, genetic, and social relatedness on the fidelity of copying behavior, and the impact of transmission fidelity on specific behavioral outcomes.
+
+In summary, conserving forest cover is critical for the global carbon balance and for the well-being of many rural communities. Conservation projects often fail due to a lack of consideration of the social processes underlying adoption. With few studies that measure transmission fidelity in a naturalistic setting, where outcomes have real economic and health impacts - we have an opportunity to explore how environmental constraints and social learning interact when outcomes matter. This project seeks to further investigate how and why behaviors are modified during the transmission process and how modification (both enrounious and intentional) affect performance targets. 
+
+### Question
+What effect do geographic distance, genetic relatedness, and social relatedness have on transmission fidelity? Secondly, what is the relationship between transmission fidelity and behavioral outcomes?
+
+### Predictions
+* P1: Using geographic distance, genetic relatedness, and social network distance as proxies for access to behavioral demonstrators, we expect transmission fidelity to increase with increasing access.
+
+* P2: As access to behavioral demonstration decreases, we expect to see differential changes in the fidelity of replicated behavior and the behavioral performance target of interest.
+
+* P3: Given the high degree of environmental influence on a behavior, we expect to observe a greater change in the fidelity of transmission than in the behavioral performance target, correlative with decreasing access to behavioral demonstrators.   
+
+## Research Design
+
+### Approach
+This project will take advantage of an ongoing initiative to spread fuel-efficient cookstoves on Pemba Island, Tanzania. This initiative has funded the building of a small number of improved cookstoves across communities which have subsequently been voluntarily copied by other community members. To answer the research questions above, I will collect data on the visual similarity of all copied cookstoves and the models they were copied from to assess direct transmission fidelity. I will also measure the fuel efficiency of the cookstoves as the behavioral outcomes of interest.  
+
+### Methodological Specifics
+I will map all the seeded and voluntarily copied fuel-efficient cookstoves in Makangale, Msituu mkuu, and Kifundi wards on Pemba Island, Tanzania (Fig XXX). With the assistance of a translator, I will survey all the individuals responsible for constructing each cookstove, measure a suite of physical characteristics of each cookstove (length, height, etc.), and measure the fuel efficiency. 
+
+```{r mapp, echo=FALSE, fig.cap="Satellite map of Pemba Island, Tanzania. Three marked locations are the wards which will be surveyed for fuel-efficient cookstove copying fidelity and outcomes.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch3/BadPembaMap.png")
+```
+
+The survey instrument used for this research will elicit information regarding the relationship between the builder of each cookstove and the individual they copied their stove design from. Specifically, this survey tool will be used to gather data on geographic distance, genetic relatedness, and social relatedness. I will also use this survey to collect data on the decision making processes individuals exhibit when deciding to build a fuel-efficient cookstove. 
+
+While conducting the fuel efficiency test, I will also measure a variety of physical stove characteristics such as the exterior dimensions and size of the openings. I will use these measures to produce quantitative estimates of how physically similar each cookstove is to the cookstove it was copied from. To measure stove fuel efficiency, I will follow the standard water boiling test protocol (DeFoort et al., 2009; McCracken & Smith, 1998). Water temperature will be measured in standard intervals and compared against the weight of fuel-wood before and the weight of fuel-wood and charcoal remaining at the end of the test. 
+
+The key research questions for this project will be assessed using multilevel regression operationalized in a Bayesian context. I will compare standardized parameter estimates, to determine which factors (genetic relatedness, geographic distance, social relatedness) most strongly contribute to copying fidelity in this study system. Similar analyses will be used to determine which factors affect cookstove primary outcome variables (fuel efficiency and particulate matter production).  
+
+This project will contribute to scientific reproducibility in multiple ways. First, this work will be preregistered with the Open Science Framework. To confirm the analytical plan in advance of preregistration, I will fit the statistical models proposed above to simulated data and verify that the models recover the parameters known to have been generated in the simulated data. Secondarily, once all data for this project has been collected and the analyses are complete, all non-confidential data and R code used for this project will be made publically available through a GitHub repository shared by all team members.
+
+
+## Preliminary Work
+In preparation for a cancelled field season in the Summer of 2020, I created a variety of forms and documents to facilitate data collection. These include:
+* A household livelihood and stove adoption survey.  
+* A datasheet for cookstove fuel efficiency measurements.
+* A fuel efficiency measurement protocol. 
+I also simulated data that matches the data would be collected by the multiple instruments. These data were used to test the ability of my proposed statistical methods to recover the signal of demonstrator access on behavioral transmission fidelity and behavioral outcomes. 
+
+
+## Expected Outputs
+The regression outcomes from this analysis will be the primary result presented in the publication of this research. Figures  \@ref(fig:csp1) and  \@ref(fig:csp2) show significant and insignificant theoretical outcomes that we might observe. The findings from this paper will also be shared broadly as a white paper describing how the insights from this research can help shape future conservation and development initiatives which distribute fuel efficient cookstoves in rural areas. 
+
+```{r csp1, echo=FALSE, fig.cap="Simulated outputs showing a possible relationship between stove copying fidelity and weekly communication between the demonstrator and copier", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch3/CSP1.png")
+```
+
+
+```{r csp2, echo=FALSE, fig.cap="Simulated outputs showing a possible relationship between stove copying fidelity and geographic distance between the demonstrator and copier", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch3/CSP2.png")
+```
+# Conclusion
 
 
 
-# Chapter 3
-
-
-
-
-
+# References
 
 
 
