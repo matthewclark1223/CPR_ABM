@@ -143,17 +143,22 @@ knitr::include_graphics("Figures/Ch1/ConceptDiagram.png")
 
 ## Preliminary Work
 
-```{r abmOutput, echo=FALSE, fig.cap="Fifteen example runs of the current, single-group agent based model", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+```{r abmOutput, echo=FALSE, fig.cap="Fifteen example runs of the current, single group agent-based model", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("Figures/Ch1/ABM_Output.png")
 ```
 
 ## Expected Products
-I plan to communicate the findings of this project both to the academic community and to non-scientists. The insights gained from this model will be published in a peer reviewed, academic journal such as Environmental Modeling and Software. This paper will show logically how we expect that protected areas function in the context of community level cooperative conservation. An example of how this model may inform implementation of protected areas for various resource mobilities or starting resource degradation is displayed in figure (XXX).
+I plan to communicate the findings of this project both to the academic community and to non-scientists. The insights gained from this model will be published in a peer reviewed, academic journal such as Environmental Modeling and Software. This paper will show logically how we expect that protected areas function in the context of community level cooperative conservation. An example of how this model may inform implementation of protected areas for various resource mobilities or starting resource degradation is displayed in figures \@ref(fig:abmSim1) & \@ref(fig:abmSim2).
 
 To make this model readily available to a general audience however, I will update the online application provided above to better reflect the final version of the model. In this application I will also embed a graphical display of the model function as a .gif that displays key outputs at each timestep of the model. This will allow users to better internalize the implications of the model and to better apply them to real world conservation. 
 
+```{r abmSim1, echo=FALSE, fig.cap="Simulated agent-based model output of conservation adoption under single group dynamics.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/abmSim1.png")
+```
 
-
+```{r abmSim2, echo=FALSE, fig.cap="Simulated agent-based model output of conservation adoption under multiple group dynamics.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
+knitr::include_graphics("Figures/Ch1/abmSim2.png")
+```
 # Chapter 2: Effects of inter-group resource competition and selection on community adoption of costly conservation policy. 
 
 ## Background
@@ -169,6 +174,21 @@ Conservation via protected areas represents an ideal study system for testing th
 
 
 ## Research Design
+
+Inline LaTeX equations can be written in a pair of dollar signs using the LaTeX syntax, e.g., $f(k) = {n \choose k} p^{k} (1-p)^{n-k}$  math expressions of the display style can be written in a pair of double dollar signs, e.g., 
+
+$$f(k) = {n \choose k} p^{k} (1-p)^{n-k}$$, and the output looks like this:
+
+
+Cultural fst equation
+
+$$F_{STx} = \frac{\frac{n_{i}}{n_{i}+n_{j}} (p_{i}-\bar{p})^2 + \frac{n_{j}}{n_{i}+n_{j}} (p_{j}-\bar{p})^2}{\bar{p}(1-\bar{p})}$$
+
+Rogers inequality
+$$\frac{c_{w}}{b_{p}} < \frac{F_{ST}}{(1-F_{ST})}$$
+
+Price equation
+$$ \bar{W} \Delta \bar{Z} = \text{cov}(W_{g},Z_{g}) + E[\text{cov}(W_{ig},Z_{ig})]$$
 
 ## Preliminary Work
 This project benefits from preliminary work done by our collaborators at the Max Planck Institute for Evolutionary Anthropology (MPI). MPI researchers conducted a preliminary qualitative survey and coalition of oral histories with the assistance of Department of Forestry staff to confirm anecdotally that competition between wards has led to CoFMA adoption at the ward level. These researchers have also visited wards across the island and recorded which wards have adopted CoFMAs and which have not. These adoption characteristics will be compared against the adoption characteristics recorded in my work as a form of data validation.
@@ -257,7 +277,7 @@ knitr::include_graphics("Figures/Ch3/CSP1.png")
 knitr::include_graphics("Figures/Ch3/CSP2.png")
 ```
 # Conclusion
-
+[@dudley2018essential]
 
 
 # References

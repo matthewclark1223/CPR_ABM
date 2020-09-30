@@ -58,7 +58,63 @@ p2
 dev.off()
 
 
+PaSize = seq(0,1,0.01)
+ResourceMobility =seq(0,1,0.01)
+fakeData<-expand.grid( Y=ResourceMobility,X=PaSize)
+names(fakeData)<-c("PaSize","ResourceMobility")
+fakeData$Adoption<-rep(NA,nrow(fakeData))
+
+for (i in 1:nrow(fakeData)){
+  
+  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
+                                  rbeta(1,2,2),rbeta(1,2,5))}
+
+for (i in 1:nrow(fakeData)){
+  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.9,
+                                rbeta(1,5,1),fakeData[i,]$Adoption)}
 
 
+names(fakeData)<-c("PaSize","ResourceMobility","Adoption")
+
+p2<-ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adoption)) + 
+  geom_tile()+scale_fill_viridis()+theme_classic()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text( size=14, color="black",face="bold"),
+        axis.title.x = element_text( size=12),
+        axis.title.y = element_text( size=12),
+        axis.text=(element_text(color="black", size=12)),
+        legend.title = element_text(colour="black", size=12),
+        legend.text = element_text( size = 12))+
+  xlab("Percent of Resource Protected")+ylab("Probability of Resource Mobility")+ggtitle("Multiple Groups")
+
+png(filename = "DissertationProposal/Figures/Ch1/abmSim2.png", pointsize=10, width=900, height=680, res=200)
+p2
+dev.off()
 
 
+for (i in 1:nrow(fakeData)){
+  
+  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
+                                  rbeta(1,1,5),rbeta(1,1,5))}
+
+for (i in 1:nrow(fakeData)){
+  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.9,
+                                rbeta(1,1,5),fakeData[i,]$Adoption)}
+
+
+names(fakeData)<-c("PaSize","ResourceMobility","Adoption")
+
+p1<-ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adoption)) + 
+  geom_tile()+scale_fill_viridis()+theme_classic()+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text( size=14, color="black",face="bold"),
+        axis.title.x = element_text( size=12),
+        axis.title.y = element_text( size=12),
+        axis.text=(element_text(color="black", size=12)),
+        legend.title = element_text(colour="black", size=12),
+        legend.text = element_text( size = 12))+
+  xlab("Percent of Resource Protected")+ylab("Probability of Resource Mobility")+ggtitle("Single Group")
+
+png(filename = "DissertationProposal/Figures/Ch1/abmSim1.png", pointsize=10, width=900, height=680, res=200)
+p1
+dev.off()
