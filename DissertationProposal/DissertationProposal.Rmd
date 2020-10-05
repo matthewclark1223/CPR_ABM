@@ -150,6 +150,36 @@ In the multiple competing groups scenario, two groups with separate resource poo
 
 In both single and competing group scenarios, the dependent variables of interest are as follows.: Cooperative behavior reports the average time that agents spend harvesting from the working landscape in each time step. Full defection is defined as all agents harvesting from the protected landscape for a proportion of time equal to the percent of the resource which is protected. Protected area degradation measures the percent carrying capacity of the protected landscape. Working landscape degradation measures the percent carrying capacity of the working landscape. Lastly, mean payoff to individuals measures the average payoff that agents receive at each time step.
 
+```{r tabAbmVars, echo=F, fig.align='center'}
+abmVars <- data.frame(Parameters = c("Individuals","Total Carrying Capacity", "Percent Carrying Capacity", 
+                                     "Percent Protected", "Starting Cooperators", "Time Steps", "Max Harvest",
+                                     "Resource Regeneration",  "Resource Mobility","Groups","Learning Strategy", 
+                                     "Percent Cooperation", "Average Payoff", "Protected Area Degredation",
+                                     "Working Landscape Degredation"), 
+                      Type = c("Starting Condition","Starting Condition","Starting Condition",
+                               "Starting Condition","Starting Condition","Starting Condition",
+                               "Starting Condition","Key Independent Variable","Key Independent Variable",
+                               "Key Independent Variable","Key Independent Variable",
+                               "Outcome","Outcome","Outcome","Outcome"), 
+                      Description = linebreak(c("Number of agents in simulation",
+                                      "Maximum number of resources\nallowed on landscape",
+                                      "Percent of carrying capacity at\ninitialization",
+                                      "Percent of landscape in\nprotected area",
+                                      "Starting percent of agents\nfully cooperating",
+                                      "Number of time steps\nsimulation will run for",
+                                      "Maximum number of resources\nagents will harvest during\none time step",
+                                      "The percent of available resources\nwhich will regenerate at each time\nstep in both protected and\nworking landscapes",
+                                      "The probability that any available\nresource will move from the\n protected to working landscape\nor vice versa",
+                                      "Solitary or multiple\ncompeting groups",
+                                      "Assigns a percent of the population\nto success-biased imitation and\nthe remaining population to\nconformist-biased imitation",
+                                      "Percent of total population\nharvest time spent in\nthe working landscape","Mean harvest for all agents\nat each time step",
+                                      "Working landscape percent of\ntotal carrying capacity",
+                                      "Protected area percent of\ntotal carrying capacity")))
+knitr::kable(abmVars, caption = "Description of all model parameters.",escape=F) %>% 
+  kable_styling(c("striped",full_width=F))%>% row_spec(0,bold=TRUE)
+
+```
+
 
 ```{r conceptDiagram, echo=FALSE, fig.cap="Concept diagram of agent-based model scheduling under single group dynamics", out.width = "50%", fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("Figures/Ch1/ConceptDiagram.png")
