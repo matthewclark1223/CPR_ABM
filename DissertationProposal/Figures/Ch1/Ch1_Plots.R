@@ -66,11 +66,11 @@ fakeData$Adoption<-rep(NA,nrow(fakeData))
 
 for (i in 1:nrow(fakeData)){
   
-  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
+  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.35&fakeData[i,]$ResourceMobility<0.85,
                                   rbeta(1,2,2),rbeta(1,2,5))}
 
 for (i in 1:nrow(fakeData)){
-  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.9,
+  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.55&fakeData[i,]$ResourceMobility<0.7,
                                 rbeta(1,5,1),fakeData[i,]$Adoption)}
 
 
