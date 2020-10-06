@@ -82,7 +82,7 @@ p2<-ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adopti
         plot.title = element_text( size=14, color="black",face="bold"),
         axis.title.x = element_text( size=12),
         axis.title.y = element_text( size=12),
-        axis.text=(element_text(color="black", size=12)),
+        axis.text=(element_text(color="black", size=12)),text=element_text(family="Calibri"),
         legend.title = element_text(colour="black", size=12),
         legend.text = element_text( size = 12))+
   xlab("Percent of Resource Protected")+ylab("Probability of Resource Mobility")+ggtitle("Multiple Groups")
@@ -94,12 +94,12 @@ dev.off()
 
 for (i in 1:nrow(fakeData)){
   
-  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
-                                  rbeta(1,1,5),rbeta(1,1,5))}
+  fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.35&fakeData[i,]$PaSize<0.75&fakeData[i,]$ResourceMobility>0.6&fakeData[i,]$ResourceMobility<0.85,
+                                  rbeta(1,2,2),rbeta(1,2,5))}
 
 for (i in 1:nrow(fakeData)){
-  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.9,
-                                rbeta(1,1,5),fakeData[i,]$Adoption)}
+  fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.45&fakeData[i,]$PaSize<0.6&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.75,
+                                rbeta(1,5,1),fakeData[i,]$Adoption)}
 
 
 names(fakeData)<-c("PaSize","ResourceMobility","Adoption")
@@ -110,7 +110,7 @@ p1<-ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adopti
         plot.title = element_text( size=14, color="black",face="bold"),
         axis.title.x = element_text( size=12),
         axis.title.y = element_text( size=12),
-        axis.text=(element_text(color="black", size=12)),
+        axis.text=(element_text(color="black", size=12)),text=element_text(family="Calibri"),
         legend.title = element_text(colour="black", size=12),
         legend.text = element_text( size = 12))+
   xlab("Percent of Resource Protected")+ylab("Probability of Resource Mobility")+ggtitle("Single Group")
