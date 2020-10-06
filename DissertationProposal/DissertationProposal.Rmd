@@ -54,6 +54,7 @@ knitr::opts_chunk$set(cache = 2, cache.path = "Cache/")
 knitr::opts_chunk$set(fig.pos = 'H')
 ```
 
+\newpage
 # Summary
 Area-based conservation is critical for stemming global biodiversity loss. As such, each year billions of dollars are spent to protect key areas. It is common, however, for these areas to fail to reach their stated conservation goals. The most chronic causes of conservation project failure are the human dimensions. Conversely, historic conservation successes are also attributed to widespread human adoption of conservation behaviors. Research examining how and why conservation practices are adopted tends to suffer from a bias toward the reporting of successful projects and highly context dependent drivers and outcomes. This dissertation seeks to demonstrate and better understand the underlying mechanisms which underpin social adoption of conservation practices in and around protected areas. Toward this aim, this project will combine insights from cultural group selection theory with empirical research on Pemba Island, Tanzania to achieve three primary objectives. 
 
@@ -64,6 +65,7 @@ Area-based conservation is critical for stemming global biodiversity loss. As su
 3. Using the ongoing spread of an improved efficiency cookstove design, specifically examine how the nature of interpersonal relationships may modify conservation behaviors as they spread within groups. 
 
 Globally, we have expended a tremendous amount of resources to identify conservation goals which will deliver the greatest benefits to biodiversity and ecosystem function. For these benefits to come to fruition however, conservation initiatives must be adopted at a rate which exceeds ecological degradation. This research will bring together cultural evolutionary science and ecology to identify the key mechanisms of conservation adoption.  
+\newpage
 
 # Introduction
 ## Phenomenon
@@ -100,6 +102,11 @@ The overarching question this research seeks to answer is: What are the underlyi
 * Objective 2: Calculate theoretical adoption probabilities of protected areas known as Community Forest Management Agreements (CoFMAs) for each ward on Pemba Island, Tanzania. Probabilities are based on the salience of group cultural identities and the costs and benefits of CoFMAs to individuals and groups. Compare theoretical predictions to the presence or absence of CoFMAs in reality.  
 
 * Objective 3: Quantitatively examine how social and physical access to a behavioral demonstration during behavioral transmission affects both the copying fidelity as well as the performance of copied behavior. This project will make use of the ongoing spread of fuel efficient cookstove technology on Pemba Island, Tanzania.
+
+## Study System
+All empirical research for this dissertation will take place on Pemba Island, Tanzania. In 2014, Pemba Island had a reported population of 406,808 [@RGZ2014Zanzibar]. This population is divided into wards of 2,000 to 6,000 individuals. The majority of Pemban wards are described as forest-dependent. The Department of Forests and Non-Renewable Natural Resources allows wards to enter into Community Forest Management Agreements (CoFMAs), which among other things, established forest protected areas and exclude outside individuals [@benjaminsen2014between]. As of 2018, 18 Pemban wards had adopted CoFMAs [@andrews_cultural_2018]. 
+
+\newpage
 
 # Chapter 1: Theoretical Advances for Applying Cultural Group Selection Theory to Area-Based Conservation. 
 ## Background
@@ -197,6 +204,8 @@ knitr::include_graphics("Figures/Ch1/abmSim1.png")
 ```{r abmSim2, echo=FALSE, fig.cap="Simulated agent-based model output of conservation adoption under multiple group dynamics.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("Figures/Ch1/abmSim2.png")
 ```
+\newpage
+
 # Chapter 2: Effects of inter-group resource competition and selection on community adoption of costly conservation policy. 
 
 ## Background
@@ -208,18 +217,18 @@ A second empirical study tested the prediction that large scale human cooperatio
 
 This project aims to extend the empirical study of cultural group selection to cooperation around environmental problems explicitly. Insights from cultural group selection may provide solutions to pressing environmental challenges of collective action. If validated experimentally, principles of cultural group selection may allow conservation scientists to better predict the viability of conservation initiatives.
 
-Conservation via protected areas represents an ideal study system for testing the environmental applications of cultural group selection in the real world. Ignoring the regional to global scale ecosystem service benefits of protected areas, the units of the individual costs and group benefits of protected area adoption are directly comparable (i.e. fuelwood growth/use). This comparability will allow us to use established methods of measuring multilevel selection pressures to quantitatively predict if protected areas are likely to be selected for in each group. Finally, this project will compare the calculated selection pressures for protected area adoption from each group against the observed adoption of community managed protected areas. 
+Protected areas are an ideal study system for testing the mechanisms of cultural group selection in real world conservation. When a community adopts a protected area, like the Community Forest Management Agreements observed on Pemba Island, Tanzania, individuals agree to forego a portion of their personal harvest potential for the benefit of the community. Under cultural group selection, we only expect this behavior to emerge when the proportion of dissimilar to similar cultural traits between a group and its neighbors outweighs the benefit/cost ratio of engaging in cooperative conservation. Plainly put, communities should be more likely to adopt CoFMAs if they are culturally dissimilar to their surrounding communities. This project will test this theory by evaluating the perceived individual costs and group benefits of CoFMAs, within and between group cultural similarities (cultural $F_{st}$), and actual adoption of CoFMAs in forest dependent wards on Pemba Island [@kline2018designing]. 
 
 ### Question: 
-Does cultural group selection theory accurately predict real world Community Forest Management Agreements in forest adjacent wards on Pemba Island, Tanzania?
+Do Pemban wards with stronger cultural differentiation from surrounding wards adopt CoFMAs at a higher rate than wards who are more culturally similar to their neighbors?  
 
 ### Predictions
-* P1: In wards where cultural group selection theory predicts that group selection should favor the adoption of community managed forested areas, we will observe significantly more real world adoption than in wards where adoption is not predicted to be favored by selection.
+* P1: Cultural differentiation of Pemban wards will predict CoFMA adoption only when the perceived individual costs of CoFMAs are relatively low.
 
-* P2: If significant cultural differentiation between wards is not present in the population, wards will not adopt Community Forest Management Agreements without external influences such as nonprofit conservation initiatives. 
+* P2: High levels of forest dependence and perceived costs of CoFMAs will prevent CoFMA adoption, even when groups are considerably culturally dissimilar to adjacent groups. 
 
 ## Research Design
-Under cultural group selection theory, clear group boundaries must be present for selection to act at the group level. These group level selection pressures are what we hypothesize to drive the adoption of Community Forest Management Agreements (CoFMAs). Logically, groups with more clear differences from surrounding groups should be more likely to adopt CoFMAs than groups whose boundaries with surrounding groups are blurred. For this reason, I will calculate the cultural $F_{ST}$ values for all combinations of neighboring Pemban wards as opposed to pairwise calculations of cultural $F_{ST}$ across all wards overall. 
+Under cultural group selection theory, clear group boundaries must be present for selection to act at the group level. These group level selection pressures are what we hypothesize to drive the adoption of CoFMAs. Logically, groups with more clear differences from surrounding groups should be more likely to adopt CoFMAs than groups whose boundaries with surrounding groups are blurred. For this reason, I will calculate the cultural $F_{ST}$ values for all combinations of neighboring Pemban wards as opposed to pairwise calculations of cultural $F_{ST}$ across all wards overall. 
 
 I will conduct an in-person survey of randomly sampled forest users in each Pemban ward. This survey will elicit information on approximately 50 cultural norms ranging from crime, cultural markers, punishment, family dynamics, etc. Cultural $F_{ST}$ values will be calculated for each trait given the following formula:
 
@@ -246,6 +255,7 @@ The primary outputs of data collection and analysis in this project will produce
 ```{r selPress, echo=FALSE, fig.cap="Simulated data showing protected area adoption vs calculated selection pressure for group adoption of protected areas.", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("Figures/Ch3/SelPressureAdopt.png")
 ```
+\newpage
 
 # Chapter 3: Social influences on transmission fidelity in household level diffusion of beneficial technology.
 
@@ -327,6 +337,8 @@ knitr::include_graphics("Figures/Ch3/CSP1.png")
 ```{r csp2, echo=FALSE, fig.cap="Simulated outputs showing a possible relationship between stove copying fidelity and geographic distance between the demonstrator and copier", out.width = "100%", fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("Figures/Ch3/CSP2.png")
 ```
+\newpage
+
 # Conclusion
 This research seeks to make clear how and why conservation behaviors succeed or fail to spread efficiently within a population. Moreover, the aim of this dissertation is to provide generalizable insights which can be applied to conservation initiatives in a variety of environments and population structures. A key advance made by this work is to link the fields of conservation social science and cultural group selection. Cultural group selection theory makes important predictions about how cooperative behaviors like conservation adoption may emerge and spread within populations, but has not yet been tested in a conservation context explicitly. Similarly, conservation social science incorporates environmental phenomena like resource mobility and regeneration, but largely omits generalizable insights about human behavioral evolution. By linking these two fields, we are greatly increasing the applicability of both bodies of work. 
 
@@ -335,6 +347,7 @@ This dissertation will achieve this goal in three progressive steps. The first w
 Human wellbeing is definitively tied to the persistence of renewable resources and ecosystem services. We are however, degrading these resources more rapidly than they can regenerate; reducing the stock of available resources while notably also slowing further regeneration. Conservation scientists have identified focal areas which, if preserved, may provide a disproportionate benefit to ecosystem function and offer a lifeline for human wellbeing. Simply put, we understand the environmental targets that we must achieve to ensure continued availability of renewable resources and we understand how conservation can achieve those targets. What we do not understand is how to effectively implement these required conservation measures. Reaching global biodiversity goals such as those set by the UN Convention on Biological Diversity will require “big and bold” conservation initiatives to be adopted at every level of the human population [@convention2010strategic; @dudley2018essential]. Currently however, even small-scale, local conservation measures often fail to gain traction and effectively run aground. This research will provide crucial theory and empirical evidence for how we can better shape and implement effective conservation initiatives at a variety of scales and in a variety of environmental conditions. 
 
 
+\newpage
 
 # References
 
