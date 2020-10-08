@@ -45,7 +45,7 @@ p1<-dat%>%filter(NO_TAKE =="All")%>%filter(STATUS_YR>1970)%>%group_by(STATUS_YR)
         legend.title = element_text(colour="black", size=12),
         legend.text = element_text( size = 12),text=element_text(family="Calibri"),
         legend.position = "none")+
-  xlab("Year")+ylab("Number of Newly Established \n No-Take Conservation Areas")+ggtitle("Newly Established No-Take Conservation Areas")
+  xlab("Year")+ylab("Number of Newly Established \n No-Take Protected Areas")+ggtitle("Newly Established No-Take Protected Areas")
 
 
 
