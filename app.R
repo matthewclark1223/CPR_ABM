@@ -43,7 +43,7 @@ ui<-shinyUI(navbarPage("Protected Areas ABM",
                                                       sliderInput("startCooperators",
                                                                   "Starting Obligatory Cooperators",
                                                                   min = 0.0,
-                                                                  max = 0.99,
+                                                                  max = 1.0,
                                                                   value = 0.9),
                                                       sliderInput("resourceRegen",
                                                                   "Resource Regeneration Rate",
@@ -223,8 +223,16 @@ server <- function(input, output) {
             NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
             
             ##Resource mobility
-            LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
-            LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+            
+            
+            #all resources mobile
+            #LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
+            #LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+            
+            #make it so only new resources can leave 
+            LeaveWorking<-rbinom(1,(NewWorkingResourcesTotal-output$NumResourcesWorking[t-1]),ProbOfMobility) #number of resources which leave the protected area
+            LeaveProtected<-rbinom(1,(NewProtectedResourcesTotal-output$NumResourcesProtect[t-1]),ProbOfMobility)#number of resources which leave the working area
+            
             
             #do the accounting on entering vs leaving individuals
             NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected

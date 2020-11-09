@@ -34,7 +34,7 @@ abm<-function(#Specified parameters
                      PayoffProtectedLastTime = rep(NA,Individuals),
                      PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
   
-  ProtectPerDefect<-as.integer(StartResourceProtected/DefNumStart) #protected area resources per each individual harvesting there
+  ProtectPerDefect<-ifelse(DefNumStart ==0,0,as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
   WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
   
   for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
@@ -144,20 +144,32 @@ abm<-function(#Specified parameters
     
     
     #New resource pools to pull from
-    #make sure they dont regenerate past their carrying capacity
+    #Resources over the CC move with probability 'ProbOfMobility'
     
     NewProtectedResourcesTotal<-round(output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep,digits=0)
-    NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+    ProtectedResourcesOverCC<-round(NewProtectedResourcesTotal-TotalCCResourceProtected,digits=0)
+    ProtectedResourcesOverCC<- ifelse(ProtectedResourcesOverCC<=  0,0, ProtectedResourcesOverCC)
+    
     NewWorkingResourcesTotal<-round(output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep,digits=0)
-    NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+    WorkingResourcesOverCC<-round(NewWorkingResourcesTotal-TotalCCResourceWorking,digits=0)
+    WorkingResourcesOverCC<- ifelse(WorkingResourcesOverCC<=  0,0, WorkingResourcesOverCC)
+    
     
     ##Resource mobility
-    LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
-    LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+    
+    
+    #all resources mobile
+    #LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
+    #LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+    
+    #make it so only new resources can leave 
+    LeaveWorking<-rbinom(1, WorkingResourcesOverCC,ProbOfMobility) #number of resources which leave the protected area
+    LeaveProtected<-rbinom(1,ProtectedResourcesOverCC,ProbOfMobility)#number of resources which leave the working area
+    
     
     #do the accounting on entering vs leaving individuals
-    NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
-    NewProtectedResourcesTotal<-NewProtectedResourcesTotal-LeaveProtected+LeaveWorking
+    NewWorkingResourcesTotal<-NewWorkingResourcesTotal+LeaveProtected
+    NewProtectedResourcesTotal<-NewProtectedResourcesTotal+LeaveWorking
     
     #Make sure they dont go over the CC again
     NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
@@ -218,7 +230,22 @@ abm<-function(#Specified parameters
   return(output) 
 }
 
-
+abm(Individuals=100, #number of total resource users in a population
+    
+    TotalCarryingCapacity=10000, #total available resource units
+    
+    StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
+    
+    PercProtected=0.8, #percent of the total resource that's in a protected area
+    
+    CoopPercStart=1.0, #percent of individuals who start by following the rules at t0
+    
+    LearningStrategy = "Success Bias", #options are Success Bias & Conformist
+    
+    TimeSteps=30,
+    ResourceRegenerationPerTimeStep=1.5,
+    harvestMax=22,
+    ProbOfMobility=0.99)
 
 abm(LearningStrategy = "Conformist",CoopPercStart=0.5)
 
