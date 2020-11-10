@@ -1,22 +1,22 @@
 abmnp<-function(#Specified parameters
   
-  Runs=3,
+  Runs=10,
   Individuals=100, #number of total resource users in a population
   
   TotalCarryingCapacity=10000, #total available resource units
   
   StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
   
-  PercProtected=0.15, #percent of the total resource that's in a protected area
+  PercProtected=0.4, #percent of the total resource that's in a protected area
   
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist
   
-  TimeSteps=75,
+  TimeSteps=30,
   ResourceRegenerationPerTimeStep=1.5,
-  harvestMax=15,
-  ProbOfMobility=0.15){
+  harvestMax=17,
+  ProbOfMobility=0.2){
   
   ## Create output dfs
   
@@ -59,7 +59,7 @@ abmnp<-function(#Specified parameters
                        PayoffProtectedLastTime = rep(NA,Individuals),
                        PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
     
-    ProtectPerDefect<-as.integer(StartResourceProtected/DefNumStart) #protected area resources per each individual harvesting there
+    ProtectPerDefect<-ifelse(DefNumStart ==0,0,as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
     WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
     
     for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
@@ -160,23 +160,28 @@ abmnp<-function(#Specified parameters
       
       #New resource pools to pull from
       #make sure they dont regenerate past their carrying capacity
-      
       NewProtectedResourcesTotal<-round(outputNumResourcesProtect[t-1,r] * ResourceRegenerationPerTimeStep,digits=0)
-      NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
-      NewWorkingResourcesTotal<-round(outputNumResourcesWorking[t-1,r] * ResourceRegenerationPerTimeStep,digits=0)
-      NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+      ProtectedResourcesOverCC<-round(NewProtectedResourcesTotal-TotalCCResourceProtected,digits=0)
+      ProtectedResourcesOverCC<- ifelse(ProtectedResourcesOverCC<=  0,0, ProtectedResourcesOverCC)
       
-      ##Resource mobility
-      LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
-      LeaveProtected<-rbinom(1,as.integer(NewProtectedResourcesTotal),ProbOfMobility)#number of resources which leave the working area
+      NewWorkingResourcesTotal<-round(outputNumResourcesWorking[t-1,r] * ResourceRegenerationPerTimeStep,digits=0)
+      WorkingResourcesOverCC<-round(NewWorkingResourcesTotal-TotalCCResourceWorking,digits=0)
+      WorkingResourcesOverCC<- ifelse(WorkingResourcesOverCC<=  0,0, WorkingResourcesOverCC)
+      
+      #make it so only new resources can leave 
+      LeaveWorking<-rbinom(1, WorkingResourcesOverCC,ProbOfMobility) #number of resources which leave the protected area
+      LeaveProtected<-rbinom(1,ProtectedResourcesOverCC,ProbOfMobility)#number of resources which leave the working area
+      
       
       #do the accounting on entering vs leaving individuals
-      NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
-      NewProtectedResourcesTotal<-NewProtectedResourcesTotal-LeaveProtected+LeaveWorking
+      NewWorkingResourcesTotal<-NewWorkingResourcesTotal+LeaveProtected
+      NewProtectedResourcesTotal<-NewProtectedResourcesTotal+LeaveWorking
       
       #Make sure they dont go over the CC again
       NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
       NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+      
+      ##
       
       
       ##calculate available resources per individual

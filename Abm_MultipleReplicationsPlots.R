@@ -275,20 +275,20 @@ abm<-function(#Specified parameters
   
 }
 
-abm(Runs=4,Individuals=100, #number of total resource users in a population
+abm(Runs=20,Individuals=100, #number of total resource users in a population
     
     TotalCarryingCapacity=10000, #total available resource units
     
     StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
     
-    PercProtected=0.7, #percent of the total resource that's in a protected area
+    PercProtected=0.5, #percent of the total resource that's in a protected area
     
-    CoopPercStart=1.0, #percent of individuals who start by following the rules at t0
+    CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
     
     LearningStrategy = "Success Bias", #options are Success Bias & Conformist
     
     TimeSteps=30,
-    ResourceRegenerationPerTimeStep=1.1,
+    ResourceRegenerationPerTimeStep=1.3,
     harvestMax=22,
     ProbOfMobility=0.99)
 
