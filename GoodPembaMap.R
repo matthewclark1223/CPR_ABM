@@ -35,11 +35,12 @@ annotate(geom = "text", x = 38, y = 0.8, label = "Kenya", fontface = "italic", c
   annotate(geom = "text", x = 35, y = -6, label = "Tanzania", fontface = "italic", color = "grey22", size = 4)+
   annotate(geom = "text", x = 47, y = -18, label = "Madagascar", fontface = "italic", color = "grey22", size = 4)+
   annotate(geom = "text", x = 37.5, y = -13, label = "Mozambique", fontface = "italic", color = "grey22", size = 4)+
-   theme( panel.background = element_rect(fill = "#c6dbef"),panel.grid.major = element_blank())+
+   theme( panel.background = element_rect(fill = "#c6dbef"),panel.grid.major = element_blank(),
+          axis.text=element_blank(), axis.ticks = element_blank())+
    annotation_scale(location = "bl", width_hint = 0.5) +ylab("")+xlab("")+
   annotation_north_arrow(location = "bl", which_north = "true", 
-                         pad_x = unit(0.75, "in"), pad_y = unit(0.5, "in"), 
-                         style = north_arrow_fancy_orienteering)
+                         pad_x = unit(0.1, "in"), pad_y = unit(0.5, "in"), 
+                         style = north_arrow_fancy_orienteering)+theme(plot.margin=unit(c(0.5,-4,0.5,0),"cm"))
 
 
 
@@ -60,14 +61,14 @@ Pem_fin<-ggplot() + geom_sf(data = Pemba, fill="antiquewhite")+coord_sf()+ theme
             size = 4,
             fontface = "bold",
             hjust = c(0,-0.3,1.1),vjust = c(-1,0,0)) +ylab("")+xlab("")+
-  theme( panel.background = element_rect(fill = "#c6dbef"),panel.grid.major = element_blank())+
-  annotation_scale(location = "bl", width_hint = 0.5) 
+  theme( panel.background = element_rect(fill = "#c6dbef"),panel.grid.major = element_blank(),
+         axis.text=element_blank(), axis.ticks = element_blank())+
+  annotation_scale(location = "bl", width_hint = 0.5) +theme(plot.margin=unit(c(0.5,0,0.5,-4),"cm"))
   
 
 Map<-gridExtra::grid.arrange(EAfrFin,Pem_fin,nrow=1)
 
-EAfrFin
-+ geom_abline(intercept = 37, slope = -5)
+
 
 #alternative method. Sloppy right now
 library(grid)
