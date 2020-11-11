@@ -59,7 +59,7 @@ abmnp<-function(#Specified parameters
                        PayoffProtectedLastTime = rep(NA,Individuals),
                        PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
     
-    ProtectPerDefect<-ifelse(DefNumStart ==0,0,as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
+    ProtectPerDefect<-ifelse(DefNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
     WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
     
     for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
@@ -239,4 +239,55 @@ abmnp<-function(#Specified parameters
 }
 
 abmnp(Runs=5,LearningStrategy = "Conformist")
+
+#fill a dataframe with the means
+
+FillData<-data.frame(PercProtected=seq(0.1,1,0.1),ResourceMobility=seq(0.1,1,0.1))
+FillData<-expand.grid(PercProtected=seq(0.1,1,0.1), ResourceMobility=seq(0.1,1,0.1))
+FillData$meanPayoff<-rep(NA,nrow(FillData))
+FillData%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(ResourceMobility=round(ResourceMobility,digits=1))
+
+
+for (i in 1:nrow(FillData)){
+  abmnp(Runs=3,Individuals = 100,TotalCarryingCapacity=10000,
+      StartPercCarryingCapacity = 0.65,
+      PercProtected = FillData[i,]$PercProtected, 
+      ProbOfMobility = FillData[i,]$ResourceMobility,CoopPercStart=1.0, 
+      LearningStrategy = "Success Bias",
+      TimeSteps=30,
+      ResourceRegenerationPerTimeStep=1.3,
+      harvestMax=25)
+  FillData[i,3]<-apply(FullOutput$meanPayoff[30,1:3],1,mean)  
+  
+}
+
+ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanPayoff)) + 
+  geom_tile()+scale_fill_viridis()
+
+
+
+FillData2<-data.frame(PercProtected=seq(0.1,1,0.1),ResourceMobility=seq(0.1,1,0.1))
+FillData2<-expand.grid(PercProtected=seq(0.1,1,0.1), ResourceMobility=seq(0.1,1,0.1))
+FillData2$meanPayoff<-rep(NA,nrow(FillData2))
+FillData2%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(ResourceMobility=round(ResourceMobility,digits=1))
+
+
+for (i in 1:nrow(FillData2)){
+  abmnp(Runs=3,Individuals = 100,TotalCarryingCapacity=10000,
+        StartPercCarryingCapacity = 0.65,
+        PercProtected = FillData2[i,]$PercProtected, 
+        ProbOfMobility = FillData2[i,]$ResourceMobility,CoopPercStart=0.9, 
+        LearningStrategy = "Success Bias",
+        TimeSteps=30,
+        ResourceRegenerationPerTimeStep=1.3,
+        harvestMax=25)
+  FillData2[i,3]<-apply(FullOutput$meanPayoff[30,1:3],1,mean)  
+  
+}
+
+ggplot(data=FillData2, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanPayoff)) + 
+  geom_tile()+scale_fill_viridis()
+
+
+
 
