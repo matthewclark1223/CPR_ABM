@@ -34,7 +34,7 @@ abm<-function(#Specified parameters
                      PayoffProtectedLastTime = rep(NA,Individuals),
                      PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
   
-  ProtectPerDefect<-ifelse(DefNumStart ==0,0,as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
+  ProtectPerDefect<-ifelse(DefNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
   WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
   
   for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
