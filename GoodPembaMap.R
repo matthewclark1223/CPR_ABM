@@ -80,7 +80,7 @@ sites<-data.frame(Site=c("Makangale","Kifundi","Msituu mkuu"),
                   lon=c(39.690753,39.710927,39.837124),
                   lat=c(-4.906206,-4.940105,-4.997158))
 
-Pem_fin<-ggplot() + geom_sf(data = Pemba, fill="antiquewhite")+coord_sf(xlim = c(39.4,39.9))+ theme_bw()+
+Pem_fin<-ggplot() + geom_sf(data = Pemba, fill="antiquewhite")+coord_sf(xlim = c(39.36,39.86))+ theme_bw()+
   geom_point(data = sites, aes(x = lon, y = lat), size = 4, 
              shape = 18) +
   annotate(geom = "text", x = 39.77, y = -5.13, label = "Pemba Island", fontface = "italic", color = "grey22", size = 4)+
