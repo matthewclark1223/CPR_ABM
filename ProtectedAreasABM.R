@@ -216,7 +216,7 @@ abm<-function(#Specified parameters
   
   p2<-ggplot(data=output,aes(x=timeStep))+
     geom_line(aes(y=meanPayoff),size=3,color="#993404")+
-    theme_classic()+ylab("Resource Units")+
+    theme_classic()+ylab("Resource Units")+ylim(0,harvestMax+1)+
     ggtitle("Mean Individual Payoff")
   
   p3<-ggplot(data=output,aes(x=timeStep))+

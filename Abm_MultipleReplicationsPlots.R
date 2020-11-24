@@ -7,16 +7,16 @@ abm<-function(#Specified parameters
   
   StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
   
-  PercProtected=0.4, #percent of the total resource that's in a protected area
+  PercProtected=0.8, #percent of the total resource that's in a protected area
   
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist
   
   TimeSteps=30,
-  ResourceRegenerationPerTimeStep=1.5,
+  ResourceRegenerationPerTimeStep=1.3,
   harvestMax=17,
-  ProbOfMobility=0.2){
+  ProbOfMobility=0.6){
   
   ## Create output dfs
   
@@ -59,7 +59,7 @@ abm<-function(#Specified parameters
                        PayoffProtectedLastTime = rep(NA,Individuals),
                        PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
     
-    ProtectPerDefect<-ifelse(DefNumStart ==0,0,as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
+    ProtectPerDefect<-ifelse(DefNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
     WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
     
     for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
@@ -214,7 +214,7 @@ abm<-function(#Specified parameters
     par(mfrow=c(2,2))
     
     #mean payoff
-    plot(rowMeans(outputmeanPayoff), type = 'l', ylab = "Value", xlab = "Timestep", ylim=c(0,harvestMax), lwd = 3, main = "Mean Payoff")
+    plot(rowMeans(outputmeanPayoff), type = 'l', ylab = "Harvest Payoff", xlab = "Timestep", ylim=c(0,harvestMax), lwd = 3, main = "Mean Payoff")
     
     for (j in 1:Runs) {  
       
@@ -222,8 +222,8 @@ abm<-function(#Specified parameters
       
     }
     
-    #% CC protected
-    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "Value", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Average time in working (coop)")
+    #% CC time working
+    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "Effort in Working Landscape", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Average effort in working (coop)")
     
     for (j in 1:Runs) {  
       
@@ -232,7 +232,7 @@ abm<-function(#Specified parameters
     }
     
     #% CC protected
-    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "Value", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Protected")
+    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "Carrying Capacity", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Protected")
     
     for (j in 1:Runs) {  
       
@@ -241,7 +241,7 @@ abm<-function(#Specified parameters
     }
     
     #% CC working
-    plot(rowMeans(outputpercCCWorking), type = 'l', ylab = "Value", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Working")
+    plot(rowMeans(outputpercCCWorking), type = 'l', ylab = "Carrying Capacity", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Working")
     
     for (j in 1:Runs) {  
       
@@ -275,22 +275,14 @@ abm<-function(#Specified parameters
   
 }
 
-abm(Runs=20,Individuals=100, #number of total resource users in a population
-    
-    TotalCarryingCapacity=10000, #total available resource units
-    
-    StartPercCarryingCapacity = 0.65, #amount of resources available in the landscape at the start in proportion to CC
-    
-    PercProtected=0.5, #percent of the total resource that's in a protected area
-    
-    CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
-    
-    LearningStrategy = "Success Bias", #options are Success Bias & Conformist
-    
+abm(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
+    StartPercCarryingCapacity = 1.00,
+    PercProtected = 0.8, 
+    ProbOfMobility = 1.00,CoopPercStart=0.95, 
+    LearningStrategy = "Success Bias",
     TimeSteps=30,
-    ResourceRegenerationPerTimeStep=1.3,
-    harvestMax=22,
-    ProbOfMobility=0.99)
+    ResourceRegenerationPerTimeStep=1.2,
+    harvestMax=25)
 
 #fill a dataframe with the means
 
@@ -299,10 +291,15 @@ FillData<-expand.grid(PercProtected=seq(0.1,0.9,0.05), ResourceMobility=seq(0.1,
 FillData$ProtectedCC<-rep(NA,nrow(FillData))
 
 for (i in 1:nrow(FillData)){
-abm(Runs=10,Individuals = 100,
+abm(Runs=10,Individuals = 100,TotalCarryingCapacity=10000,
+    StartPercCarryingCapacity = 0.65,
     PercProtected = FillData[i,]$PercProtected, 
-    ProbOfMobility = FillData[i,]$ResourceMobility)
-FillData[i,3]<-apply(FullOutput$percCCProtect[75,1:10],1,mean)  
+    ProbOfMobility = FillData[i,]$ResourceMobility,CoopPercStart=0.9, 
+    LearningStrategy = "Success Bias",
+    TimeSteps=30,
+    ResourceRegenerationPerTimeStep=1.3,
+    harvestMax=22,)
+FillData[i,3]<-apply(FullOutput$meanPayoff[75,1:10],1,mean)  
   
 }
   

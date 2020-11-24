@@ -249,20 +249,31 @@ FillData%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(Resourc
 
 
 for (i in 1:nrow(FillData)){
-  abmnp(Runs=3,Individuals = 100,TotalCarryingCapacity=10000,
-      StartPercCarryingCapacity = 0.65,
+  abmnp(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
+      StartPercCarryingCapacity = 1.00,
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility,CoopPercStart=1.0, 
       LearningStrategy = "Success Bias",
       TimeSteps=30,
       ResourceRegenerationPerTimeStep=1.3,
       harvestMax=25)
-  FillData[i,3]<-apply(FullOutput$meanPayoff[30,1:3],1,mean)  
-  
+  FillData[i,3]<-apply(FullOutput$meanPayoff[30,1:5],1,mean)  
+  print(paste0(i/nrow(FillData)*100,"%"))
 }
 
 ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= meanPayoff)) + 
-  geom_tile()+scale_fill_viridis()
+  geom_tile()+scale_fill_viridis()+theme_minimal()+ylab("Resource Mobility")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text( size=18, color="black",face="bold"),
+        axis.title.x = element_text( size=18),
+        axis.title.y = element_text( size=18),
+        axis.text=(element_text(color="black", size=14)),
+        legend.title = element_text(colour="black", size=18),
+        legend.text = element_text( size = 14))+
+  scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
+  scale_y_continuous( labels = scales::percent,expand = c(0, 0))+
+  labs(fill = "Average Harvest\nPayoff")+
+  xlab("Percent Protected")
 
 
 
@@ -273,15 +284,16 @@ FillData2%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(Resour
 
 
 for (i in 1:nrow(FillData2)){
-  abmnp(Runs=3,Individuals = 100,TotalCarryingCapacity=10000,
-        StartPercCarryingCapacity = 0.65,
+  abmnp(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
+        StartPercCarryingCapacity = 1.00,
         PercProtected = FillData2[i,]$PercProtected, 
         ProbOfMobility = FillData2[i,]$ResourceMobility,CoopPercStart=0.9, 
         LearningStrategy = "Success Bias",
         TimeSteps=30,
         ResourceRegenerationPerTimeStep=1.3,
         harvestMax=25)
-  FillData2[i,3]<-apply(FullOutput$meanPayoff[30,1:3],1,mean)  
+  FillData2[i,3]<-apply(FullOutput$meanPayoff[30,1:5],1,mean)  
+  print(paste0(i/nrow(FillData2)*100,"%"))
   
 }
 
@@ -289,5 +301,36 @@ ggplot(data=FillData2, mapping=aes(x=PercProtected, y=ResourceMobility, fill= me
   geom_tile()+scale_fill_viridis()
 
 
+FillData<-data.frame(PercProtected=seq(0.1,1,0.1),HarvestMax=seq(12,30,2))
+FillData<-expand.grid(PercProtected=seq(0.1,1,0.1), HarvestMax=seq(12,30,2))
+FillData$meanPayoff<-rep(NA,nrow(FillData))
+FillData%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(HarvestMax=round(HarvestMax,digits=0))
 
 
+
+for (i in 1:nrow(FillData)){
+  abmnp(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
+        StartPercCarryingCapacity = 1.00,
+        PercProtected = FillData[i,]$PercProtected, 
+        ProbOfMobility = 1.00,CoopPercStart=1.0, 
+        LearningStrategy = "Success Bias",
+        TimeSteps=30,
+        ResourceRegenerationPerTimeStep=1.2,
+        harvestMax=FillData[i,]$HarvestMax)
+  FillData[i,3]<-apply(FullOutput$meanPayoff[30,1:5],1,mean)  
+  print(paste0(i/nrow(FillData)*100,"%"))
+}
+
+ggplot(data=FillData, mapping=aes(x=PercProtected, y=HarvestMax, fill= meanPayoff)) + 
+  geom_tile()+scale_fill_viridis(breaks=c(0,8,16))+theme_minimal()+ylab("Maximum Harvest Value")+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        plot.title = element_text( size=18, color="black",face="bold"),
+        axis.title.x = element_text( size=18),
+        axis.title.y = element_text( size=18),
+        axis.text=(element_text(color="black", size=14)),
+        legend.title = element_text(colour="black", size=18),
+        legend.text = element_text( size = 14))+
+   scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
+  scale_y_continuous( breaks=c(12,16,20,24,28),expand = c(0, 0))+
+  labs(fill = "Average Harvest\nPayoff")+
+  xlab("Percent Protected")

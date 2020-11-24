@@ -106,7 +106,7 @@ server <- function(input, output) {
                            PayoffProtectedLastTime = rep(NA,Individuals),
                            PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
         
-        ProtectPerDefect<-as.integer(StartResourceProtected/DefNumStart) #protected area resources per each individual harvesting there
+        ProtectPerDefect<-ifelse(DefNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/DefNumStart)) #protected area resources per each individual harvesting there
         WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
         
         for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
@@ -205,6 +205,7 @@ server <- function(input, output) {
             
             
             
+            
             PercTimeWorking<- 1-PercTimeProtected   #time foraging in the working landscape
             
             
@@ -215,12 +216,16 @@ server <- function(input, output) {
             
             
             #New resource pools to pull from
-            #make sure they dont regenerate past their carrying capacity
+            #Resources over the CC move with probability 'ProbOfMobility'
             
             NewProtectedResourcesTotal<-round(output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep,digits=0)
-            NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+            ProtectedResourcesOverCC<-round(NewProtectedResourcesTotal-TotalCCResourceProtected,digits=0)
+            ProtectedResourcesOverCC<- ifelse(ProtectedResourcesOverCC<=  0,0, ProtectedResourcesOverCC)
+            
             NewWorkingResourcesTotal<-round(output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep,digits=0)
-            NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+            WorkingResourcesOverCC<-round(NewWorkingResourcesTotal-TotalCCResourceWorking,digits=0)
+            WorkingResourcesOverCC<- ifelse(WorkingResourcesOverCC<=  0,0, WorkingResourcesOverCC)
+            
             
             ##Resource mobility
             
@@ -230,13 +235,13 @@ server <- function(input, output) {
             #LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
             
             #make it so only new resources can leave 
-            LeaveWorking<-rbinom(1,(NewWorkingResourcesTotal-output$NumResourcesWorking[t-1]),ProbOfMobility) #number of resources which leave the protected area
-            LeaveProtected<-rbinom(1,(NewProtectedResourcesTotal-output$NumResourcesProtect[t-1]),ProbOfMobility)#number of resources which leave the working area
+            LeaveWorking<-rbinom(1, WorkingResourcesOverCC,ProbOfMobility) #number of resources which leave the protected area
+            LeaveProtected<-rbinom(1,ProtectedResourcesOverCC,ProbOfMobility)#number of resources which leave the working area
             
             
             #do the accounting on entering vs leaving individuals
-            NewWorkingResourcesTotal<-NewWorkingResourcesTotal-LeaveWorking+LeaveProtected
-            NewProtectedResourcesTotal<-NewProtectedResourcesTotal-LeaveProtected+LeaveWorking
+            NewWorkingResourcesTotal<-NewWorkingResourcesTotal+LeaveProtected
+            NewProtectedResourcesTotal<-NewProtectedResourcesTotal+LeaveWorking
             
             #Make sure they dont go over the CC again
             NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
@@ -283,7 +288,7 @@ server <- function(input, output) {
         
         p2<-ggplot(data=output,aes(x=timeStep))+
             geom_line(aes(y=meanPayoff),size=3,color="#993404")+
-            theme_classic()+ylab("Resource Units")+
+            theme_classic()+ylab("Resource Units")+ylim(0,input$maxHarvest+1)+
             ggtitle("Mean Individual Payoff")
         
         p3<-ggplot(data=output,aes(x=timeStep))+
