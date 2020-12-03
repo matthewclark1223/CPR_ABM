@@ -49,7 +49,7 @@ CWs$latadj<-CWs$lat+c(0.015, 0, 0.015, -0.035, 0, -0.018, -0.05,
 
 
 #library(gggibbous)
-cols <- c("No CoFMA" = "#cccccc", "CoFMA" = "#525252")
+cols <- c("No CoFMA" = "#d9d9d9", "CoFMA" = "#525252")
 
 ggplot() + geom_sf(data = Pemba,aes(fill=CoFMA))+theme_bw()+
   geom_segment(data = CWs,aes(x=lon,xend = lonadj,y=lat, yend = latadj), color = "black") +
@@ -75,7 +75,32 @@ ggplot() + geom_sf(data = Pemba,aes(fill=CoFMA))+theme_bw()+
 
 
 
+CWs$lonadj<-CWs$lon+c(0, -0.025, 0.015, -0.025, 0.025, 0.03, -0.03, 
+                      0.025, 0.025, 0.03, 0.03, -0.025, 0.025, 0.035, 
+                      0.03, -0.005, -0.035, -0.025)
+CWs$latadj<-CWs$lat+c(0.022, 0, -0.02, -0.035, 0, -0.018, -0.03, 
+                      0.005, -0.03, -0.01, 0.018, -0.005, 0.035, 0, 
+                      0, 0.035, 0, -0.005)
 
+ggplot() + geom_sf(data = Pemba,aes(fill=CoFMA),color="black")+theme_bw()+
+  geom_segment(data = CWs,aes(x=lon,xend = lonadj,y=lat, yend = latadj),size=1 ,color = "black") +
+  geom_point(data = CWs,aes(lon, lat), size = 2, color = "black") +
+  geom_moon(data=CWs,aes(x=lonadj,y=latadj,ratio=UseAreaPerc,size=Total),right = FALSE, fill = "#74a9cf", color = "#74a9cf",
+            key_glyph = draw_key_moon_left
+  ) +
+  geom_moon(data=CWs,
+            aes(x=lonadj,y=latadj,ratio = ConsAreaPerc,size=Total),
+            fill = "#33a02c", color = "#33a02c"
+  )+
+  scale_size(range = c(5,15)) +
+  scale_colour_manual(
+    values = cols,name=NULL,
+    aesthetics = ( "fill")
+  )+
+  ylab("")+xlab("")+
+  theme( panel.background = element_rect(fill = "white"),panel.grid.major = element_blank(),
+         axis.text=element_blank(), axis.ticks = element_blank())+
+  annotation_scale(location = "bl", width_hint = 0.5) 
 
 
 
