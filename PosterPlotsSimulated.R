@@ -44,7 +44,6 @@ xb<-0+1.5*SP
 p<-1/(1+exp(-xb))
 y <- rbinom(n = 100, size = 1, prob = p)
 
-plot(y~SP)
 data<-data.frame(COF=y,SelPres=SP)
 
 ggplot(data,aes(x=SelPres,y=COF))+
@@ -88,7 +87,9 @@ z <- rnorm(N, 0, 2)
 mu <- binomial(link = logit)$linkinv(eta[1]  + eta[2]*x+ eta[3]*l)
 phi <- 500
 y <- rbeta(N, mu * phi, (1 - mu) * phi)
+names(fakeData)<-c("PaSize","ResourceMobility")
 
+fakeData$Adoption<-rep(NA,nrow(fakeData))
 for (i in 1:nrow(fakeData)){
 
 fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
@@ -117,11 +118,11 @@ ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adoption))
 for (i in 1:nrow(fakeData)){
   
   fakeData[i,]$Adoption<-ifelse(  fakeData[i,]$PaSize>0.2&fakeData[i,]$PaSize<0.9&fakeData[i,]$ResourceMobility>0.45&fakeData[i,]$ResourceMobility<1,
-                                  rbeta(1,2,2),rbeta(1,2,2))}
+                                  rbeta(1,1,5),rbeta(1,1,5))}
 
 for (i in 1:nrow(fakeData)){
   fakeData[i,]$Adoption<-ifelse(fakeData[i,]$PaSize>0.4&fakeData[i,]$PaSize<0.7&fakeData[i,]$ResourceMobility>0.65&fakeData[i,]$ResourceMobility<0.9,
-                                rbeta(1,2,2),fakeData[i,]$Adoption)}
+                                rbeta(1,1,5),fakeData[i,]$Adoption)}
 
 
 names(fakeData)<-c("PaSize","ResourceMobility","Adoption")
@@ -136,6 +137,41 @@ ggplot(data=fakeData, mapping=aes(x=PaSize, y=ResourceMobility, fill= Adoption))
         legend.title = element_text(colour="black", size=18),
         legend.text = element_text( size = 14))+
   xlab("Percent of Resource Protected")+ylab("Probability of Resource Mobility")+ggtitle("Simulated Protected Area Adoption Rate - Single Group")
+
+
+
+
+
+
+
+
+
+
+
+SP<-rnorm(100,0,3)
+xb<-0+1.5*SP
+p<-1/(1+exp(-xb))
+y <- rbinom(n = 100, size = 1, prob = p)
+
+plot(y~SP)
+data<-data.frame(COF=y,SelPres=SP)
+
+ggplot(data,aes(x=SelPres,y=COF))+
+  geom_point(shape=21,size=3,stroke=3,fill="white",
+             color="#a6bddb",alpha=0.75)+
+  geom_smooth(se=F,color="lightgrey",size=2)+
+  theme_classic()+
+  scale_y_continuous(breaks=c(0,1))+theme_void()+
+  theme(
+    panel.background = element_rect(fill = "#073763ff",color="#073763ff",
+                                     linetype = "solid"),
+    axis.line = element_line(colour = "white",size=2))
+    axis.title=element_text(color="yellow",size=18,face="bold"),
+    axis.title.y=element_text(hjust=1.5))+
+  xlab("Selection Strength")+
+  ylab("Adoption")
+
+
 
 
 
