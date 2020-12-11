@@ -54,17 +54,6 @@ knitr::opts_chunk$set(fig.pos = 'H')
 ```
 
 \newpage
-# Summary
-Area-based conservation is critical for stemming global biodiversity loss. As such, each year billions of dollars are spent to protect key areas. It is common, however, for protected areas to fail to reach their stated conservation goals. The most chronic cause of conservation failure is a lack of local support and adoption of mandates. Conversely, historic protected area successes are also attributed to widespread adoption of conservation behaviors. Research examining how and why protected areas are adopted tends to suffer from a bias toward the reporting of successful projects and highly context dependent drivers and outcomes. This dissertation seeks to demonstrate and better understand the underlying mechanisms which underpin local adoption of conservation practices in and around protected areas. Toward this aim, this project will combine insights from cultural group selection theory with empirical research on Pemba Island, Tanzania to achieve three primary objectives. 
-
-1. Develop a dynamic, theoretical model to generate predictions regarding if and how group-level adoption of protected areas can emerge and persist via competition between groups.
-
-2. Empirically test theoretical predictions of protected area adoption as a function of group competition and perceived costs and benefits to local community members.
-
-3. Using the ongoing spread of an improved efficiency cookstove design, examine how the nature of interpersonal relationships may modify conservation behaviors as they spread within groups.  
-
-Globally, we have expended a tremendous amount of resources to identify conservation goals which will deliver the greatest benefits to biodiversity and ecosystem function. For these benefits to come to fruition however, conservation initiatives must be adopted at a rate which exceeds ecological degradation. This research will bring together cultural evolutionary science and ecology to identify the key mechanisms of conservation adoption.  
-\newpage
 
 # Introduction
 Human prosperity is unequivocally linked to the persistence of diverse, self-sustaining ecosystems through our dependence on ecosystem services and consumption of renewable resources. Until approximately 50 years ago, the rate of overall ecological regeneration exceeded the rate at which we consume and degrade our environment [@network2019global]. Today, on average, we degenerate our renewable resources at a rate 56% faster than regeneration [@network2020global]. This is particularly concerning as renewable resources regenerate at a rate proportional to the resource stock remaining [@beltratti_sustainable_1993]. Thus, overuse of earth’s renewable resources creates a positive feedback loop where scarcity slows regeneration and further perpetuates scarcity [@regev_biological_1998]. 
