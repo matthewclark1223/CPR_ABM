@@ -1,0 +1,40 @@
+---
+title: Resilient Landscapes and Livelihoods Through Better Conservation Planning
+author: "Matt Clark"
+date: "`r Sys.Date()`"
+output:
+  bookdown::pdf_document2:
+    toc: no
+    number_sections: false
+  pdf_document:
+    toc: no
+    number_sections: false
+  bookdown::html_document2:
+    toc: no
+    number_sections: false
+fontsize: 12pt
+link-citations: yes
+csl: AmJBot.csl
+subtitle: Proposal for Boise State Hazard and Climate Resilience Institute Research Grant
+---
+
+```{r setup, include=FALSE, cache=TRUE, message = FALSE, warning=FALSE}
+knitr::opts_chunk$set(cache = 2, cache.path = "Cache/")
+
+## Plots
+#opts_chunk$set(fig.path = "Figures_MS/", dev=c('pdf', 'png'), dpi = 300)
+
+## Locate figures as close as possible to requested position (=code)
+knitr::opts_chunk$set(fig.pos = 'H')
+```
+
+# Executive Summary
+From 2001–2019, the world lost 9.7% of total tree cover, largely due to deforestation. These losses directly reduce ecosystem and human resilience to climate change. Despite decades of effort into international and community-based conservation, preventing deforestation is still a critical problem. Conservation projects that work in one place are abandoned in others, or worse, have adverse impacts on local communities. Much of the literature around deforestation has focused either on the relevant ecological processes or social processes in isolation. This project will explicitly study the feedbacks between social and ecological processes in the context of conservation interventions. Thus, our project aims to understand how features of the natural system interact with features of the social system to create conservation outcomes.
+
+Our research integrates both empirical data collection and theoretical land use simulations of our study system, Pemba Island, Tanzania. Because of the variation in natural features, as well as the fact that Pemba has been host to a variety of both international and community-based conservation interventions, the island serves as an ideal place to assess the factors driving conservation success. To ensure that our research produces findings that help local communities in Pemba combat deforestation, we are collaborating with Community Forests Pemba, a nonprofit organization focused on climate resilience through sustainable agroforestry.
+
+Results of this project will significantly improve our ability to predict conservation outcomes for both the environment and communities. To communicate simulation outcomes, we will produce an interactive dashboard displaying alternative conservation scenarios. We will host a workshop with our community partner to demonstrate how project results can inform ongoing conservation efforts. This work advances the HCRI Natural Environment pillar by providing a roadmap for conservation planning on Pemba and in complex social-ecological landscapes broadly. This work also contributes to the Economy & Society pillar by explicitly demonstrating the local economic viability of intervention strategies.
+
+
+
+\newpage
