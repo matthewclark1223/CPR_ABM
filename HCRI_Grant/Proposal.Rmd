@@ -19,8 +19,9 @@ subtitle: Proposal for Boise State Hazard and Climate Resilience Institute Resea
 bibliography: [Refs.bib]
 header-includes:
 - \usepackage{pdfpages}
-- \usepackage[font={small}]{caption}
+- \usepackage[font={footnotesize}]{caption}
 - \usepackage{wrapfig}
+
 ---
 
 ```{r packages, include=FALSE, cache=FALSE, message=FALSE, warning=FALSE}
@@ -55,71 +56,107 @@ knitr::opts_chunk$set(fig.pos = 'H')
 \newpage
 
 # Executive Summary
-From 2001–2019, the world lost 9.7% of total tree cover, largely due to deforestation. These losses directly reduce ecosystem and human resilience to climate change. Despite decades of effort into international and community-based conservation, preventing deforestation is still a critical problem. Conservation projects that work in one place are abandoned in others, or worse, have adverse impacts on local communities. Much of the literature around deforestation has focused either on the relevant ecological processes or social processes in isolation. This project will explicitly study the feedbacks between social and ecological processes in the context of conservation interventions. Thus, our project aims to understand how features of the natural system interact with features of the social system to create conservation outcomes.
+Biodiversity buffers ecosystems and human communities against the worsening impacts of climate change. Despite decades of effort into conservation, global biodiversity loss is still a critical problem. Interventions that work in one place are abandoned in others, or worse, harm local communities. This project will combine empirical data collection with simulation modeling to study how feedbacks between the natural and social systems impact conservation.
 
-Our research integrates both empirical data collection and theoretical land use simulations of our study system, Pemba Island, Tanzania. Because of the variation in natural features, as well as the fact that Pemba has been host to a variety of both international and community-based conservation interventions, the island serves as an ideal place to assess the factors driving conservation success. To ensure that our research produces findings that help local communities in Pemba combat deforestation, we are collaborating with Community Forests Pemba, a nonprofit organization focused on climate resilience through sustainable agroforestry.
+This work will advance the HCRI Natural Environment and Economy & Society pillars by providing a roadmap for conservation planning in complex social-ecological landscapes while considering the local economic viability of intervention strategies. The aim of this project is to produce land use simulations demonstrating the viability of two conservation paradigms in our study system, Pemba Island, Tanzania. Pemba Island serves as an ideal place to study the factors driving conservation success due to the biological variation across the island and its history of both international and community-based conservation interventions. Simulations will be informed using interviews with local community members and insights from conservation social science. 
 
-Results of this project will significantly improve our ability to predict conservation outcomes for both the environment and communities. To communicate simulation outcomes, we will produce an interactive dashboard displaying alternative conservation scenarios. We will host a workshop with our community partner to demonstrate how project results can inform ongoing conservation efforts. This work advances the HCRI Natural Environment pillar by providing a roadmap for conservation planning in Pemba and in complex social-ecological landscapes broadly. This work also contributes to the Economy & Society pillar by explicitly demonstrating the local economic viability of intervention strategies.
+To apply project insights locally, we are collaborating with Community Forests Pemba, a nonprofit organization focused on climate resilience through sustainable agroforestry. We will produce an interactive dashboard which will visualize how alternative conservation scenarios will impact the environment and local communities. Following completion of this dashboard, we will host a workshop with Community Forests Pemba to demonstrate how simulation results can directly inform future conservation planning. 
+
+This scholarly work will build upon ongoing research in Pemba by the Max Planck Institute for Evolutionary Anthropology. Thus, funding this project will support international and cross-disciplinary collaboration, produce an interactive, public-facing dashboard, improve the conservation capacity of Community Forests Pemba, and support the published dissertation work of one Ecology, Evolution, & Behavior PhD student at Boise State University. 
 
 
 \newpage
 
 # Project Team
+**Matt Clark, doctoral student - Boise State University, Human-Environment Systems**
+
+This project is a major component of Matt’s dissertation work. As such, he will be involved with all stages of the project. Matt will travel to Pemba and work with Mbarouk M. Omar and Dr. Jeff Andrews to interview community members involved in conservation projects. Matt will code the land use model and build the web dashboard displaying simulation results. Matt, with the help of Mbarouk M. Omar, will co-lead the workshop presenting the project outcomes.
+
+\  
+
+**Vicken Hillis PhD, assistant professor - Boise State University, Human-Environment Systems**
+
+Dr. Vicken Hillis will supervise Matt Clark at all stages of this project. Dr. Hillis will oversee the development of the land use model and the publication of the scholarly work. Dr. Hillis is also actively involved with securing additional funding for this project.  
+\  
+
+**Jeff Andrews PhD, postdoctoral researcher - Max Planck Institute for Evolutionary Anthropology**
+
+Dr. Jeff Andrews has worked in Pemba since 2017 and will help coordinate on-the-ground logistics for this project. Dr. Andrews will also help with data collection and serve as a co-author on all published work. 
+
+
+\  
+
+**Monique Borgerhoff-Mulder PhD,  professor - University of California Davis, Anthropology**
+
+Dr. Monique Borgerhoff-Mulder has worked in international conservation research for multiple decades. Dr. Borgerhoff-Mulder will advise the production of all scholarly work and ensure that it advances conservation social science. Dr. Borgerhoff-Mulder is also involved with securing additional financial support for this project, and leads our team research visa with Tanzania’s Department of Forestry and Nonrenewable Natural Resources.
+
+
+\   
+
+
+**Mbarouk Mussa Omar, executive director - Community Forests Pemba**
+
+Mbarouk Mussa Omar will give logistical support to this project in Pemba. This will include arranging interviews with community members, assigning an employee of Community Forests Pemba to work as a translator, and coordinating help with language study for Matt Clark. Mbarouk Mussa Omar will co-lead the workshop where Matt Clark will present the results of this project to Community Forests Pemba and will make use of the insights for real-world application of our research findings. 
+
+
 
 \newpage
 # Project Narrative
 ### Background and Rationale
-Diverse and intact natural landscapes are unequivocally our best insurance policy against the worsening impacts of climate change [@isbell2015biodiversity; @loreau2001biodiversity; @oliver2015biodiversity; @lloret2012extreme; @alongi2008mangrove]. In response, $24 billion is spent on conservation interventions annually [@waldron2020protecting; @waldron2017reductions]. As the world’s most biodiverse areas greatly overlap with the world’s poorest communities, many conservation interventions require community development and buy-in from vulnerable, often indenous populations [@fisher2007poverty; @mittermeier2011global; @larsen2012conserving; @naughton2005role]. 
+Diverse and intact natural landscapes are unequivocally our best insurance policy against the worsening impacts of climate change [@isbell2015biodiversity; @loreau2001biodiversity; @oliver2015biodiversity; @lloret2012extreme; @alongi2008mangrove]. In response, $24 billion is spent on conservation interventions annually [@waldron2020protecting; @waldron2017reductions]. These interventions are fundamentally about shaping people’s behavior through institutional incentives. Interventions commonly achieve this by directly paying local communities to forgo resources (payments for ecosystem services), or by legally protecting a portion of the landscape (protected areas) [@jack2008designing; @naughton2005role].  
 
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.45\textwidth}
   \begin{center}
-    \includegraphics[width=0.48\textwidth]{InsetSimple.png}
+    \includegraphics[width=0.45\textwidth]{InsetSimpleCropped.png}
   \end{center}
-  \caption{Pemba Island, Tanzania. Black lines show geographic boundaries for 121 distinct wards on the island. Subfigure shows East Africa with the Coastal Forests of Eastern Africa biodiversity hotspot highlighted in red.}
+  \captionsetup{margin=0.25cm}
+  \caption{Pemba Island, Tanzania. Black lines show geographic boundaries for 121 distinct communities on the island. Subfigure shows East Africa with the Coastal Forests of Eastern Africa biodiversity hotspot highlighted in red.}
 \end{wrapfigure}
 
-Conservation interventions, while well intentioned, frequently fail to meet both ecological and community development goals [@christie_marine_2004; @watson_performance_2014]. When environments and livelihoods are closely linked, economic and ecological processes may have complex interactions and feedbacks that make conservation outcomes difficult to predict. One area in particular, the Coastal Forests of Eastern Africa biodiversity hotspot, has seen considerable foreign and community-based investment in conservation, yet deforestation and biodiversity loss in the area continue to worsen [ @burgess2017two; @cuadros2018empty]. 
+Conservation interventions, while well intentioned, frequently fail to meet both ecological and community development goals [@christie_marine_2004; @watson_performance_2014]. Economic and ecological processes are inherently interwoven, creating complex interactions that make conservation outcomes difficult to predict. One area in particular, the Coastal Forests of Eastern Africa biodiversity hotspot, has seen considerable foreign and community-based investment in conservation, yet deforestation and biodiversity loss in the area continue to worsen [@burgess2017two; @cuadros2018empty]. 
 
-This study focuses on Pemba Island, Tanzania, located in the Coastal Forests of Eastern Africa biodiversity hotspot. Deforestation is a perennial issue in Pemba, as the yearly deforestation rate is nearly 2%, and 90% of households rely exclusively on forest products (fuelwood and charcoal) to meet their daily cooking needs [@RGZ2014Zanzibar; @ely2000participatory]. As such, Pemba has been subject to a stream of foreign conservation initiatives since the mid 20th century, yet deforestation remains apace. Unfortunately, anecdotal evidence suggests that resentment is mounting amongst residents towards the train of conservation projects that have failed to deliver any sustained economic compensation or ecological benefits. Our collaborative effort will build land use simulations that integrate ecology and economics to demonstrate why conservation and development initiatives have continued to fall short in Pemba, and how we can do better in the future.
+This study focuses on Pemba Island, Tanzania, located in the Coastal Forests of Eastern Africa biodiversity hotspot (Figure 1). Deforestation is a perennial issue in Pemba, as the yearly deforestation rate is nearly 2%, and 90% of households rely exclusively on forest products (fuelwood and charcoal) to meet their daily cooking needs [@RGZ2014Zanzibar; @ely2000participatory]. As such, Pemba has been subject to a stream of foreign conservation initiatives since the mid 20th century, yet deforestation remains apace. Unfortunately, anecdotal evidence suggests that resentment is mounting amongst residents towards the train of conservation projects that have failed to deliver any sustained economic compensation or ecological benefits. Our collaborative effort will build land use simulations that integrate ecology and economics to demonstrate why conservation and development initiatives have continued to fall short in Pemba, and how we can do better in the future.
 
-This project is in collaboration with the Max Planck Institute for Evolutionary Anthropology, and Community Forests Pemba, a Pemban nonprofit organization established in 2009 with a mission to conserve and restore Pemba’s forests while supporting livelihood development on the island. The organization specifically seeks to build a resilient Pemba, ecologically and economically, with respect to climate change. This effort is mutually beneficial as Community Forests Pemba facilitate data collection and provide on-the-ground logistical support, while resulting land use simulations will inform future conservation efforts by the organization 
+This project is in collaboration with the Max Planck Institute for Evolutionary Anthropology, and Community Forests Pemba, a Pemban nonprofit organization established in 2009 with a mission to conserve and restore Pemba’s forests while supporting livelihood development on the island. The organization specifically seeks to build a resilient Pemba, ecologically and economically, with respect to climate change. This effort is mutually beneficial as Community Forests Pemba will facilitate data collection and provide on-the-ground logistical support, while resulting land use simulations will inform future conservation efforts by the organization.
 
-If funded, the project will establish a formal collaboration between the Hazards and Climate Resilience Center, the Max Planck Institute for Evolutionary Anthropology, Community Forests Pemba, and Boise State Human-Environment Systems. This funding will specifically support the dissertation work of one PhD student at Boise State, Matt Clark, and will yield an interactive web dashboard displaying all land use simulations described below. 
+If funded, the project will establish a formal collaboration between the Hazards and Climate Resilience Institute, the Max Planck Institute for Evolutionary Anthropology, Community Forests Pemba, and Boise State Human-Environment Systems. This funding will specifically support the published dissertation work of one Ecology, Evolution, & Behavior PhD student at Boise State, Matt Clark, and will yield an interactive web dashboard displaying all land use simulations described below. 
+
 
 ```{r Mapp, echo=FALSE,eval=FALSE, fig.cap="Pemba Island, Tanzania. Black lines show geographic boundaries for 121 distinct wards on the island. Subfigure shows East Africa with the Coastal Forests of Eastern Africa biodiversity hotspot highlighted in red.", out.width = "40%" ,fig.align='center', dpi=72, fig.pos= "H"}
 knitr::include_graphics("InsetSimple.png")
 ```
 
 ### Aims and Objectives
-Our project will generate predictions for ecological and economic viability of two common conservation interventions: protected areas and payments for ecosystem services (Table \@ref(tab:tabinterventions), and provide a roadmap for implementing successful conservation projects on-the-ground.
+Our project will generate predictions for ecological and economic viability of two common conservation interventions: protected areas and payments for ecosystem services (Table \@ref(tab:tabinterventions2)).
 
-We will produce two specific deliverables to immediately inform conservation efforts on-the-ground in Pemba.
+We will produce two specific deliverables to immediately inform conservation efforts in Pemba.
 
-1. We will create and host an interactive web dashboard to let individuals run our agent-based simulations to visualize alternative scenarios and better predict conservation outcomes. This web tool will accompany the scholarly publication of this work to better communicate findings to a broad audience. 
+1. We will create and host an interactive web dashboard to let individuals run our simulations and visualize alternative scenarios to better predict conservation outcomes. This web tool will accompany the scholarly publication of this work to better communicate findings to a broad audience.   
 
 2. We will hold a community information and training session with Community Forests Pemba to communicate the findings and implications of this project and to give a live demonstration of the web dashboard described above. This session will be designed to immediately inform ongoing conservation efforts.
 
 ### Research Methods
 *Data Collection*
 
-Empirical data collected for this project will inform the decision rules built into our agent-based land use simulations. Our objective is to understand how individuals make decisions in response to varying ecological and economic conditions. To achieve this, our Community Forests Pemba will identify community members who have been subject to a variety of different conservation interventions and rely on each of the four forest types on the island: high tropical rainforest, mangroves, coral rag forest, and agroforestry scrub matrix. Only community members who actively rely on harvesting fuelwood for household needs will be interviewed. Respondents will be compensated for their time (see budget). 
+All empirical data collection for this project will be in the form of qualitative interviews with local community members. Community Forests Pemba will identify community members who have been subject to a variety of different conservation interventions and rely on each of the four forest types on the island: high tropical rainforest, mangroves, coral rag forest, and agroforestry scrub matrix. Only community members who actively rely on harvesting fuelwood for household needs will be interviewed. Respondents will be compensated for their time (see budget). 
 
-With the help of a local translator arranged by Community Forests Pemba, Matt Clark and Dr. Jeff Andrews will conduct structured interviews with each of these community members. Interviews will consist of a series of scenarios where the respondent is asked how they would modify their wood harvesting strategy based on the environmental and economic conditions of interest.   
+With the help of a local translator arranged by Community Forests Pemba, Matt Clark and Dr. Jeff Andrews will conduct structured interviews with each of these community members. Interviews will consist of a series of scenarios where the respondent is asked how they would modify their fuelwood harvesting strategy based on the environmental and economic conditions of interest. These data will inform how individuals make fuelwood harvesting decisions in our land use simulations in response to changes in the social-ecological landscape.
+   
 
 *Modeling*
 
-Dr. Vicken Hillis and Dr. Monique Borgerhoff-Mulder will oversee the agent-based modeling portion of this project. All model coding will be done by Matt Clark. Our simulations will vary features of the natural environment including: dispersal distance, market substitutability, regrowth rate, and starting degradation. We will then impose three different conservation intervention scenarios and features within them, all listed in Table \@ref(tab:tabinterventions).  
+Dr. Vicken Hillis and Dr. Monique Borgerhoff-Mulder will oversee the modeling portion of this project. All model coding will be done by Matt Clark. Simulations, in the form of an agent-based model, will vary features of the natural and social environment, impose three different conservation intervention scenarios on the landscape, and observe how they impact the environment and community access to resources. All variable features are listed in Table \@ref(tab:tabinterventions2).  
 
-Within this backdrop, individuals make harvesting decisions about where (protected or not) and how much fuelwood to harvest. Decision-making and learning rules are motivated by insights from cultural evolutionary theory. In particular, we’re interested in how intervention types affect individual’s access to resources given their environment, how individuals respond to these changes, and how community response further impacts their environment. 
+Within this backdrop, simulated individuals will make harvesting decisions about where (protected or not) and how much fuelwood to harvest. Individuals will learn and adjust harvest strategies in response to their environment. Overall, we’re interested in how environmental conditions determine the economic impact of interventions, how individuals respond to these impacts, and how community response further shapes their environment. 
 
 All simulations will be displayed visually on an interactive dashboard created using the Flexdashboard and R Shiny functionality in the R statistical programming language [@R; @flexD; @shiny]. The dashboard will allow users to test all three intervention scenarios and their variations against all described social and ecological starting conditions. 
 
 
-```{r tabinterventions, echo=F, fig.align='center', warning=FALSE}
+```{r tabinterventions, echo=F, fig.align='center', warning=FALSE, eval=FALSE}
 intVars <- data.frame(Intervention = c("No intervention","Protected areas", "Payments for ecosystem services"), 
-                      Scheme = c("Individuals harvest renewable resources at a rate which matches their household need, regardless of the location on the landscape or harvest rate compared to resource regeneration rate.",
-                                 "Some portion of the landscape is designated for conservation and resources inside are socially unacceptable to harvest. Resource units produced inside conservation area may spillover to use area under sink/source dynamics. Some agents may defect and harvest from the conservation area.",
-                                 "Agents are incentivised to forgo harvesting resources in return for economic payments. Payments may offset resource collection when agents previously sold harvested resources, but may fail to change incentive structures when agents directly depend on resources harvested."), 
+                      Scheme = c("Baseline comparison. Individuals harvest renewable resources at a rate which matches their household need, regardless of the location on the landscape or harvest rate compared to resource regeneration rate.",
+                                 "Some portion of the landscape is designated for conservation and resources inside are socially unacceptable to harvest. Resources produced inside the conservation area may spillover to the adjacent landscape. Some individuals may steal resources from the conservation area.",
+                                 "Individuals are incentivised to forgo harvesting resources in return for economic payments. Payments may offset resource collection when agents previously sold harvested resources, but may fail to change incentive structures when agents directly depend on resources harvested."), 
                       Features = c("N/A",
                                       "Protected area size",
                                       "Market value for harvested fuelwood, Payment amount"))
@@ -136,26 +173,53 @@ row_spec(0,bold=TRUE)%>%
 
 ```
 
+```{r tabinterventions2, echo=F, fig.align='center', warning=FALSE}
+intVars2 <- data.frame(Intervention = c("No intervention","Protected areas", "Payments for ecosystem services"), 
+                      Scheme = c("Baseline comparison. Individuals harvest renewable resources at a rate which matches their household need, regardless of the location on the landscape or harvest rate compared to resource regeneration rate.",
+                                 "Some portion of the landscape is designated for conservation and resources inside are socially unacceptable to harvest. Resources produced inside the conservation area may spillover to adjacent landscapes. Some individuals may steal resources from the conservation area.",
+                                 "Individuals are incentivised to forgo harvesting resources in return for economic payments. Payments may offset resource collection when individuals previously sold harvested resources, but may fail to change incentive structures when individuals directly depend on resources harvested."), 
+                      IFeatures = c("N/A",
+                                      "Protected area size",
+                                      "Market value for fuelwood, Payment amount"),
+                     EFeatures = c("Regrowth rate, Starting degradation", "Seed dispersal distance, Regrowth rate, Starting degradation", "Market substitutability, Regrowth rate, Starting degradation") )
+
+colnames(intVars2)[3]<-"Intervention features"
+colnames(intVars2)[4]<-"Environmental features"
+
+kbl(intVars2,format="latex", caption = "Three conservation intervention scenarios to be tested with the proposed land use model.",escape=F,booktabs = T) %>% 
+  kableExtra::kable_styling(latex_options = c("striped","hold_position"), font_size = 9)%>%
+  #kable_classic_2(full_width=T)%>% 
+row_spec(0,bold=TRUE)%>%
+    column_spec(1, width = "8em")%>%
+    column_spec(2, width = "23em")%>%
+  column_spec(3, width = "8em")%>%
+  column_spec(4, width = "10em")
+  
+  
+
+```
+
+\  
 
 ### Key Implications
 *Intellectual Merit*
 
-Predicting if and how conservation actions will evolve has proven to be a major challenge for conservation scientists and practitioners [@child2010conceptual]. Conservation social science largely relies on case studies to draw correlations between social phenomena and conservation outcomes. Widely applicable theory around the long-term adoption of conservation norms is therefore sparse [@mahajan2020theory]. Recently however, theories from cultural evolution, a field of anthropology, have been identified as a potentially useful tool to better understand the mechanisms which drive the evolution of conservation initiatives [@brooks_applying_2018].
+Predicting if and how conservation initiatives will evolve has proven to be a major challenge for conservation scientists and practitioners [@child2010conceptual]. Widely applicable theory around the long-term social viability of conservation projects is sparse [@mahajan2020theory]. Conservation is a complex mix of individual behaviors, informal group-level institutions, and formal interventions. These social features exist on top of underlying variation in the natural environment. Theories from cultural evolution, a field of anthropology, examine the evolution of behaviors generally and may be applicable to conservation [@brooks_applying_2018]. Existing cultural evolution theory is highly abstract, offering insights only about nonspeciﬁc cooperative behaviors [@lehmann_evolution_2006; @boyd_rapid_2011]. This is problematic as conservation behaviors have behavior-environment feedbacks which are fundamentally different from generic cooperative behaviors. They operate under the sink/source dynamics of renewable, mobile resources as well as variable resource regeneration rates. Specific resources may also be substitutable for other goods on the market or communities may rely on them directly. As such, cultural evolutionary theory must be extended to include these dynamics in order to be eﬀectively applied to conservation.
 
-Cultural evolution oﬀers theories on the mechanisms behind the evolution of cooperative behaviors such as adhering to community conservation. Existing cultural group selection theory however, is highly abstract, relying on simple, analytical models of nonspeciﬁc behaviors [@lehmann_evolution_2006; @boyd_rapid_2011]. Current theory therefore does not oﬀer predictions about the evolution of conservation norms speciﬁcally [although see @waring2015multilevel; & -@waring_coevolution_2017]. This is problematic as conservation behaviors have behavior-environment feedbacks which are fundamentally different from generic cooperative behaviors. They operate under the sink/source dynamics of renewable, mobile resources as well as variable resource regeneration rates. Specific resources may also be substitutable for other goods on the market or communities may rely on them directly. As such, cultural group selection theory must be extended to include these dynamics in order to be eﬀectively applied to conservation.
 
 *Broader Impacts*
 
-The broader impacts of this research will advance the overall mission of HCRI to build resilient communities by providing methodology and tools to better plan conservation projects for nature and communities as an integrated system, both in Pemba and elsewhere. The project as described also closely aligns with both the Natural Environment and Economy & Society HRCI pillars in the following ways:
+The broader impacts of this research will advance the overall mission of HCRI to build resilient communities by providing methodology and tools to better plan conservation projects for nature and communities as an integrated system, both in Pemba and elsewhere. The project also closely aligns with both the Natural Environment and Economy & Society HRCI pillars in the following ways:
 
 * *Natural Environment* - The work here will provide immediately actionable insights for conservation in Pemba Island and Zanzibar overall. Our community partner, among others, will be provided with the tools to make use of these insights as part of ongoing conservation and community development efforts. More generally, conservation is in need of unifying theory about which kinds of interventions succeed or fail as a result of underlying ecological and social conditions. This research will serve as a foundational building block for conservation science to consider complete social-ecological landscapes moving forward. 
 
-* *Economy & Society* - Fuelwood and charcoal are the primary source of energy to 40% of the world’s rural poor, producing more renewable energy than solar, wind, and hydroelectric sources combined [@muller2018state]. Conservation may be the key to ensuring continued access to vital resources for communities in an uncertain climatic future, but it may also backfire and disenfranchise communities to much needed resources. Similar to the pillar above, the work described here will be immediately relevant to better designing conservation projects in our study system, but the implications of the scholarly work are notably far-reaching. Our simulations will explicitly consider the access to resources of local communities both as an outcome and as a driver of conservation efficacy. 
+* *Economy & Society* - Fuelwood and charcoal are the primary source of energy to 40% of the world’s rural poor, producing more renewable energy than solar, wind, and hydroelectric sources combined [@muller2018state]. Conservation may be the key to ensuring continued access to vital resources for communities in an uncertain climatic future, but it may also backfire and disenfranchise communities of much needed resources, especially as the world’s most biodiverse areas greatly overlap with the world’s poorest communities [@fisher2007poverty; @mittermeier2011global; @larsen2012conserving; @naughton2005role]. Similar to the pillar above, the work described here will be immediately relevant to better designing conservation projects in our study system, but the implications of the scholarly work are far-reaching. Our simulations will explicitly consider the access to resources by local communities both as an outcome and as a driver of conservation efficacy.  
 
 ### Dissemination Plan 
 Scholarly results from this project that advance conservation science broadly will be published in a peer-reviewed academic journal. Currently we are targeting *Environmental Modeling and Software*. All model code will be posted on a public GitHub repository and linked to the publication. Before publication we will contribute to open, reproducible science by making our pre-print manuscripts available online using the preprint science repository arXiv.org. 
 
-Pemba specific results and the web tool which will accompany this project will be presented at a workshop with Community Forests Pemba described earlier in this proposal. This workshop is currently planned as an online, remote workshop given budget restrictions and the covid-19 pandemic. If possible, we would like to host this workshop in-person if conditions change.
+Pemba specific results and the interactive dashboard which will accompany this project will be presented at a workshop with Community Forests Pemba described earlier in this proposal. This workshop is currently planned as an online, remote workshop given budget restrictions and the COVID-19 pandemic. If possible, we would like to host this workshop in-person if conditions change. 
+
 
 ### Timeline 
 ```{r timeline2,echo=FALSE, cache=TRUE, message = FALSE, warning=FALSE,fig.cap="Timeline of proposed research activities and team members involved.", out.width = "80%", fig.align='center', dpi=72, fig.pos= "H" }
@@ -198,23 +262,43 @@ p +theme_bw()+scale_x_datetime(date_breaks = "1 month")+ ggplot2::theme(
 ```
 
 ### Future Directions
-The Human-Environment Systems research center at Boise State has built a partnership with researchers at the Max Planck Institute for Evolutionary Anthropology already working on conservation research in Pemba Island, Tanzania. Although we consider our partnership to be strong, Boise State personnel have not yet visited the field site. If funded, this project will begin what we anticipate will be a long-lasting and fruitful research program. Thus, this proposal will not only fund necessary conservation research, but will also fund an international research partnership between both institutions. 
+We view the work proposed here as the first step toward a long-term, cross disciplinary collaboration between HCRI, the Max Planck Institute for Evolutionary Anthropology, Community Forests Pemba, and Human-Environment Systems. We hope to establish a research program in Pemba that will create lasting impacts for community members and produce significant scholarly contribution. Future research will seek to collect quantitative data in our system to validate the outcomes of our land use simulations. These data will include biodiversity and land cover data from Pemban forests, as well as community metrics on exposure to conservation interventions and willingness to participate in future interventions. This study system is well positioned to investigate questions from conservation social science and community resilience to climate change. All research will be co-produced with Community Forests Pemba to ensure broader impacts and real-world applicability.    
 
-Future research will seek to collect quantitative data in our system to validate the outcomes of our land use simulations. These data will include biodiversity and land cover data from Pemban forests, as well as community metrics on exposure to conservation interventions and willingness to participate in future interventions.   
 
 \newpage
+# Budget 
+```{r tabbudget, echo=F, fig.align='center', warning=FALSE}
+budgVars <- data.frame(Item = c("Airfare to Zanzibar","Airfare to Pemba","Lodging", "Field interpreter wage","Swahili tutoring", "Interview compensation", "Land transportation","TOTAL"), 
+                      Amount = c("2,500","200",
+                                 "650","500","300", "200", "300", "4,650"), 
+                      Details = c("Air travel round trip for Matt Clark from Boise to Abeid Amani Karume International Airport as of 2/15/2021","Air travel round trip Abeid Amani Karume International Airport to Pemba Airport as of 2/15/2021",
+                                      "Lodging for Matt Clark at Hill View Guest House, Wete Town, Pemba Island for 50 days @ 13/day. ",
+                                      "Payment for interpreter to assist with community interviews. Interpreter will be hired from Community Forests Pemba staff.", "Language tutoring for Matt Clark. Tutor will be coordinated by Community Forests Pemba.", "Compensation for community members who participate in qualitative interviews.", "Transportation in Pemba including gasoline for motorbike and various taxi travel."," " ))
+
+colnames(budgVars)[2]<-"Amount (USD)"
+
+kbl(budgVars,format="latex", caption = "Project budget and justification.",escape=F,booktabs = T) %>% 
+  kableExtra::kable_styling(latex_options = c("striped","hold_position"), font_size = 12)%>%
+  #kable_classic_2(full_width=T)%>% 
+row_spec(0,bold=TRUE)%>%
+    column_spec(1, width = "10em")%>%
+    column_spec(2, width = "4em")%>%
+  column_spec(3, width = "27em")
+  
+  
+
+```
 
 
 
 
-
-
-\includepdf[pages={-}]{CURRICULUMVITAE.pdf}
+\includepdf[pages={-}]{AbbreviatedCURRICULUMVITAE.pdf}
 
 
 \newpage
 
 \includepdf[pages={-}]{CFP_Letter.pdf}
+
 
 \newpage
 
