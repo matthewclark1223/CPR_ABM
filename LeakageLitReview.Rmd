@@ -1,0 +1,64 @@
+---
+title: "Leakage Literature Review"
+author: "Matt Clark"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+fontsize: 12pt
+link-citations: yes
+csl: DissertationProposal/AMJBot.csl
+subtitle: 
+bibliography: [Anthroposphere2.bib]
+---
+
+**Review Papers (no order)**
+
+Overview of leakage. Calls for better monitoring of leakage and conservation outcomes both spatially and temporally [@ewers_estimates_2008].
+
+Gives definition of leakage compared to other spillovers such as “indirect land use change.” General review of spillover processes [@meyfroidt_focus_2020].
+
+Little is known about the predictability of leakage and blockage. Study looked at 3,398 protected areas globally to assess rates of both. 11.8% show leakage while 54.8% show blockage. GDP is the strongest predictor of whether or not blockage occurs [@fuller_first_2019].  
+
+Conservation via protected areas is increasing worldwide in terms of both the number and size of areas. Spillovers of all kinds are increasing with them [@pfaff_spillovers_2017]
+
+REDD+ takes advantage of market globalization and the fact that land conservation is cheaper in some places compared to others to leverage the greatest conservation potential with the conservation funding available. Leakage plagues REDD+ projects globally and is therefore a major problem for global efforts to reduce greenhouse gasses [@atmadja_review_2012]
+
+Leakage is shifting from an issue of local land use displacement to global displacement resulting from conservation interventions. Theory suggests that this might lead to spatial matching of land use and productivity potential. In practice we see high income to low income transitions where low income countries have worse agricultural technology and require more area to produce the same amount of resources, resulting in a net loss of forest cover [@meyfroidt_globalization_2013].
+
+Leakage is commonly viewed as a failing of governance, but this is not necessarily true. In Vietnam, evidence suggests that deforestation leakage info adjacent Cambodia was planned. Leakage is a feature of policy/governance and often constitutes a choice rather than a failing [@bastos_lima_leakage_2019].
+
+Protected areas, payments for ecosystem services, and technicological (mostly agricultural) advances are intended to mitigate habitat loss. Leakage and selection biases threaten the efficacy of protected areas and payments for ecosystem services. When multiple substitutable forest products exist such as various forms of timber or palm oil/ rapeseed, increased productivity (technological advance) in one may actually lead to a net increase in deforestation as demand for the cheaper product decreases demand for the more expensive product and that dedicated land may not be converted [@lim_perverse_2017].
+
+
+**Case Studies (no order)**
+
+An assessment of protected areas in East Africa’s evergreen forests showed that leakage increased commensurate with the efficacy of an area's protections within its boundaries. Social factors were also important in predicting deforestation rates [@pfeifer_protected_2012].  
+
+In the world’s tropical and subtropical forests, an analysis of 120 protected areas showed that 55 experienced leakage. In 78.2% of those 55 protected areas, the forest conserved by the protected area was not enough to offset the deforestation in the buffer region [@ford_deforestation_2020]. 
+
+Authors present a method for better monitoring leakage through global trade [@godar_towards_2015].
+
+The Soybean Moratorium and zero-deforestation beef agreements halved deforestation in the Brazilian Amazon, but resulted in a nearly seven times increase in deforestation in the neighboring biome from legally converted soybean fields and rangeland [@dou_spillover_2018].
+
+Global analysis of leakage via global trade shows that approximately a third of forest gains in countries with net forest increases are offset by those countries increasing demand for forest commodities from other countries [@pendrill_deforestation_2019]. 
+
+Land prices in Brazil predict future deforestation from leakage following land-use policies aimed at forest conservation. Conservation policies cause adjacent lands to become more valuable and more likely to get deforested [@miranda_land_2019]
+
+From 2000-2016, Cambodia lost approximately 22% of all forest cover. Leakage resulting from conservation focused land concessions may have contributed to up to 10% of this loss [@magliocca_direct_2020].
+
+Theoretical model of leakage processes shows that opportunistic conservation is more likely to result in leakage than when conservation is pursued strategically. Model is validated empirically with data from Kalimantan Indonesia (Borneo) [@renwick_reserves_2015]. 
+
+From 2009-2016, researchers looked at the effects of oil palm certification programs in Indonesian Borneo (Kalimantan). Comparisons against counterfactuals show that certification programs increased forest cover compared to business as usual, but the outcomes were weakened by leakage [@heilmayr_deforestation_2020]. 
+
+Vietnam has experienced net forest growth in recent years. Up to 40% of this forest regrowth however, is offset by leakage. Woodlots mitigated much of the potential leakage effects [@meyfroidt_forest_2009]. 
+
+Parks created for eco-tourism in Costa Rica show mixed outcomes of leakage. Areas close to roads were much more likely to exhibit leakage than those which are distant from roads. Suggests preexisting deforestation pressure plays an important role [@robalino_heterogeneous_2017].
+
+In a temporal spillover, land set aside as part of the Conservation Reserve Program in the United States was 25% more likely to be converted to agriculture after the program ended than were other comparable lands [@jacobson_temporal_2014].
+
+Positive conservation effects resulting from zero-deforestation cattle agreements in the Brazilian Amazon are “washed out” by leakage [@alix-garcia_forest_2017].
+
+Land conservation in the Peruvian Amazon is largely working, but is somewhat mitigated by leakage [@oliveira_land-use_2007].
+
+Empirically grounded in the $6 billion spent on land acquisition by the Nature Conservancy on land acquisition in the last 50 years, authors create an economic model showing that buying up land for conservation can increase the value and deforestation pressure on adjacent lands [@armsworth_land_2006].

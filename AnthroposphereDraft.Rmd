@@ -1,0 +1,45 @@
+--- 
+title: Anthroposphere
+author: "Matt Clark"
+date: "`r Sys.Date()`"
+output:
+  word_document: default
+  html_document: default
+fontsize: 12pt
+link-citations: yes
+csl: HCRI_Grant/pnas.csl
+subtitle: 
+bibliography: [DissertationProposal/References/Dissertationproposal.bib,DissertationProposal/References/NonZoteroRefs.bib,HCRI_Grant/Refs.bib,Anthroposphere.bib, Anthroposphere2.bib]
+---
+Extreme climatic events like the hurricane that devastated Puerto Rico in 2017 and the recent Texas snowpocalypse garner much of the public attention when it comes to the risks of climate change. While it is true that these events are concerning and becoming more frequent, the ever-worsening press of continuous impacts such as sea level rise, rangeland conifer encroachment, and coastal erosion are much more disastrous for human livelihoods [@easterling2000climate; @beniston2004extreme]. The livelihoods which are most impacted by these changes are those of the world's poorest and most vulnerable communities — the populations least responsible for greenhouse gas emissions [@patz2007climate; @voelkel2018assessing; @green2009disproportionate]. While the global economy is slowly moving away from fossil fuels and toward renewable energy sources, the climatic shifts we are seeing today are projected to worsen in frequency and severity for the foreseeable future [@IPCC2007climate]. 
+
+Our best insurance policy against the worsening impacts of climate change is unequivocally to conserve a broad and diverse array of natural areas [@isbell2015biodiversity; @loreau2001biodiversity; @oliver2015biodiversity; @lloret2012extreme]. Mangrove forests for example, buffer communities against storms and floods, hillside vegetation reduces the risk of landslides, and most importantly, ecosystems suck up atmospheric carbon [@spiker2003national; @alongi2008mangrove]. 
+
+Luckily for us, much like the way a retiree might live off the interest of a 401(k) account without impacting the principal, these systems regenerate themselves even while we skim off the top. Actually, until approximately 50 years ago, the overall rate at which our natural resources were growing back exceeded the rate at which we were consuming and degrading them [@network2019global]. Today however, on average we degenerate our natural areas at a rate 56% faster than they regenerate — we are tapping into the principal [@network2020global].
+
+With this recognition, conservation has emerged as a major focus for political, private, and individual agendas, with $24 billion invested in conservation worldwide annually [@waldron2020protecting]. Both the number and size of geographic areas designated for conservation is skyrocketing each year [@IUCN_Protect]. The crown jewel of these conservation efforts are the world’s 36 biodiversity hotspots. Biodiversity hotspots are areas that have thousands of species found nowhere else on earth and, by definition, have lost at least 70%  of their native vegetation. The deluge of conservation dollars into these areas, which make up just 2.4% of earth’s land surface, is juxtaposed against the fact that they largely overlap with the world’s poorest, most rural communities. Thus, the day-to-day needs of local communities and Western conservation projects inevitably collide. 
+
+Conservation is a game of spillovers. Marine protected areas for example are intended to give safe harbor to fish populations where they can multiply, leave, and increase yields for fishing boats far outside their boundaries [@marshall2019underestimating]. On land, parks have up front costs to establish, but quickly bolster booming recreation and tourism economies [@koontz2017visitor]. Social and ecological systems are inherently interwoven, especially in biodiversity hotspots where many people rely directly on their environment to meet their daily needs. It may come as no surprise that these spillovers, or consequences of conservation interventions outside the initial geographic and temporal scope of the project, are not always beneficial for local people or the environment.  
+
+One particularly wicked spillover in biodiversity hotspots is leakage. Leakage occurs when interventions limit harvest or land development inside a specific geographic area, but that harvest pressure is only displaced onto adjacent landscapes, resulting in no net reduction of deforestation. Leakage is a perennial problem in land conservation. It has attenuated efforts to slow the spread of oil palm in Borneo, limit agricultural expansion in the United States, establish an eco-tourism economy in Costa Rica, reverse deforestation in Cambodia and Vietnam, and curb the high profile land conversion in the Peruvian and Brazilian Amazon [@heilmayr_deforestation_2020; @jacobson_temporal_2014; @robalino_heterogeneous_2017; @magliocca_direct_2020; @meyfroidt_forest_2009; @oliveira_land-use_2007; @alix-garcia_forest_2017]. 
+
+It is well documented that leakage and other spillovers are increasing in frequency and magnitude along with conservation interventions worldwide [@pfaff_spillovers_2017]. While these increases inherently make leakage difficult to predict and document, climatic instability is also making it more difficult to predict the long term and large scale outcomes of conservation interventions. The last half-century of human disturbance has caused regime shifts in ecosystems globally and will continue to do so. This underlying base rate of environmental change, combined with the interconnectedness of ecological and social systems causes conservation interventions to be fraught with unintended consequences. 
+
+Communities living in biodiversity hotspots have a two-fold lived experience of climate change. As previously mentioned, these communities are among the least responsible for greenhouse gas emissions, but bear the brunt of its consequences such as hurricanes and agricultural salinization. An underappreciated impact of climate change on these communities however, is the ever increasingly forceful onslaught of Western conservation interventions. Conservation happens where land is cheap, and land is cheap near the world’s most vulnerable communities. Thus, corporate net-zero promises and the privatization of a carbon credit market are drastically altering the livelihoods of some of the world’s poorest people with limited knowledge of the large scale or long term social, or even environmental, impacts. 
+
+
+“Unfortunately, anecdotal evidence suggests that resentment is mounting amongst residents towards the train of conservation projects that have failed to deliver any sustained economic compensation or ecological beneﬁts.” -Dr. Jeff Andrews, anthropologist studying conservation impacts in Pemba Island, Tanzania 
+
+Conservation does not have to be a shot in the dark. Research has repeatedly demonstrated that local communities can better predict the outcomes of conservation interventions than can foreign practitioners [@halbrendt2014differences; @agrawal1999enchantment]. Community-based conservation initiatives are also highly effective in catalyzing the behavioral changes required for most interventions to be effective.  
+
+Instead of implementing conservation interventions directly, the conservation dollars spent on biodiversity hotspots would go much further to support and monitor community-based conservation projects. In fact, expanding monitoring is among the greatest contributions that Western conservation funding can make to protecting the world’s natural landscapes. Conservation interventions have effects on the landscape and on communities far outside of their initial geographic and temporal scope. Monitoring these effects is the first step to understanding and addressing the leakage which plagues current conservation efforts. 
+
+Under our current trajectory, global biodiversity hotspots are poised to become a graveyard of trialed and abandoned conservation interventions. As with all impacts of climate change, it is the world’s most vulnerable communities who are paying the price. Implementing meaningful change in complex social-ecological landscapes is always going to be difficult, but we have ways to make it better. We need to greatly expand the scope with which we monitor the outcomes of these projects and let communities themselves take the wheel. 
+
+\newpage
+#Work Cited
+
+
+
+
+

@@ -249,13 +249,13 @@ FillData%<>%mutate(PercProtected=round(PercProtected,digits=1))%>%mutate(Resourc
 
 
 for (i in 1:nrow(FillData)){
-  abmnp(Runs=3,Individuals = 100,TotalCarryingCapacity=10000,
+  abmnp(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
       StartPercCarryingCapacity = 1.00,
       PercProtected = FillData[i,]$PercProtected, 
       ProbOfMobility = FillData[i,]$ResourceMobility,CoopPercStart=1.0, 
       LearningStrategy = "Success Bias",
       TimeSteps=30,
-      ResourceRegenerationPerTimeStep=1.05,
+      ResourceRegenerationPerTimeStep=1.20,
       harvestMax=25)
   FillData[i,3]<-apply(FullOutput$meanPayoff[30,1:3],1,mean)  
   print(paste0(i/nrow(FillData)*100,"%"))
@@ -273,7 +273,7 @@ ggplot(data=FillData, mapping=aes(x=PercProtected, y=ResourceMobility, fill= mea
   scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
   scale_y_continuous( labels = scales::percent,expand = c(0, 0))+
   labs(fill = "Average Harvest\nPayoff")+
-  xlab("Percent Protected")
+  xlab("Percent in Conservation Area")
 
 
 
@@ -309,7 +309,7 @@ ggplot(data=FillData2, mapping=aes(x=PercProtected, y=ResourceMobility, fill= me
   scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
   scale_y_continuous( labels = scales::percent,expand = c(0, 0))+
   labs(fill = "Average Harvest\nPayoff")+
-  xlab("Percent Protected")
+  xlab("Percent in Conservation Area")
 
 
 FillData<-data.frame(PercProtected=seq(0.1,1,0.1),HarvestMax=seq(12,30,2))
@@ -344,7 +344,7 @@ ggplot(data=FillData, mapping=aes(x=PercProtected, y=HarvestMax, fill= meanPayof
    scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
   scale_y_continuous( breaks=c(12,16,20,24,28),expand = c(0, 0))+
   labs(fill = "Average Harvest\nPayoff")+
-  xlab("Percent Protected")
+  xlab("Percent in Conservation Area")
 ###
 
 FillData<-data.frame(PercProtected=seq(0.1,1,0.1),HarvestMax=seq(12,30,2))
@@ -379,4 +379,4 @@ ggplot(data=FillData, mapping=aes(x=PercProtected, y=HarvestMax, fill= meanPayof
   scale_x_continuous(labels = scales::percent, expand = c(0, 0))+
   scale_y_continuous( breaks=c(12,16,20,24,28),expand = c(0, 0))+
   labs(fill = "Average Harvest\nPayoff")+
-  xlab("Percent Protected")
+  xlab("Percent in Conservation Area")
