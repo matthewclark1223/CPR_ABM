@@ -69,21 +69,37 @@ plot(z)
 plot(z*(def2*0.01))
 
 #now run the look
-model <- function(r, Time) { #this is the very simple model 
+Cov_model <- function(r, Time) { #this is the very simple model 
   outputs <- vector("list", Time) #list of length 'time'
   outputs[[1]]<-r #the first object in the list is the initialization raster
-  for(t in 2:Time) { 
+  for(t in 2:11) { #2001 - 2010
     
     r_old<-outputs[[t-1]] #raster from last time step is now the thing getting things done to it
-    new_cov<-r_old-(r_old*(def2*0.01)) # 
-    new_cov[z<0]<-0 #don't let % cover go below 0
-    outputs[[t]] <-new_cov
+    new_cov<-r_old+(r_old*(def1*0.01)) # deforestation rates before 2010 from collins 2021 
+    p<-new_cov>100
+    new_cov[p]<-100 #dont let % cover go above 100
+    
+    p<-new_cov<0
+    new_cov[p]<-0 #dont let % cover go below 0
+    outputs[[t]] <-new_cov}
+    
+    
+    for(t in 12:19) { #2011 - 2019
+      
+      r_old<-outputs[[t-1]] #raster from last time step is now the thing getting things done to it
+      new_cov<-r_old+(r_old*(def2*0.01)) #deforestation rates after 2010 from collins 2021 
+      p<-new_cov>100
+      new_cov[p]<-100 #dont let % cover go above 100
+      
+      p<-new_cov<0
+      new_cov[p]<-0 #dont let % cover go below 0
+      outputs[[t]] <-new_cov
     
   }
   return(outputs) #return rasters as list
 }
 
-Mod <- model(r = z, Time = 5) #run the model, create 5 rasters
+Mod <- Cov_model(r = z, Time = 19) #run the model, create rasters for each year. Probably dont need 18 as input since it's fixed
 
 
 ### 3 #################################################
@@ -91,6 +107,14 @@ Mod <- model(r = z, Time = 5) #run the model, create 5 rasters
 
 #plot(stack(dumMod) ) #this is a simpler, but worse option that the code below
 
-levelplot(stack(Mod) )  #make a raster stack and plot
 da<-stack(Mod)
+names(da)<-paste0("Year.",as.character(2000:2018))
+#levelplot(da)
 animate(da)
+
+
+
+
+
+
+

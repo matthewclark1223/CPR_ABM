@@ -52,4 +52,18 @@ fun(4)
   
 
 
+ggplot() + geom_sf(data = Pemba, aes(fill=ChangeYearlyRateForestLoss_FromCofma))+
+  theme_bw() +theme( panel.background = element_rect(fill = "white"),panel.grid.major = element_blank(),
+                     axis.text=element_blank(), axis.ticks = element_blank())+
+  annotation_scale(location = "bl", width_hint = 0.3) +
+  annotation_north_arrow(location = "br", which_north = "true", 
+                         pad_x = unit(0.1, "in"), pad_y = unit(0.05, "in"), 
+                         style = north_arrow_fancy_orienteering)+
+  scale_fill_gradient2(low = "#8c510a", high = "#01665e",trans = 'reverse', mid = "#f6e8c3" ,na.value = "#bdbdbd",name="Change in Annual\nForest Cover Loss",
+                       breaks=c(-3,0,5), labels = function(x) {ifelse(x>=0,paste0("+",x,"%"),paste0(x,"%"))})
+
+
+
+
+
 
