@@ -23,7 +23,7 @@ R0 = 0
 # Assign transmission and pathogen-induced death/recovery rates:
 beta = 0.60 #rate of infection
 gamma = 0.10 #rate of recovery
-chi = 0.95 # rate at which recovered individuals are added back to the susceptible group CHANGE to 1 tp get main dynamic of interest!!
+chi = 0.05 # rate at which recovered individuals are added back to the susceptible group CHANGE to 1 tp get main dynamic of interest!!
 
 # We will use the package deSolve to integrate, which requires certain data structures.
 # Store parameters and initial values
@@ -73,8 +73,8 @@ legend(x = 30, y = 0.8, legend = c("Susceptible", "Infected"),
        col = c("black", "red"), lty = c(1, 1), bty="n")
 
 
-sample_days = 15 # number of days sampled throughout the epidemic. changing this around
-sample_n = 1000 # number of host individuals sampled per day
+sample_days = 20 # number of days sampled throughout the epidemic. changing this around
+sample_n = 100 # number of host individuals sampled per day
 
 # Choose which days the samples were taken. 
 # Ideally this would be daily, but we all know that is difficult.

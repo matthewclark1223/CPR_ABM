@@ -1,0 +1,287 @@
+#####Scheduling
+#Establish a degraded resource
+#set some of that into a conservation area
+#Establish a population
+#Some % of the population buys into the conservation project (low %)
+#That % gets a payment every time step..maybe once?...maybe every 12 time steps?
+#People not enrolled harvest from the entire landscape
+#people enrolled harvest from just the un-conserved area. 
+#At the end of each time step, everyone learns via success biased imitation (equation from equifinality paper)
+#People either enroll of unenroll
+#Measure the number of people enrolled/unenrolled
+#Measure the % CC of the resource
+
+#repeat for 1:t
+
+#####
+abm<-function(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  
+  TotalCarryingCapacity=10000, #total available resource units
+  
+  StartPercCarryingCapacity = 0.1, #amount of resources available in the landscape at the start in proportion to CC
+  
+  PaymentAmount = 5, 
+  
+  
+  PercProtected=0.3, #percent of the total resource that's in a protected area
+  
+  EnrollPercStart=0.05, #percent of individuals who start by following the rules at t0
+  
+  LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
+  
+  BiasStregnth = 1.5,
+  
+  TimeSteps=20,
+  ResourceRegenerationPerTimeStep=1.15,
+  harvestMax=25,
+  ProbOfMobility=0.5){
+  
+  ## Set parameters
+  PercWorking= 1-PercProtected #percent of resource in a working landscape
+  TotalCCResourceProtected=PercProtected*TotalCarryingCapacity #total resource units in carrying capacity of protected area
+  TotalCCResourceWorking=PercWorking*TotalCarryingCapacity #total resource units in carrying capacity of working area
+  StartResourceWorking = TotalCCResourceWorking*StartPercCarryingCapacity #number of resources in the working landscape starting
+  StartResourceProtected = TotalCCResourceProtected*StartPercCarryingCapacity #number of resources in the protected landscape starting
+  EnrollNumStart= as.integer(EnrollPercStart*Individuals) #number of individuals cooperating fully at t0
+  NotEnrollNumStart= Individuals - EnrollNumStart#number of individuals defecting at t0
+  Enrolled = c(rep(1,EnrollNumStart),rep(0,NotEnrollNumStart))#enrolled or not
+  
+  PercTimeProtected = PercProtected*(1-Enrolled) #percent of their foraging time each indv spends in the PA. For those not enrolled this is = the the % protected..Treat whole landscape equally
+  PercTimeWorking = (1-PercTimeProtected)#percent of their foraging time each indv spends in the working landscape
+  
+  agents<-data.frame(Enrolled,
+                     PercTimeProtected,
+                     PercTimeWorking,
+                     PayoffProtectedLastTime = rep(NA,Individuals),
+                     PayoffWorkingLastTime= rep(NA,Individuals))   #dataframe to be filled with initial payoffs
+  
+  ProtectPerDefect<-ifelse(NotEnrollNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/NotEnrollNumStart)) #protected area resources per each individual harvesting there
+  WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
+
+  
+  for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
+    agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
+    agents[i,5]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
+    agents[i,5]<-ifelse(agents[i,5]>=harvestMax,harvestMax,agents[i,5])
+    agents[i,4]<- ifelse(agents[i,5]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
+    agents[i,4]<-ifelse(agents[i,4]>harvestMax-agents[i,5],harvestMax-agents[i,5],agents[i,4])
+  } #see what they get from the working landscape first
+  
+
+  agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
+  
+  
+  output<-data.frame(timeStep = 1:TimeSteps, #create df to fill with the outputs from each time step
+                     Enrolled = rep(NA,TimeSteps),
+                     NumResourcesProtect = rep(NA,TimeSteps),
+                     percCCProtect = rep(NA,TimeSteps),
+                     NumResourcesWorking = rep(NA,TimeSteps),
+                     percCCWorking = rep(NA,TimeSteps),
+                     meanPayoff = rep(NA,TimeSteps))
+  
+  output$Enrolled[1] <- sum(agents$Enrolled)  #fill it with the outouts from time 1
+  output$NumResourcesProtect[1] <- StartResourceProtected-sum(agents$PayoffProtectedLastTime) 
+  output$NumResourcesWorking[1] <- StartResourceWorking-sum(agents$PayoffWorkingLastTime) 
+  output$percCCProtect[1]  <- output$NumResourcesProtect[1]/TotalCCResourceProtected
+  output$percCCWorking[1]  <- output$NumResourcesWorking[1]/TotalCCResourceWorking
+  output$meanPayoff[1]  <- mean(agents$PayoffTotalLastTime) 
+  
+  
+  for (t in 2:TimeSteps){  #run the abm for all of the time steps
+    
+    #choose new strategy  
+    
+    LastTimeAgents<-agents  #save the agents from the previous time to a new df
+    
+    if(sum(LastTimeAgents$Enrolled)==Individuals){ #if there's no one NOT enrolled, unenroll someone at random
+      LastTimeAgents[sample(1:Individuals,1),"Enrolled"]<-0
+    }
+    
+    if(sum(LastTimeAgents$Enrolled)==0){ #if there's no one  enrolled, enroll someone at random
+      LastTimeAgents[sample(1:Individuals,1),"Enrolled"]<-1
+      
+    }
+    
+    
+    
+    
+    #give payments to enrolled individuals
+    LastTimeAgents$PayoffTotalLastTime<-LastTimeAgents$PayoffTotalLastTime+(PaymentAmount*LastTimeAgents$Enrolled)
+    
+    succLearn<-function(agentdf){
+      #meanPayoffEnroll
+      if(sum(agentdf$Enrolled)==0){
+        payMeanEnrl<-0}
+      if(sum(agentdf$Enrolled)!=0){
+      payMeanEnrl<-mean(agentdf[agentdf$Enrolled==1,]$PayoffTotalLastTime)}
+      
+      #meanPayoffUnenroll
+      if(sum(agentdf$Enrolled)==nrow(agentdf)){
+        payMeanNOTEnrl<-0}
+      if(sum(agentdf$Enrolled)!=nrow(agentdf)){
+        payMeanNOTEnrl<-mean(agentdf[agentdf$Enrolled==0,]$PayoffTotalLastTime)} 
+      
+      probEnroll<-exp(BiasStregnth*payMeanEnrl)/
+         (exp(BiasStregnth*payMeanEnrl)+exp(BiasStregnth*payMeanNOTEnrl))
+        
+        agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
+      return(agentdf$Enrolled)
+    }
+    
+    #success biased leaning accross the whole group
+    #NewEnroll<-succLearn(LastTimeAgents)
+    
+    #within small groups
+    #NewEnroll<-rep(NA,Individuals)
+    #groups<-seq(1,Individuals,5)
+    #for(j in groups){
+    #group<-LastTimeAgents[j:(j+4),]      
+    #groupEnroll<-succLearn(group)  
+    #NewEnroll[j:(j+4)]<-groupEnroll
+    #}
+    
+    #BELOW NEEDS TO BE DOUBLE CHECKED
+    NewEnroll<-rep(NA,Individuals)
+    groups<-split(sample(1:Individuals),f=1:10)
+    
+
+    for(j in 1:length(groups)){
+      group<-LastTimeAgents[groups[[j]],]      
+      groupEnroll<-succLearn(group)  
+      NewEnroll[groups[[j]]]<-groupEnroll
+    }
+    
+  
+    
+    PercTimeProtected = PercProtected*(1-NewEnroll) #percent of their foraging time each indv spends in the PA. For those not enrolled this is = the the % protected..Treat whole landscape equally
+    PercTimeWorking = (1-PercTimeProtected)
+    
+    
+    agents<-data.frame(Enrolled=NewEnroll,
+                       PercTimeProtected,   #new agent dataframe to fill
+                       PercTimeWorking,
+                       PayoffProtectedLastTime = rep(NA,Individuals),
+                       PayoffWorkingLastTime= rep(NA,Individuals)) 
+    
+    
+    #New resource pools to pull from
+    #Resources over the CC move with probability 'ProbOfMobility'
+    
+    NewProtectedResourcesTotal<-round(output$NumResourcesProtect[t-1] * ResourceRegenerationPerTimeStep,digits=0)
+    ProtectedResourcesOverCC<-round(NewProtectedResourcesTotal-TotalCCResourceProtected,digits=0)
+    ProtectedResourcesOverCC<- ifelse(ProtectedResourcesOverCC<=  0,0, ProtectedResourcesOverCC)
+    
+    NewWorkingResourcesTotal<-round(output$NumResourcesWorking[t-1] * ResourceRegenerationPerTimeStep,digits=0)
+    WorkingResourcesOverCC<-round(NewWorkingResourcesTotal-TotalCCResourceWorking,digits=0)
+    WorkingResourcesOverCC<- ifelse(WorkingResourcesOverCC<=  0,0, WorkingResourcesOverCC)
+    
+    
+    ##Resource mobility
+    
+    
+    #all resources mobile
+    #LeaveWorking<-rbinom(1,NewWorkingResourcesTotal,ProbOfMobility) #number of resources which leave the protected area
+    #LeaveProtected<-rbinom(1,NewProtectedResourcesTotal,ProbOfMobility)#number of resources which leave the working area
+    
+    #make it so only new resources can leave 
+    LeaveWorking<-rbinom(1, WorkingResourcesOverCC,ProbOfMobility) #number of resources which leave the protected area
+    LeaveProtected<-rbinom(1,ProtectedResourcesOverCC,ProbOfMobility)#number of resources which leave the working area
+    
+    
+    #do the accounting on entering vs leaving individuals
+    NewWorkingResourcesTotal<-NewWorkingResourcesTotal+LeaveProtected
+    NewProtectedResourcesTotal<-NewProtectedResourcesTotal+LeaveWorking
+    
+    #Make sure they dont go over the CC again
+    NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
+    NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+    
+    
+    ##calculate available resources per individual
+    if(nrow(agents[agents$PercTimeProtected>0,])==0){ProtectPerDefect<-NewProtectedResourcesTotal}
+    if(nrow(agents[agents$PercTimeProtected>0,])!=0){ProtectPerDefect<-as.integer(NewProtectedResourcesTotal/nrow(agents[agents$PercTimeProtected>0,]))}
+    WorkingPerTotal<-as.integer(NewWorkingResourcesTotal/Individuals)
+    
+    
+    for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
+      agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
+      agents[i,5]<-rbinom(1,WorkingPerTotal,agent2$PercTimeWorking)
+      agents[i,5]<-ifelse(agents[i,5]>=harvestMax,harvestMax,agents[i,5])
+      agents[i,4]<- ifelse(agents[i,5]< harvestMax,rbinom(1,ProtectPerDefect,agent2$PercTimeProtected),0) #if they didnt get the max harvest, then 
+      agents[i,4]<-ifelse(agents[i,4]>harvestMax-agents[i,5],harvestMax-agents[i,5],agents[i,4])
+    } #see what they get from the working landscape first
+    
+    
+    
+    agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
+    
+    output$Enrolled[t] <- sum(agents$Enrolled)  #fill it with the outouts from time 1
+    output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
+    output$NumResourcesWorking[t]  <- NewWorkingResourcesTotal-sum(agents$PayoffWorkingLastTime)
+    output$percCCProtect[t]  <- output$NumResourcesProtect[t]/TotalCCResourceProtected
+    output$percCCWorking[t]  <- output$NumResourcesWorking[t]/TotalCCResourceWorking
+    output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
+    
+  }
+  
+  
+  p1<-ggplot(data=output,aes(x=timeStep))+
+    geom_line(aes(y=percCCProtect),size=3,color="#b2df8a")+
+    geom_line(aes(y=percCCWorking),size=3,color="#1f78b4")+
+    ylim(0, 1.0)+theme_classic()+ylab("Percent Carrying Capacity")+
+    scale_colour_manual(name = 'Area', 
+                        values =c('#b2df8a'='#b2df8a','#1f78b4'='#1f78b4'), labels = c('Protected Area','Working Landscape'))+
+    ggtitle("Resource Degredation")
+  
+  
+  p2<-ggplot(data=output,aes(x=timeStep))+
+    geom_line(aes(y=meanPayoff),size=3,color="#993404")+
+    theme_classic()+ylab("Resource Units")+ylim(0,harvestMax+1)+
+    ggtitle("Mean Individual Payoff")
+  
+  p3<-ggplot(data=output,aes(x=timeStep))+
+    geom_line(aes(y=Enrolled),size=3,color="#756bb1")+
+    theme_classic()+ylab("Mean Percent Time in Working landscape")+
+    ggtitle("Number Enrolled")
+  
+  x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
+  
+  
+  return(output) 
+}
+
+
+
+abm()
+
+
+
+abm(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  
+  TotalCarryingCapacity=100000, #total available resource units
+  
+  StartPercCarryingCapacity = 0.1, #amount of resources available in the landscape at the start in proportion to CC
+  
+  PaymentAmount = 2, 
+  
+  
+  PercProtected=0.3, #percent of the total resource that's in a protected area
+  
+  EnrollPercStart=0.05, #percent of individuals who start by following the rules at t0
+  
+  LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
+  
+  BiasStregnth = 1.01,
+  
+  TimeSteps=50,
+  ResourceRegenerationPerTimeStep=1.25,
+  harvestMax=35,
+  ProbOfMobility=0.7)
+
+
+
+
+
+
