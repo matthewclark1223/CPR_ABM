@@ -12,7 +12,7 @@
 #Measure the % CC of the resource
 
 #repeat for 1:t
-
+library(ggplot2)
 #####
 abm<-function(#Specified parameters
   Individuals=100, #number of total resource users in a population
@@ -30,7 +30,7 @@ abm<-function(#Specified parameters
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
   
-  BiasStregnth = 1.5,
+  BiasStrength = 1.5,
   
   TimeSteps=20,
   ResourceRegenerationPerTimeStep=1.15,
@@ -122,28 +122,23 @@ abm<-function(#Specified parameters
       if(sum(agentdf$Enrolled)!=nrow(agentdf)){
         payMeanNOTEnrl<-mean(agentdf[agentdf$Enrolled==0,]$PayoffTotalLastTime)} 
       
-      probEnroll<-exp(BiasStregnth*payMeanEnrl)/
-         (exp(BiasStregnth*payMeanEnrl)+exp(BiasStregnth*payMeanNOTEnrl))
+      probEnroll<-exp(BiasStrength*payMeanEnrl)/
+         (exp(BiasStrength*payMeanEnrl)+exp(BiasStrength*payMeanNOTEnrl))
         
         agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
       return(agentdf$Enrolled)
     }
     
-    #success biased leaning accross the whole group
-    #NewEnroll<-succLearn(LastTimeAgents)
     
-    #within small groups
-    #NewEnroll<-rep(NA,Individuals)
-    #groups<-seq(1,Individuals,5)
-    #for(j in groups){
-    #group<-LastTimeAgents[j:(j+4),]      
-    #groupEnroll<-succLearn(group)  
-    #NewEnroll[j:(j+4)]<-groupEnroll
-    #}
     
-    #BELOW NEEDS TO BE DOUBLE CHECKED
+    
+    if(LearningStrategy == "Success Bias"){
+      
+      #success biased leaning accross the whole group
+      #NewEnroll<-succLearn(LastTimeAgents)
+    #success biased learning within small groups
     NewEnroll<-rep(NA,Individuals)
-    groups<-split(sample(1:Individuals),f=1:10)
+    groups<-split(sample(1:Individuals),f=1:25)
     
 
     for(j in 1:length(groups)){
@@ -152,7 +147,52 @@ abm<-function(#Specified parameters
       NewEnroll[groups[[j]]]<-groupEnroll
     }
     
+  } #end success biased learning
+    
+  ###OLD one from Barrett. This does not model disease dynamics
+    #ConfLearn<-function(agentdf){
+      
+      
+      #probEnroll<-(length(which(agentdf$Enrolled==1)))^BiasStrength/
+        #((length(which(agentdf$Enrolled==1)))^BiasStrength+(length(which(agentdf$Enrolled==0)))^BiasStrength)
+      
+      #apply to ALL agents
+     # agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
+      
+      #apply to only unenrolled
+     # agentsdf$Enrolled<-ifelse(agentsdf$Enrolled == 0, rbinom(1,1, probEnroll),1)
+      
+      #return(agentdf$Enrolled)
+    #}
+    
+#BETTER implementation. disease spread
+    
+    
+    
+  #start conformist learning
+  if(LearningStrategy=="Conformist Bias"){
+    
+    spreadProb<-0.25 #0.25
+    recProb<-0.1 #0.01
+    
+    NewEnroll<-rep(NA,Individuals)
   
+    
+    for(a in 1:nrow(LastTimeAgents)){
+      thisagent<-LastTimeAgents[a,]
+      otheragents<-LastTimeAgents[-a,]
+      pairagent<-otheragents[sample(1:nrow(otheragents),1),]
+      if(thisagent$Enrolled == 1){    NewEnroll[a]<-rbinom(1,1,1-recProb)}
+      if(thisagent$Enrolled == 0){    NewEnroll[a]<-ifelse(pairagent$Enrolled ==1,
+                                                           rbinom(1,1,spreadProb),0 )}
+      
+    }
+    
+    
+    
+  }
+    
+  #end conformist learning
     
     PercTimeProtected = PercProtected*(1-NewEnroll) #percent of their foraging time each indv spends in the PA. For those not enrolled this is = the the % protected..Treat whole landscape equally
     PercTimeWorking = (1-PercTimeProtected)
@@ -252,36 +292,81 @@ abm<-function(#Specified parameters
 }
 
 
+set.seed(2) #whole group
+#set.seed(6) #small groups
 
-abm()
+deqdatPOS_Conform<-abm(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  TotalCarryingCapacity=100000, #total available resource units
+  StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
+  PercProtected=0.2, #percent of the total resource that's in a protected area
+  EnrollPercStart=0.01, #percent of individuals who start by following the rules at t0
+  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
+  BiasStrength = 1.05,
+  TimeSteps=100,
+  ResourceRegenerationPerTimeStep=1.15,
+  harvestMax=35,
+  ProbOfMobility=0.9)
 
+set.seed(1) #group level
+set.seed(1) #small groups
+deqdatNEG_Conform<-abm(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  TotalCarryingCapacity=100000, #total available resource units
+  StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
+  PercProtected=0.2, #percent of the total resource that's in a protected area
+  EnrollPercStart=0.5, #percent of individuals who start by following the rules at t0
+  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
+  BiasStrength = 1.05,
+  TimeSteps=100,
+  ResourceRegenerationPerTimeStep=1.15,
+  harvestMax=35,
+  ProbOfMobility=0.9)
 
-
-abm(#Specified parameters
+deqdat<-abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
   TotalCarryingCapacity=100000, #total available resource units
   
-  StartPercCarryingCapacity = 0.1, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.10, #amount of resources available in the landscape at the start in proportion to CC
   
-  PaymentAmount = 2, 
+  PaymentAmount = 3, 
   
   
-  PercProtected=0.3, #percent of the total resource that's in a protected area
+  PercProtected=0.25, #percent of the total resource that's in a protected area
   
-  EnrollPercStart=0.05, #percent of individuals who start by following the rules at t0
+  EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
   
-  BiasStregnth = 1.01,
+  BiasStrength = 1.05,
   
-  TimeSteps=50,
-  ResourceRegenerationPerTimeStep=1.25,
+  TimeSteps=100,
+  ResourceRegenerationPerTimeStep=1.15,
+  harvestMax=15,
+  ProbOfMobility=0.9)
+
+
+
+deqdat<-abm(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  
+  TotalCarryingCapacity=100000, #total available resource units
+  
+  StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
+  
+  PaymentAmount = 1, 
+  
+  
+  PercProtected=0.2, #percent of the total resource that's in a protected area
+  
+  EnrollPercStart=0.5, #percent of individuals who start by following the rules at t0
+  
+  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
+  
+  BiasStrength = 1.05,
+  
+  TimeSteps=100,
+  ResourceRegenerationPerTimeStep=1.15,
   harvestMax=35,
-  ProbOfMobility=0.7)
-
-
-
-
-
-
+  ProbOfMobility=0.9)
