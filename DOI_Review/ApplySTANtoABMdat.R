@@ -73,23 +73,45 @@ mod_time = stan_d$fake_ts
 df_sample = data.frame(sample_prop, sample_time)
 df_fit = data.frame(mod_median, mod_low, mod_high, mod_time)
 
+
+
+
 # Plot the synthetic data with the model predictions
 # Median and 95% Credible Interval
 
+mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                plot.title = element_text( size=18, color="black",face="bold"),
+                axis.title.x = element_text( size=18),
+                axis.title.y = element_text( size=18),
+                axis.text=(element_text(color="black", size=14)),
+                legend.title = element_text(colour="black", size=18),
+                legend.text = element_text( size = 14))
+
+
 ggplot(df_sample, aes(x=sample_time, y=sample_prop)) +
-  geom_point(col="black", shape = 19, size = 1.5) +
-  geom_point(data=deqdatPOS_Conform[sample_days+1:sample_n,],aes(x=timeStep,y=Enrolled/100),col="purple")+
+  #points
+  geom_point(aes(fill="Training"),col="black" ,shape = 21, size = 5,stroke=2) +
+  geom_point(data=deqdatPOS_Conform[sample_days+1:sample_n,],aes(x=timeStep,y=Enrolled/100,fill="Test"),
+             col="black" ,shape = 21, size = 5,stroke=2)+
+  
   # Error in integration:
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_median), color = "red") + 
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_high), color = "red", linetype=3) + 
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_low), color = "red", linetype=3) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_median), color = "black",alpha=0.5,size=1.5) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_high), color = "black",alpha=0.5, linetype="longdash",size=1) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_low), color = "black", alpha=0.5,linetype="longdash",size=1) + 
+  
+ 
   # Aesthetics
-  labs(x = "Time (days)", y = "Proportion Enrolled") + 
+  labs(x = "Time", y = "Proportion Enrolled") + 
   #scale_x_continuous(limits=c(0, 50), breaks=c(0,25,50)) +
   #scale_y_continuous(limits=c(0,1), breaks=c(0,.5,1)) +
+  
+  #legend
+  scale_fill_manual(name="",values=c("Training"="darkgrey","Test"="#3690c0"),
+                    guide = guide_legend(reverse = TRUE))+
+
   theme_classic() + 
   theme(axis.line.x = element_line(color="black"),
-        axis.line.y = element_line(color="black"))
+        axis.line.y = element_line(color="black"))+mytheme
 
 
 

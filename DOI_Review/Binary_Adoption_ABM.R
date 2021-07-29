@@ -131,6 +131,7 @@ abm<-function(#Specified parameters
     
     
     
+    #need to change this so agents can spend varying portions of time in each zone
     
     if(LearningStrategy == "Success Bias"){
       
@@ -138,7 +139,7 @@ abm<-function(#Specified parameters
       #NewEnroll<-succLearn(LastTimeAgents)
     #success biased learning within small groups
     NewEnroll<-rep(NA,Individuals)
-    groups<-split(sample(1:Individuals),f=1:25)
+    groups<-split(sample(1:Individuals),f=1:50)
     
 
     for(j in 1:length(groups)){
@@ -173,7 +174,7 @@ abm<-function(#Specified parameters
   if(LearningStrategy=="Conformist Bias"){
     
     spreadProb<-0.25 #0.25
-    recProb<-0.1 #0.01
+    recProb<-0.01 #0.1
     
     NewEnroll<-rep(NA,Individuals)
   
@@ -236,6 +237,10 @@ abm<-function(#Specified parameters
     #Make sure they dont go over the CC again
     NewWorkingResourcesTotal<-ifelse(NewWorkingResourcesTotal<=TotalCCResourceWorking,NewWorkingResourcesTotal,TotalCCResourceWorking)
     NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
+    
+    #dont let them alll the way to 0. if they do they won't regenerate
+    if(NewWorkingResourcesTotal==0){NewWorkingResourcesTotal<-as.integer(TotalCCResourceWorking*0.01)}
+    if(NewProtectedResourcesTotal==0){NewProtectedResourcesTotal<-as.integer(TotalCCResourceProtected*0.01)}
     
     
     ##calculate available resources per individual
@@ -323,50 +328,53 @@ deqdatNEG_Conform<-abm(#Specified parameters
   harvestMax=35,
   ProbOfMobility=0.9)
 
-deqdat<-abm(#Specified parameters
+set.seed(1)
+abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
-  TotalCarryingCapacity=100000, #total available resource units
+  TotalCarryingCapacity=10000, #total available resource units
   
-  StartPercCarryingCapacity = 0.10, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
   
-  PaymentAmount = 3, 
+  PaymentAmount = 1, 
   
   
-  PercProtected=0.25, #percent of the total resource that's in a protected area
+  PercProtected=0.20, #percent of the total resource that's in a protected area
   
   EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
   
-  BiasStrength = 1.05,
+  BiasStrength = 1.1,
   
   TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.15,
-  harvestMax=15,
-  ProbOfMobility=0.9)
+  ResourceRegenerationPerTimeStep=1.10, #.10
+  harvestMax=2, #20
+  ProbOfMobility=0.3)
 
 
 
-deqdat<-abm(#Specified parameters
+set.seed(2)
+#stable dynamics
+abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
-  TotalCarryingCapacity=100000, #total available resource units
+  TotalCarryingCapacity=10000, #total available resource units
   
-  StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
   
-  PaymentAmount = 1, 
+  PaymentAmount = 9, 
   
   
-  PercProtected=0.2, #percent of the total resource that's in a protected area
+  PercProtected=0.20, #percent of the total resource that's in a protected area
   
-  EnrollPercStart=0.5, #percent of individuals who start by following the rules at t0
+  EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
   
-  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
+  LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
   
-  BiasStrength = 1.05,
+  BiasStrength = 1.1,
   
   TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.15,
-  harvestMax=35,
-  ProbOfMobility=0.9)
+  ResourceRegenerationPerTimeStep=1.5, #.10
+  harvestMax=20, #20
+  ProbOfMobility=0.3)
