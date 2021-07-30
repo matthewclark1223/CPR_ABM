@@ -106,8 +106,6 @@ abm<-function(#Specified parameters
     
     
     
-    #give payments to enrolled individuals
-    LastTimeAgents$PayoffTotalLastTime<-LastTimeAgents$PayoffTotalLastTime+(PaymentAmount*LastTimeAgents$Enrolled)
     
     succLearn<-function(agentdf){
       #meanPayoffEnroll
@@ -196,6 +194,8 @@ abm<-function(#Specified parameters
   #end conformist learning
     
     PercTimeProtected = PercProtected*(1-NewEnroll) #percent of their foraging time each indv spends in the PA. For those not enrolled this is = the the % protected..Treat whole landscape equally
+    #PercTimeProtected = output$NumResourcesProtect[t-1]/(output$NumResourcesProtect[t-1]+output$NumResourcesWorking[t-1])
+    
     PercTimeWorking = (1-PercTimeProtected)
     
     
@@ -239,8 +239,8 @@ abm<-function(#Specified parameters
     NewProtectedResourcesTotal<-ifelse(NewProtectedResourcesTotal<=  TotalCCResourceProtected,NewProtectedResourcesTotal, TotalCCResourceProtected)
     
     #dont let them alll the way to 0. if they do they won't regenerate
-    if(NewWorkingResourcesTotal==0){NewWorkingResourcesTotal<-as.integer(TotalCCResourceWorking*0.01)}
-    if(NewProtectedResourcesTotal==0){NewProtectedResourcesTotal<-as.integer(TotalCCResourceProtected*0.01)}
+    if(NewWorkingResourcesTotal==0){NewWorkingResourcesTotal<-as.integer(TotalCCResourceWorking*0.05)}
+    if(NewProtectedResourcesTotal==0){NewProtectedResourcesTotal<-as.integer(TotalCCResourceProtected*0.05)}
     
     
     ##calculate available resources per individual
@@ -260,6 +260,9 @@ abm<-function(#Specified parameters
     
     
     agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
+    #give payments to enrolled individuals
+    agents$PayoffTotalLastTime<-agents$PayoffTotalLastTime+(PaymentAmount*agents$Enrolled)
+    
     
     output$Enrolled[t] <- sum(agents$Enrolled)  #fill it with the outouts from time 1
     output$NumResourcesProtect[t] <- NewProtectedResourcesTotal-sum(agents$PayoffProtectedLastTime) 
@@ -272,23 +275,25 @@ abm<-function(#Specified parameters
   
   
   p1<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=percCCProtect),size=3,color="#b2df8a")+
-    geom_line(aes(y=percCCWorking),size=3,color="#1f78b4")+
-    ylim(0, 1.0)+theme_classic()+ylab("Percent Carrying Capacity")+
-    scale_colour_manual(name = 'Area', 
-                        values =c('#b2df8a'='#b2df8a','#1f78b4'='#1f78b4'), labels = c('Protected Area','Working Landscape'))+
-    ggtitle("Resource Degredation")
+    geom_line(aes(y=percCCProtect,color="Protected"),size=3)+
+    geom_line(aes(y=percCCWorking,color="Working"),size=3)+
+    theme_classic()+ylab("Carrying Capacity")+xlab("")+
+    scale_y_continuous(labels = scales::percent,limits = c(0,1.0) )+
+    scale_colour_manual(name = '', 
+                        values =c('Protected'='#b2df8a','Working'='#1f78b4'), labels = c('Protected Area','Working Area'))+
+    ggtitle("Resource Integrity")+mytheme +
+    theme(legend.position="bottom")
   
   
   p2<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=meanPayoff),size=3,color="#993404")+
-    theme_classic()+ylab("Resource Units")+ylim(0,harvestMax+1)+
-    ggtitle("Mean Individual Payoff")
+    geom_line(aes(y=meanPayoff),size=3,color="#993404")+xlab("")+
+    theme_classic()+ylab("Resource Units")+ylim(0,harvestMax+PaymentAmount)+
+    ggtitle("Mean Individual Payoff")+mytheme
   
   p3<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=Enrolled),size=3,color="#756bb1")+
-    theme_classic()+ylab("Mean Percent Time in Working landscape")+
-    ggtitle("Number Enrolled")
+    geom_line(aes(y=Enrolled),size=3,color="#756bb1")+xlab("Time Step")+
+    theme_classic()+ylab("Individuals")+
+    ggtitle("Number Enrolled")+mytheme
   
   x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
   
@@ -313,30 +318,17 @@ deqdatPOS_Conform<-abm(#Specified parameters
   harvestMax=35,
   ProbOfMobility=0.9)
 
-set.seed(1) #group level
-set.seed(1) #small groups
-deqdatNEG_Conform<-abm(#Specified parameters
-  Individuals=100, #number of total resource users in a population
-  TotalCarryingCapacity=100000, #total available resource units
-  StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
-  PercProtected=0.2, #percent of the total resource that's in a protected area
-  EnrollPercStart=0.5, #percent of individuals who start by following the rules at t0
-  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
-  BiasStrength = 1.05,
-  TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.15,
-  harvestMax=35,
-  ProbOfMobility=0.9)
+
 
 set.seed(1)
-abm(#Specified parameters
+SucBiasdat<-abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
-  TotalCarryingCapacity=10000, #total available resource units
+  TotalCarryingCapacity=100000, #total available resource units
   
   StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
   
-  PaymentAmount = 1, 
+  PaymentAmount = 5, #10
   
   
   PercProtected=0.20, #percent of the total resource that's in a protected area
@@ -348,15 +340,15 @@ abm(#Specified parameters
   BiasStrength = 1.1,
   
   TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.10, #.10
-  harvestMax=2, #20
+  ResourceRegenerationPerTimeStep=1.05, #.10
+  harvestMax=10, #20
   ProbOfMobility=0.3)
 
 
 
 set.seed(2)
 #stable dynamics
-abm(#Specified parameters
+SucBiasdat<-abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
   TotalCarryingCapacity=10000, #total available resource units

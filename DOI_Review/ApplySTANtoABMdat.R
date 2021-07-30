@@ -118,10 +118,12 @@ ggplot(df_sample, aes(x=sample_time, y=sample_prop)) +
 ################
 ###fitting Stan data
 
-sample_days<-50
+###fitting the success bias model with behavior env. feedbacks
+
+sample_days<-30
 sample_n<-100
 t_max<-100
-sample_y<-deqdat[1:sample_days,]$Enrolled
+sample_y<-SucBiasdat[1:sample_days,]$Enrolled
 sample_time<-1:sample_days
 
 
@@ -147,17 +149,17 @@ mod = stan("~/Pemba_Project/DOI_Review/SIRS.stan",
 
 
 # You should do some MCMC diagnostics, including:
-traceplot(mod, pars="lp__")
+#traceplot(mod, pars="lp__")
 
-traceplot(mod, pars=c("params", "y0"))
+#traceplot(mod, pars=c("params", "y0"))
 #summary(mod)$summary[,"Rhat"]
 
 # These all check out for my model, so I'll move on.
 
 # Extract the posterior samples to a structured list:
 posts <- extract(mod)
-hist(posts$params[,1])
-hist(posts$params[,2])
+#hist(posts$params[,1])
+#hist(posts$params[,2])
 
 #R0 number of infected people
 R0<-(posts$params[,1]*0.20)/posts$params[,2]
@@ -179,27 +181,42 @@ mod_time = stan_d$fake_ts
 df_sample = data.frame(sample_prop, sample_time)
 df_fit = data.frame(mod_median, mod_low, mod_high, mod_time)
 
+
+
+
 # Plot the synthetic data with the model predictions
 # Median and 95% Credible Interval
 
+mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                plot.title = element_text( size=18, color="black",face="bold"),
+                axis.title.x = element_text( size=18),
+                axis.title.y = element_text( size=18),
+                axis.text=(element_text(color="black", size=14)),
+                legend.title = element_text(colour="black", size=18),
+                legend.text = element_text( size = 14))
+
+
 ggplot(df_sample, aes(x=sample_time, y=sample_prop)) +
-  geom_point(col="black", shape = 19, size = 1.5) +
-  geom_point(data=deqdat[sample_days+1:sample_n,],aes(x=timeStep,y=Enrolled/100),col="purple")+
+  #points
+  geom_point(aes(fill="Training"),col="black" ,shape = 21, size = 5,stroke=2) +
+  geom_point(data=SucBiasdat[sample_days+1:sample_n,],aes(x=timeStep,y=Enrolled/100,fill="Test"),
+             col="black" ,shape = 21, size = 5,stroke=2)+
+  
   # Error in integration:
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_median), color = "red") + 
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_high), color = "red", linetype=3) + 
-  geom_line(data = df_fit, aes(x=mod_time, y=mod_low), color = "red", linetype=3) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_median), color = "black",alpha=0.5,size=1.5) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_high), color = "black",alpha=0.5, linetype="longdash",size=1) + 
+  geom_line(data = df_fit, aes(x=mod_time, y=mod_low), color = "black", alpha=0.5,linetype="longdash",size=1) + 
+  
+  
   # Aesthetics
-  labs(x = "Time (days)", y = "Proportion Enrolled") + 
+  labs(x = "Time", y = "Proportion Enrolled") + 
   #scale_x_continuous(limits=c(0, 50), breaks=c(0,25,50)) +
-  #scale_y_continuous(limits=c(0,1), breaks=c(0,.5,1)) +
+  scale_y_continuous(limits=c(0,1)) +
+  
+  #legend
+  scale_fill_manual(name="",values=c("Training"="darkgrey","Test"="#3690c0"),
+                    guide = guide_legend(reverse = TRUE))+
+  
   theme_classic() + 
   theme(axis.line.x = element_line(color="black"),
-        axis.line.y = element_line(color="black"))
-
-
-
-
-
-
-
+        axis.line.y = element_line(color="black"))+mytheme
