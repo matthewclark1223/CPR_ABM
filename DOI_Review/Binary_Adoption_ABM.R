@@ -14,6 +14,7 @@
 #repeat for 1:t
 library(ggplot2)
 #####
+
 abm<-function(#Specified parameters
   Individuals=100, #number of total resource users in a population
   
@@ -172,7 +173,7 @@ abm<-function(#Specified parameters
   if(LearningStrategy=="Conformist Bias"){
     
     spreadProb<-0.25 #0.25
-    recProb<-0.01 #0.1
+    recProb<-0.1 #0.01
     
     NewEnroll<-rep(NA,Individuals)
   
@@ -292,7 +293,7 @@ abm<-function(#Specified parameters
   
   p3<-ggplot(data=output,aes(x=timeStep))+
     geom_line(aes(y=Enrolled),size=3,color="#756bb1")+xlab("Time Step")+
-    theme_classic()+ylab("Individuals")+
+    theme_classic()+ylab("Individuals")+ylim(0,Individuals)
     ggtitle("Number Enrolled")+mytheme
   
   x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
@@ -302,7 +303,7 @@ abm<-function(#Specified parameters
 }
 
 
-set.seed(2) #whole group
+set.seed(1) #whole group
 #set.seed(6) #small groups
 
 deqdatPOS_Conform<-abm(#Specified parameters

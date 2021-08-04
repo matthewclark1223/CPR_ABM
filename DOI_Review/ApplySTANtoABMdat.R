@@ -17,7 +17,10 @@ sample_n<-100
 t_max<-100
 sample_y<-deqdatPOS_Conform[1:sample_days,]$Enrolled
 sample_time<-1:sample_days
-
+# Parameters must be stored in a named list.
+params <- list(beta = NA, #rate of transmission
+               gamma = NA, #rate of dropout
+               chi = NA) #time after dropout before willing to try again
 
 stan_d = list(n_obs = sample_days,
               n_params = length(params),
@@ -35,7 +38,7 @@ params_monitor = c("y_hat", "y0", "params", "fake_I") #fake_I from generated qua
 mod = stan("~/Pemba_Project/DOI_Review/SIRS.stan",
            data = stan_d,
            pars = params_monitor,
-           chains = 3,
+           chains = 2,
            warmup = 500,
            iter = 1500)
 
