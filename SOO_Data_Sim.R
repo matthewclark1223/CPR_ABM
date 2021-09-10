@@ -24,7 +24,7 @@
 # This script experiments with the sample size needed to recover the parameter values of interest
 # Sample size from each community
 set.seed(3)
-Ssize<-40
+Ssize<-15
 StudyWards<-c("Tondooni","Msuka Magharibi","Tumbe Magharibi","Shumba Mjini","Kifundi","Mgogoni",
               "Gando","Mjini Wingwi","Mtambwe Kaskazini","Mtambwe Kusini","Fundo","Mgelema","Kisiwa Panza",
               "Kangani","Changaweni","Kambini","Chumbageni","Shungi","Ziwani","Piki",
@@ -60,7 +60,7 @@ Orgdat$OutCons<-rpois(Ssize,7)
 b1a<-0.5
 b1b<--0.7
 b1c<--1.0
-Intercept1<-3.4  #log(30)
+Intercept1<-1.4  #log(30)
 
 stdize<-function(x){
   (x-mean(x))/(2*sd(x))}
@@ -88,7 +88,7 @@ mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_b
 parzSet1<-data.frame(par=c("Intercept", #get all the parameter values on the std scale of the predictor
                           "Outgroup Theft",
                           "REDD+",
-                          "Forest Cover Change"),val=c(3.4,
+                          "Forest Cover Change"),val=c(1.4,
                                              0.5,
                                              -0.7,
                                              -1.0))
@@ -99,14 +99,19 @@ z1<-stack(z1)%>%group_by(ind)%>%
             top = quantile(values,.95),
             bottom = quantile(values,.05),
             mid=quantile(values,.5))%>%filter(ind%in%parzSet1$par)
-ggplot(z1)+ggtitle("")+
-  geom_pointrange(mapping=aes(y = mid ,x=as.character(ind),ymin=bottom,ymax=top),position = position_dodge(width = 0.5),size=1,alpha=0.8)+xlab("Predictor")+
-  geom_point(data=parzSet1,aes(x=as.character(par),y=val),shape=24,alpha=0.5,size=9,color="blue",fill="blue")+
+ggplot(z1)+
+  geom_pointrange(mapping=aes(y = mid ,x=as.character(ind),ymin=bottom,ymax=top,color="Estimate 90% C.I."),position = position_dodge(width = 0.5),size=1,alpha=0.8)+xlab("Predictor")+
+  geom_point(data=parzSet1,aes(x=as.character(par),y=val,fill="True Value"),shape=24,alpha=0.7,size=5,color="#2171b5")+
+  scale_colour_manual(name = '', 
+                      values =c('Estimate 90% C.I.'='black'))+
+  scale_fill_manual(name = '', 
+                    values =c('True Value'='#2171b5'))+
+  
   ylab("Parameter Value")+
   coord_flip()+
   theme_classic()+mytheme+theme(strip.background = element_blank(),
                                 strip.text.x = element_blank())+
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+ggtitle("Simulated analysis of environmental, social, and historical effects\non preferred resource harvest limits (N/group = 15)")
 
 
 
@@ -146,14 +151,19 @@ z2<-stack(z2)%>%group_by(ind)%>%
             top = quantile(values,.95),
             bottom = quantile(values,.05),
             mid=quantile(values,.5))
-  ggplot(z2)+ggtitle("")+
-  geom_pointrange(mapping=aes(y = mid ,x=as.character(ind),ymin=bottom,ymax=top),position = position_dodge(width = 0.5),size=1,alpha=0.8)+xlab("Predictor")+
-   geom_point(data=parzSet2,aes(x=as.character(par),y=val),shape=24,alpha=0.5,size=9,color="blue",fill="blue")+
-  ylab("Parameter Value")+
+  ggplot(z2)+
+  geom_pointrange(mapping=aes(y = mid ,x=as.character(ind),ymin=bottom,ymax=top,color="Estimate 90% C.I."),position = position_dodge(width = 0.5),size=1,alpha=0.8)+xlab("Predictor")+
+   geom_point(data=parzSet2,aes(x=as.character(par),y=val,fill="True Value"),shape=24,alpha=0.7,size=5,color="#2171b5")+
+    scale_colour_manual(name = '', 
+                        values =c('Estimate 90% C.I.'='black'))+
+  scale_fill_manual(name = '', 
+                        values =c('True Value'='#2171b5'))+
+    
+    ylab("Parameter Value")+
   coord_flip()+
   theme_classic()+mytheme+theme(strip.background = element_blank(),
                                 strip.text.x = element_blank())+
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")+ggtitle("Simulated analysis of environmetal, social, and historical effects\non individual participation in tree planting experiments (N/group = 15)")
 
 
 

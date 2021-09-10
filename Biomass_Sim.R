@@ -1,9 +1,9 @@
 pp<-raster("00N_030E_tCO2_pixel_AGB_masked_by_loss.tif")
-pp<-crop(pp,z)
+pp<-crop(pp,Pemba)
 plot(pp)
 
 Biomass<-raster("AG_Biomass_year2000.tif")
-Biomass<-crop(Biomass,z)
+Biomass<-crop(Biomass,Pemba)
 plot(Biomass)
 
 
@@ -43,6 +43,6 @@ names(da)<-paste0("Year.",as.character(2000:2018))
 animate(da)
 
 
-
+#animation::saveGIF(animate(da),filename="Biomass" )
 
 

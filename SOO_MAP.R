@@ -8,7 +8,7 @@ library(ggspatial)
 library(grid)
 
 gadm3_3 <- readRDS("~/Pemba_Project/MapData/gadm36_TZA_3_sf.rds")
-ggplot() + geom_sf(data = gadm3_3) + theme_bw()
+#ggplot() + geom_sf(data = gadm3_3) + theme_bw()
 Pemba <- st_crop(gadm3_3, xmin = 39.5, xmax = 39.9,
                  ymin = -5.6, ymax = -4.75)
 

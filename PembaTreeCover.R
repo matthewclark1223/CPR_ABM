@@ -3,7 +3,7 @@ library("rgeos")
 library("rgdal")
 library(sf)
 library(magrittr)
-#library("rasterVis")
+library("rasterVis")
 #library(viridis)
 
 
@@ -39,7 +39,7 @@ Mod <- model(r = z, Time = 5) #run the model, create 5 rasters
 ### 3 #################################################
 ####plot the output
 
-#plot(stack(dumMod) ) #this is a simpler, but worse option that the code below
+#plot(stack(Mod) ) #this is a simpler, but worse option that the code below
 
 levelplot(stack(Mod) )  #make a raster stack and plot
 
@@ -112,7 +112,7 @@ names(da)<-paste0("Year.",as.character(2000:2018))
 #levelplot(da)
 animate(da)
 
-
+animation::saveGIF(animate(da),filename="TreeCover.gif" )
 
 
 
