@@ -46,15 +46,15 @@ mod = stan("~/Pemba_Project/DOI_Review/SIRS.stan",
 # You should do some MCMC diagnostics, including:
 #traceplot(mod, pars="lp__")
 
-#traceplot(mod, pars=c("params", "y0"))
+traceplot(mod, pars=c("params", "y0"))
 #summary(mod)$summary[,"Rhat"]
 
 # These all check out for my model, so I'll move on.
 
 # Extract the posterior samples to a structured list:
 posts <- extract(mod)
-#hist(posts$params[,1])
-#hist(posts$params[,2])
+hist(posts$params[,1])
+hist(posts$params[,2])
 
 #R0 number of infected people
 R0<-(posts$params[,1]*0.20)/posts$params[,2]

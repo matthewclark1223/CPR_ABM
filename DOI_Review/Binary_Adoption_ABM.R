@@ -303,8 +303,7 @@ abm<-function(#Specified parameters
 }
 
 
-set.seed(1) #whole group
-#set.seed(6) #small groups
+set.seed(1) 
 
 deqdatPOS_Conform<-abm(#Specified parameters
   Individuals=100, #number of total resource users in a population
