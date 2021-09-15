@@ -45,29 +45,27 @@ firesalldf <- firesall %>%
   mutate(lat = unlist(map(firesall$geometry,1)),
          long = unlist(map(firesall$geometry,2)))
 
-
+firesall<-filter(firesall,confidence != "l")
 
 
 ggplot() + geom_sf(data = Pemba) + theme_bw()+
 stat_density2d(aes(x=lat,y=long,fill = ..level..), alpha = .4,
                geom = "polygon", data = firesalldf) + 
   geom_sf(data = firesall,alpha=0.4,color="black",size=2)+
-  scale_fill_viridis_c(option="rocket",begin=0.2,end=.9,direction=-1)#cividis,plasma
+  scale_fill_viridis_c(option="plasma",begin=0.2,end=.9,direction=-1,name = "Number of \nRecorded Fires" )+#cividis,plasma,rocket
+  scale_size(range = c(5,15)) +
+  ylab("")+xlab("")+
+  annotation_north_arrow(location = "br", which_north = "true", 
+                         pad_x = unit(0.1, "in"), pad_y = unit(0.03, "in"), 
+                         style = north_arrow_fancy_orienteering)+
+  theme( panel.background = element_rect(fill = "white"),panel.grid.major = element_blank(),
+         axis.text=element_blank(), axis.ticks = element_blank())+
+  annotation_scale(location = "bl", width_hint = 0.5) #+ theme(legend.position = "none")
 
-p<-ggplot() + geom_sf(data = Pemba) + theme_bw()+
-  geom_sf(data = firesall,color="darkred",size=2,alpha=0.5)+
-  transition_states(year, transition_length = 1, state_length = 3, wrap = TRUE ) +
-  ease_aes('linear') +
-  shadow_mark()
 
-animate(p)
+ggplot(firesall,aes(x=acq_date))+geom_histogram()
 
-ggplot() + geom_sf(data = Pemba) + theme_bw()+
-  #stat_density2d(data=firesall)+
-  geom_density2d_filled(data=firesall)
- 
-####Netcdf data below, not working
-small_fires_2016<-ncdf4::nc_open("~/Pemba_Project/Small_fires.nc", verbose = TRUE)
 
-small_fires_2016<-st_read(small_fires_2016)
-plot(small_fires_2016)
+
+
+
