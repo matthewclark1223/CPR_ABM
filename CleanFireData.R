@@ -34,7 +34,7 @@ for (f in rasters){
   
   rasterstack<-raster::stack(rasterstackList)
   cummRaster<-sum(rasterstack)
-  cummRaster[cummRaster<=0]<-NA
+  cummRaster[cummRaster<=0]<-0
   cummRaster[cummRaster>0]<-1
   return(cummRaster)
 }
@@ -47,7 +47,7 @@ raster::plot(top)
 
 r_merged<- raster::merge(top,bottom)
 raster::plot(r_merged)
-
+#raster::writeRaster(r_merged,"ESA_Small_Fires_2019_Pemba.tif")
 r_merged_df<-raster::as.data.frame(r_merged, xy = TRUE) 
 
 r_merged_df<-filter(r_merged_df,layer==1)
