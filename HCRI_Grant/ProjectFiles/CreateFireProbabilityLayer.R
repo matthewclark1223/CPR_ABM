@@ -19,5 +19,5 @@ StackDF$predFire<-predict(fit,newdata=StackDF,type="response")
 predFireRas<-rasterFromXYZ(StackDF[c(1,2,9)],crs = crs(stackRS) )
 predFireRas<-resample(predFireRas,stackRS)
 stackRS<-stack(stackRS,predFireRas)
-
+raster::writeRaster(predFireRas,"PredFire2019.tif")
 
