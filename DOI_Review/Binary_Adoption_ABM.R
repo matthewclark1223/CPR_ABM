@@ -273,7 +273,13 @@ abm<-function(#Specified parameters
     output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
     
   }
-  
+  mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                  plot.title = element_text( size=18, color="black",face="bold"),
+                  axis.title.x = element_text( size=18),
+                  axis.title.y = element_text( size=18),
+                  axis.text=(element_text(color="black", size=14)),
+                  legend.title = element_text(colour="black", size=18),
+                  legend.text = element_text( size = 14))
   
   p1<-ggplot(data=output,aes(x=timeStep))+
     geom_line(aes(y=percCCProtect,color="Protected"),size=3)+
@@ -293,7 +299,7 @@ abm<-function(#Specified parameters
   
   p3<-ggplot(data=output,aes(x=timeStep))+
     geom_line(aes(y=Enrolled),size=3,color="#756bb1")+xlab("Time Step")+
-    theme_classic()+ylab("Individuals")+ylim(0,Individuals)
+    theme_classic()+ylab("Individuals")+ylim(0,Individuals)+
     ggtitle("Number Enrolled")+mytheme
   
   x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
@@ -370,3 +376,34 @@ SucBiasdat<-abm(#Specified parameters
   ResourceRegenerationPerTimeStep=1.5, #.10
   harvestMax=20, #20
   ProbOfMobility=0.3)
+
+
+###### Hoping to ID some parameter setting where we get oscillation
+set.seed(1)
+#stable dynamics
+SucBiasdat<-abm(#Specified parameters
+  Individuals=100, #number of total resource users in a population
+  
+  TotalCarryingCapacity=10000, #total available resource units
+  
+  StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
+  
+  PaymentAmount = 9, 
+  
+  
+  PercProtected=0.20, #percent of the total resource that's in a protected area
+  
+  EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
+  
+  LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
+  
+  BiasStrength = 1.1,
+  
+  TimeSteps=100,
+  ResourceRegenerationPerTimeStep=1.3, #.10
+  harvestMax=15, #20
+  ProbOfMobility=0.3)
+
+
+
+

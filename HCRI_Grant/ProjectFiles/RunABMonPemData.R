@@ -1,3 +1,6 @@
+library(raster)
+library(sf)
+library(tidyverse)
 #specifics to this dataset
 stackRS<-raster::stack("PembaFiresAndPredictors.tif")
 names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
@@ -17,8 +20,8 @@ rstack$LndCvr2018<- as.integer(rstack$LndCvr2018) #this should be an integer
 
 ######CROP for trialing
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
-#PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale","Msuka Magharibi","Msuka Mashariki"))
-PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale"))
+PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale","Msuka Magharibi","Msuka Mashariki"))
+#PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale"))
 #ggplot() + geom_sf(data = PembaSUB)+ geom_sf_label(data=PembaSUB,aes(label=NAME_3),size=3)+ theme_bw()
 r2 <- crop(rstack, extent(PembaSUB))
 rstack <- mask(r2, PembaSUB)

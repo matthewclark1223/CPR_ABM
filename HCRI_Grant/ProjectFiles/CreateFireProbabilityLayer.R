@@ -10,6 +10,9 @@ stdize<-function(x){
   (x-mean(x))/(2*sd(x))}
 StackDF<-StackDF%>%mutate(slope_std=stdize(slope),road_proximity_std=stdize(roads_proximity))
 
+########THIS NEEDS TO BE EDITED SO WE ONLY PREDICT FIRES ON BURNABLE LAND! #####################
+# Filter out all non-burnable land before running the regression!!!!!!!!!!!!!
+
 fit<-glm(fires2019~slope_std+road_proximity_std+soil_cat,family="binomial",data=StackDF)
 #fit<-rstanarm::stan_glm(layer~stdize(slope)+stdize(roads_proximity),family="binomial",data=v,chains=1)
 summary(fit)
