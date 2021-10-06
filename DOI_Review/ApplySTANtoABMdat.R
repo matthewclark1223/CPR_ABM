@@ -151,21 +151,22 @@ params_monitor = c("y_hat", "y0", "params", "fake_I") #fake_I from generated qua
 mod = stan("~/Pemba_Project/DOI_Review/SIRS.stan",
            data = stan_d,
            pars = params_monitor,
-           chains = 1,
+           chains = 4,
            warmup = 500,
            iter = 1500)
 
 
 # You should do some MCMC diagnostics, including:
 traceplot(mod, pars="lp__")
+names(mod)[94:96]<-c("Beta","Gamma","Chi")
 
-traceplot(mod, pars=c("params", "y0"))
+traceplot(mod, pars=c("params"))+mytheme+theme(strip.text.x = element_text(size = 15))
 #summary(mod)$summary[,"Rhat"]
 
 # These all check out for my model, so I'll move on.
 
 # Extract the posterior samples to a structured list:
-posts <- extract(mod)
+posts <- rstan::extract(mod)
 #hist(posts$params[,1])
 #hist(posts$params[,2])
 
@@ -208,9 +209,11 @@ mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_b
                 legend.text = element_text( size = 14))
 
 
+#cor(mod_median[-(1:sample_days)],(SucBiasdat[(sample_days+1):sample_n,]$Enrolled)/sample_n)
+
 ggplot(df_sample, aes(x=sample_time, y=sample_prop)) +
   #samples
-  geom_line(data=draws,mapping = aes(x = as.integer(mod_time), y=value, group = draw), alpha = 0.2, size=0.1) +
+  geom_line(data=draws,mapping = aes(x = as.integer(mod_time), y=value, group = draw), alpha = 0.05, size=0.1) +
 
   #points
   geom_point(aes(fill="Training"),col="black" ,shape = 21, size = 5,stroke=2) +
