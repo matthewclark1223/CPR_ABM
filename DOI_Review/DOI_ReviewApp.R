@@ -26,7 +26,7 @@ ui<-shinyUI(navbarPage("Protected Areas ABM",
                                                                   value = 100),
                                                       selectInput("LearningStrategy","Learning Strategy",
                                                                   c("Success Bias" = "Success Bias",
-                                                                    "Conformist Bias"= "Conformist Bias")),
+                                                                    "Unbiased"= "Unbiased")),
                                                       sliderInput("totCareCapac","Total Carrying Capacity Landscape",
                                                                   min = 100,max=100000,value=10000),
                                                       sliderInput("StartPercCarryingCapacity","Starting Percent Carrying Capacity",
@@ -234,7 +234,7 @@ server <- function(input, output) {
       
       
       #start conformist learning
-      if(LearningStrategy=="Conformist Bias"){
+      if(LearningStrategy=="Unbiased"){
         
         spreadProb<-0.25 #0.25
         recProb<-0.1 #0.01
