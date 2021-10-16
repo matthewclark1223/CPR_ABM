@@ -12,6 +12,21 @@ rLndCvr2018<-rProbBurn
 rLndCvr2018[]<-sample(classes,size=ncell(rLndCvr2018),replace=T,prob=c(0.1,0.1,0.7,0.1))
 rLndCvr2018[is.na(rProbBurn)]<-NA
 
+#These will be used to assign working/fallow ag randomly
+FallowRechargeTime<-3
+AgLimit<-2
+propstrt<-AgLimit/FallowRechargeTime
+
+#Import 2018 Lc Data
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC.tif")
+
+rLndCvr2018<-Pem2018LC
+rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
+                                             replace=T,prob=c(propstrt,1-propstrt))
+rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable",
+                             ifelse(rLndCvr2018[] == 2,"Agriculture",
+                                    ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
+
 
 #stack all starting layers together
 rstack<-stack(stackRS$fires2019,rProbBurn,rLndCvr2018 )
@@ -31,12 +46,11 @@ rstack <- mask(r2, PembaSUB)
 ############### model copied from simple abm
 ag2018<-which(rstack$LndCvr2018[]==1) #ag from 2018 land cover layer
 burned2019<-which(rstack$Burn2019[]==1) #get cell numbers that burned in 2019
-bare2018<-which(rstack$LndCvr2018[]==2) #fallow/bare from 2018 land cover layer
+fallow2018<-which(rstack$LndCvr2018[]==2) #fallow/bare from 2018 land cover layer
 burnable2018<-which(rstack$LndCvr2018[]==3) #burnable from 2018 landcover layer
 unburnable2018<-which(rstack$LndCvr2018[]==4) #unburnable from 2018 land cover layer
 
-FallowRechargeTime<-3
-AgLimit<-2
+
 
 #Make the starting ag layer
 rstack$ag2019<-NA #Make all NA to start
@@ -45,7 +59,7 @@ rstack$ag2019[burned2019]<-1
 
 #Make starting fallow layer
 rstack$fallow2019<-NA #Make all NA to start
-rstack$fallow2019[bare2018]<-sample(2:FallowRechargeTime,size=length(bare2018),replace=T)
+rstack$fallow2019[fallow2018]<-sample(2:FallowRechargeTime,size=length(fallow2018),replace=T)
 
 #Make starting burnable layer
 burnable2019<-burnable2018[!burnable2018 %in% burned2019] #remove the ones that already burned
@@ -120,3 +134,14 @@ ggplot(data=r_df,aes(x=x,y=y))+
             aes(x = x, y = y),fill="darkred") +
   
   theme_bw()
+
+
+ggplot(data=r_df,aes(x=x,y=y))+
+  geom_tile(data = na.omit(r_df%>%dplyr::select(LndCvr2018,x,y)) , 
+            aes(x = x, y = y,fill=as.character(LndCvr2018))) +
+  geom_tile(data = na.omit(r_df%>%dplyr::select(predBurn2020,x,y)) , 
+            aes(x = x, y = y),fill="yellow") +
+  
+  theme_bw()
+
+

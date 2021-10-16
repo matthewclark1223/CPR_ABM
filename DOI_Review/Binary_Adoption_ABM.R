@@ -287,7 +287,7 @@ abm<-function(#Specified parameters
     theme_classic()+ylab("Carrying Capacity")+xlab("")+
     scale_y_continuous(labels = scales::percent,limits = c(0,1.0) )+
     scale_colour_manual(name = '', 
-                        values =c('Protected'='#b2df8a','Working'='#1f78b4'), labels = c('Conservation Area','Unprotected Area'))+
+                        values =c('Protected'='#b2df8a','Working'='#1f78b4'), labels = c('Conservation Area','Unconserved Area'))+
     ggtitle("Resource Integrity")+mytheme +
     theme(legend.position="bottom")
   
