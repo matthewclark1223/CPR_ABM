@@ -209,15 +209,21 @@ LU_AMB<-function(
   
   ## Plot
   cols<-c("#ffd966","#b6d7a8ff","#7f6000","#969696")
+  cols<-c("#7f6000","#b6d7a8ff","#7f6000","#969696") #keep if all rotational ag should be the same color
   rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")}
   
+  plotfun(rstack$LndCvr2018)
+  plotfun(rstack$LndCvr2019)
+  plotfun(rstack$LndCvr2020)
   plotfun(rstack$LndCvr2021)
   
+  x<-stack(rstack$LndCvr2018,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
+  animate(x,col.regions=cols, xlab="", ylab="")
   ###
 
 
 LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
-       Wards = "Fundo",  #character vector or wards to model. Default is full model
+       Wards = c("Makangale","Msuka Magharibi","Msuka Mashariki"),  #character vector or wards to model. Default is full model
        FallowTime = 3, #time (in years) it takes for fallow land to recharge
        AgLimit = 2
   
