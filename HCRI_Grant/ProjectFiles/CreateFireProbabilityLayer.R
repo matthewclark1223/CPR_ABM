@@ -1,5 +1,5 @@
 library(raster)
-Pem2018LC<-raster::raster("Pemba2018_LandCover.tif")
+Pem2018LC<-raster::raster("Pem_2018_LC_20m.tif")
 stackRS<-raster::stack("PembaFiresAndPredictors.tif")
 #Make function to reproject LC to the stack DF
 preprocess_raster<-function(raster,method){

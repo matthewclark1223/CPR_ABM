@@ -6,19 +6,13 @@ stackRS<-raster::stack("PembaFiresAndPredictors.tif")
 names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
 rProbBurn<-raster::raster("PredFire2019.tif")
 
-#FAKE LANDCOVER CLASSES
-classes<-factor(c("Agriculture","Bare","Burnable","Unburnable"))
-rLndCvr2018<-rProbBurn
-rLndCvr2018[]<-sample(classes,size=ncell(rLndCvr2018),replace=T,prob=c(0.1,0.1,0.7,0.1))
-rLndCvr2018[is.na(rProbBurn)]<-NA
-
 #These will be used to assign working/fallow ag randomly
 FallowRechargeTime<-3
 AgLimit<-2
 propstrt<-AgLimit/FallowRechargeTime
 
 #Import 2018 Lc Data
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m.tif")
 
 rLndCvr2018<-Pem2018LC
 rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
@@ -139,9 +133,18 @@ ggplot(data=r_df,aes(x=x,y=y))+
 ggplot(data=r_df,aes(x=x,y=y))+
   geom_tile(data = na.omit(r_df%>%dplyr::select(LndCvr2018,x,y)) , 
             aes(x = x, y = y,fill=as.character(LndCvr2018))) +
-  geom_tile(data = na.omit(r_df%>%dplyr::select(predBurn2020,x,y)) , 
-            aes(x = x, y = y),fill="yellow") +
+  #geom_tile(data = na.omit(r_df%>%dplyr::select(predBurn2020,x,y)) , 
+   #         aes(x = x, y = y),fill="yellow") +
   
   theme_bw()
 
+####plot with rasterVis
+r <- as.factor(rstack$LndCvr2018)
+rat <- levels(r)[[1]]
+rat[["landcover"]] <- c("Productive","Fallow","Convertable", "Non-convertable")
+levels(r) <- rat
+
+## Plot
+cols<-c("#ffd966","#7f6000","#b6d7a8ff","#969696")
+rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")
 
