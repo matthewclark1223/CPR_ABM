@@ -23,7 +23,7 @@ LU_AMB<-function(
   propstrt<-AgLimit/FallowRechargeTime
   
   #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC.tif")
+  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif")
   
   rLndCvr2018<-Pem2018LC
   rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
