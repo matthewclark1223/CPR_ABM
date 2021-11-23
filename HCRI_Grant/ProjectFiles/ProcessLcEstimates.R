@@ -1,5 +1,5 @@
 library(raster)
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/UnProcessed_2018_LC_Estimates_20m.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/UnProcessed_Pem_2018_LC_20m_V2.tif")
 fireRS<-raster::raster("PredFire2019.tif")
 stackRS<-raster::stack("PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -10,7 +10,7 @@ preprocess_raster<-function(raster,method){
 Pem2018LC<-preprocess_raster(Pem2018LC,method="ngb")
 Pem2018LC<-raster::mask(Pem2018LC,stackRS$PembaFiresAndPredictors.1)
 plot(Pem2018LC)
-raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m.tif",overwrite=T)
+raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif",overwrite=T)
 
 #Plot it
 r <- as.factor(Pem2018LC)
