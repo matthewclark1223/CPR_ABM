@@ -1,6 +1,7 @@
 library(ggmap)
 library(sf)
 library(tidyverse)
+library(ggspatial)
 register_google(key="AIzaSyCh-KGA6T9qaPF-wjfnBV8hb7zzGYMlGTw")
 
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
@@ -10,7 +11,7 @@ initial<-st_transform(Pemba, 3857) %>% dplyr::select(NAME_3, geometry)
 initial$index_target <- 1:nrow(initial)
 target <- st_geometry(initial)
 grid <- st_make_grid(target,
-                     cellsize=1000, #In meters
+                     cellsize=500, #In meters
                     
                      crs = st_crs(initial),
                      what = "polygons",
@@ -76,54 +77,349 @@ ggmap(map) +
   geom_sf(data = Pemba_3857, fill=NA, inherit.aes = FALSE)
 
 
-####Just one area
+####Specific shehia
 
-map <- get_map("mjimbini tanzania", scale=2,zoom=14,maptype = "hybrid" )
-map <- ggmap_bbox(map)
-ggmap(map) + 
-  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
-  geom_sf(data = filter(Pemba_3857,NAME_3 =="Mjimbini"), 
-          color="lightgrey",size=1,fill=NA, inherit.aes = FALSE)+
-  geom_sf(data = filter(Fishnet,NAME_3 =="Mjimbini"), 
-          color=alpha("darkgrey",0.4),size=0.5,fill=NA, inherit.aes = FALSE)+
-  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
-                         pad_x = unit(0.1, "in"), pad_y = unit(0.3, "in"), 
-                         style = north_arrow_fancy_orienteering)+
-  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
-                              pad_y = unit(0.2, "in"), )
-
-
-map2 <- get_googlemap(center = c(lon = 39.725, lat = -4.973),scale=2, zoom=14, maptype = "hybrid")
+#Ukunjwi
+map2 <- get_googlemap(center = c(lon = 39.697, lat = -5.04),scale=2, zoom=14, maptype = "hybrid")
 map2 <- ggmap_bbox(map2)
 ggmap(map2) + 
   coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
-  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kifundi"), 
-          color="grey",size=1,fill=NA, inherit.aes = FALSE)+
-  geom_sf(data = filter(Fishnet,NAME_3 =="Kifundi"), 
-          color=alpha("lightgrey",0.3),size=0.5,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Ukunjwi"), 
+          color=alpha("white",0.3),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Ukunjwi"), 
+          color=alpha("lightgrey",0.6),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
   ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
-                                    pad_x = unit(0., "in"), pad_y = unit(0.2, "in"), 
-                                    style = north_arrow_fancy_orienteering)
-
-
-
-
-
-##Piloting
-map <- get_map(center=c(lon = 39.70, lat = -4.904), scale=2,zoom=14,maptype = "hybrid" )
-map <- ggmap_bbox(map)
-ggmap(map) + 
-  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
-  geom_sf(data = filter(Pemba_3857,NAME_3 =="Makangale"), 
-          color=alpha("lightgrey",0.6),size=1,fill=NA, inherit.aes = FALSE)+
-  geom_sf(data = filter(Fishnet,NAME_3 =="Makangale"), 
-          color=alpha("darkgrey",0.4),size=0.5,fill=NA, inherit.aes = FALSE)+
-  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
-                                    pad_x = unit(0.1, "in"), pad_y = unit(0.3, "in"), 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
                                     style = north_arrow_fancy_orienteering)+
   ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
-                              pad_y = unit(0.2, "in"), )
+                              pad_y = unit(0.3, "in"), )
+
+#Tibirinzi
+
+map <- get_map("tibirinzi tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Tibirinzi"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Tibirinzi"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+# Gando
+map <- get_googlemap(center = c(lon = 39.702, lat = -4.99),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Gando"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Gando"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+#Ziwani
+
+map <- get_googlemap(center = c(lon = 39.76, lat = -5.185),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Ziwani"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Ziwani"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+##Msuka Magharibi
+map <- get_map("Msuka Magharibi tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Msuka Magharibi"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Msuka Magharibi"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+##Msuka Mashariki
+map <- get_map("Msuka Mashariki tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Msuka Mashariki"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Msuka Mashariki"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+# Kisiwani
+map <- get_googlemap(center = c(lon = 39.76, lat = -5.16),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kisiwani"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kisiwani"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+#Mtambwe Kaskazini
+map <- get_googlemap(center = c(lon = 39.71, lat = -5.096),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Mtambwe Kaskazini"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Mtambwe Kaskazini"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
 
 
 
+#Mtambwe Kusini
+map <-  get_googlemap(center = c(lon = 39.71, lat = -5.1385),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
 
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Mtambwe Kusini"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Mtambwe Kusini"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+#Kangagani
+map <-  get_googlemap(center = c(lon = 39.84, lat = -5.152),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kangagani"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kangagani"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+#Kiuyu Minungwini
+map<- get_googlemap(center = c(lon = 39.82, lat = -5.145),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kiuyu Minungwini"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kiuyu Minungwini"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+#Junguni
+map <- get_map("Junguni Pemba tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Junguni"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Junguni"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Kambini
+map <- get_googlemap(center = c(lon = 39.81, lat = -5.139),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kambini"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kambini"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Shengejuu
+map <- get_map("Shengejuu Pemba tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Shengejuu"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Shengejuu"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Kifundi
+map <- get_googlemap(center = c(lon = 39.715, lat = -4.974),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kifundi"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kifundi"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Wingwi Mjananza
+map <- get_map("Wingwi Mjananza Pemba tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Wingwi Mjananza"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Wingwi Mjananza"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Mtemani
+map <- get_map("Mtemani Pemba tanzania", scale=2,zoom=14,maptype = "hybrid" )
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Mtemani"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Mtemani"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+#Tondooni
+map <- get_googlemap(center = c(lon = 39.69, lat = -4.945),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Tondooni"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Tondooni"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+#Tumbe Magharibi
+map <- get_googlemap(center = c(lon = 39.783, lat = -4.95),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Tumbe Magharibi"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Tumbe Magharibi"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+##Tumbe Mashariki
+map <- get_googlemap(center = c(lon = 39.805, lat = -4.96),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Tumbe Mashariki"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Tumbe Mashariki"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )

@@ -12,6 +12,7 @@ Pem2018LC<-raster::mask(Pem2018LC,stackRS$PembaFiresAndPredictors.1)
 plot(Pem2018LC)
 raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif",overwrite=T)
 
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif")
 #Plot it
 r <- as.factor(Pem2018LC)
 

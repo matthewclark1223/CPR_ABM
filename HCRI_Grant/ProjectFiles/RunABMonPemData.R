@@ -17,9 +17,14 @@ Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_2
 rLndCvr2018<-Pem2018LC
 rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
                                              replace=T,prob=c(propstrt,1-propstrt))
-rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable",
-                             ifelse(rLndCvr2018[] == 2,"Agriculture",
-                                    ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
+####CORAL RAG BURNABLE
+#rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable", 
+ #                            ifelse(rLndCvr2018[] == 2,"Agriculture",
+  #                                  ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
+### ONLY HF BURNABLE
+rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable", 
+                                ifelse(rLndCvr2018[] == 2,"Agriculture",
+                                       ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
 
 
 #stack all starting layers together
@@ -29,8 +34,8 @@ rstack$LndCvr2018<- as.integer(rstack$LndCvr2018) #this should be an integer
 
 ######CROP for trialing
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
-PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale","Msuka Magharibi","Msuka Mashariki"))
-#PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale"))
+#PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale","Msuka Magharibi","Msuka Mashariki"))
+PembaSUB <- Pemba%>%dplyr::filter(NAME_2=="Micheweni")
 #ggplot() + geom_sf(data = PembaSUB)+ geom_sf_label(data=PembaSUB,aes(label=NAME_3),size=3)+ theme_bw()
 r2 <- crop(rstack, extent(PembaSUB))
 rstack <- mask(r2, PembaSUB)
@@ -118,6 +123,7 @@ length(which(rstack$predBurn2020[]==1))
 plot(rstack$predBurn2020)
 
 rstackNAs<-rstack
+
 rstackNAs[rstackNAs<=0]<-NA
 r_df<-raster::as.data.frame(rstackNAs, xy = TRUE) 
 
@@ -125,7 +131,7 @@ ggplot(data=r_df,aes(x=x,y=y))+
   geom_tile(data = na.omit(r_df%>%dplyr::select(Burn2019,x,y)) , 
             aes(x = x, y = y),fill="red") +
   geom_tile(data = na.omit(r_df%>%dplyr::select(predBurn2020,x,y)) , 
-            aes(x = x, y = y),fill="darkred") +
+            aes(x = x, y = y),fill="blue") +
   
   theme_bw()
 
