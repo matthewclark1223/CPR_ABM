@@ -5,7 +5,7 @@ library(tidyverse)
 
 LU_AMB<-function(
   YearsPast2018 = 3, #years (timesteps) to run model
-  Wards = NULL,  #character vector or wards to model. Default is full model
+  Wards = "Kangagani",  #character vector or wards to model. Default is full model
   FallowTime = 3, #time (in years) it takes for fallow land to recharge
   AgLimit = 2 #Time (in years) land can be farmed in-between fallow periods
 ){
@@ -13,9 +13,9 @@ LU_AMB<-function(
   Years<-(1:YearsPast2018)+2018
   
   #specifics to this dataset
-  stackRS<-raster::stack("PembaFiresAndPredictors.tif")
+  stackRS<-raster::stack("./ProjectFiles/PembaFiresAndPredictors.tif")
   names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
-  rProbBurn<-raster::raster("PredFire2019.tif")
+  rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
   
   #These will be used to assign working/fallow ag randomly
   FallowRechargeTime<-FallowTime
@@ -23,14 +23,24 @@ LU_AMB<-function(
   propstrt<-AgLimit/FallowRechargeTime
   
   #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif")
+  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R3.tif")
   
   rLndCvr2018<-Pem2018LC
-  rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
-                                               replace=T,prob=c(propstrt,1-propstrt))
-  rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable",
-                                  ifelse(rLndCvr2018[] == 2,"Agriculture",
-                                         ifelse(rLndCvr2018[] == 100,"Fallow","Unburnable")))) 
+  rLndCvr2018<-Pem2018LC
+  rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)), #assign 100 to Fallow 
+                                               replace=T,prob=c(propstrt,1-propstrt)) #2 is productive ag
+  #0 = Mangrove
+  #1 = HF
+  #2 = agriculture
+  #3 = Urban
+  #4 = Bare
+  #5 = Coral rag
+  #6 = OWV/agroforestry
+  #7 = water
+  ### ONLY CORAL RAG BURNABLE
+  rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(0,1,3,4,6,7),"Unburnable", #everything besides ag, fallow, and CR
+                                  ifelse(rLndCvr2018[] == 2,"Agriculture", #productive ag
+                                         ifelse(rLndCvr2018[] == 100,"Fallow","Burnable")))) #Fallow and CR 
   
   
   #stack all starting layers together
@@ -48,8 +58,7 @@ LU_AMB<-function(
     PembaSUB <- Pemba
   }
   
-  #PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale"))
-  #ggplot() + geom_sf(data = PembaSUB)+ geom_sf_label(data=PembaSUB,aes(label=NAME_3),size=3)+ theme_bw()
+
   r2 <- crop(rstack, extent(PembaSUB))
   rstack <- mask(r2, PembaSUB)
   
@@ -61,12 +70,12 @@ LU_AMB<-function(
   burnable2018<-which(rstack$LndCvr2018[]==2) #burnable from 2018 landcover layer
   unburnable2018<-which(rstack$LndCvr2018[]==4) #unburnable from 2018 land cover layer
   rstack$ag2018<-NA #Make all NA to start
-  rstack$ag2018[ag2018]<-sample(1:AgLimit,size=length(ag2018),replace=T) #plots that were already ag in 2018 have been at for 2 years
+  rstack$ag2018[ag2018]<-sample(1:AgLimit,size=length(ag2018),replace=T) #equally assign all possible ag years
 
   
   #Make starting fallow layer
   rstack$fallow2018<-NA #Make all NA to start
-  rstack$fallow2018[fallow2018]<-sample(1:FallowRechargeTime,size=length(fallow2018),replace=T) 
+  rstack$fallow2018[fallow2018]<-sample(1:FallowRechargeTime,size=length(fallow2018),replace=T) #equally assign all possible fallow years
   
   #Make starting burnable layer
   rstack$burnable2018<-NA #make allNA to start
@@ -174,30 +183,39 @@ LU_AMB<-function(
   }
   
   
-  }
+
+
+outcomeLyrs<-length(Years) 
+Lyrs<-length(names(rstack))
+for(l in 1:outcomeLyrs){
+  rstack[[Lyrs+l]]<-NA
   
-  #BUILD this into the model...too tired to do it now
-  rstack$LndCvr2019<-NA
-  rstack$LndCvr2019[]<-ifelse(!is.na(rstack$ag2019[]),1,
-                              ifelse(!is.na(rstack$burnable2019)[],2,
-                                     ifelse(!is.na(rstack$fallow2019[]),3,
-                                            ifelse(!is.na(rstack$Unburnable2019[]),4,NA))))
+}
+
+newLyrnames<-c(paste0("LndCvr",Years))
+names(rstack)[(Lyrs+1):(Lyrs+outcomeLyrs)]<- newLyrnames 
+names(rstack[["NEWBurn.1"]])<-"NEWBurn"
   
-  rstack$LndCvr2020<-NA
-  rstack$LndCvr2020[]<-ifelse(!is.na(rstack$ag2020[]),1,
-                              ifelse(!is.na(rstack$burnable2020)[],2,
-                                     ifelse(!is.na(rstack$fallow2020[]),3,
-                                            ifelse(!is.na(rstack$Unburnable2020[]),4,NA))))
+
+ for(yr in 1:length(Years)){
+   ag<-which(names(rstack)==paste0("ag",Years[yr]))
+   brnable<-which(names(rstack)==paste0("burnable",Years[yr]))
+   fllow<-which(names(rstack)==paste0("fallow",Years[yr]))
+   unbrnable<-which(names(rstack)==paste0("Unburnable",Years[yr]))
+   
+   rstack[[Lyrs+yr]][]<-ifelse(!is.na(rstack[[ag]][]),1,
+                               ifelse(!is.na(rstack[[brnable]][]),2,
+                                      ifelse(!is.na(rstack[[fllow]][]),3,
+                                             ifelse(!is.na(rstack[[unbrnable]][]),4,NA))))
+   
+ } 
+} 
+LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
+       Wards = c("Kangagani"),  #character vector or wards to model. Default is full model
+       FallowTime = 3, #time (in years) it takes for fallow land to recharge
+       AgLimit = 2)
+
   
-  rstack$LndCvr2021<-NA
-  rstack$LndCvr2021[]<-ifelse(!is.na(rstack$ag2021[]),1,
-                              ifelse(!is.na(rstack$burnable2021)[],2,
-                                     ifelse(!is.na(rstack$fallow2021[]),3,
-                                            ifelse(!is.na(rstack$Unburnable2021[]),4,NA))))
-  
-  
- plot(rstack$LndCvr2019)
-  hist(rstack$ag2021) # Ag is not repopulating!!!
  
   ###
   plotfun<-function(x){
