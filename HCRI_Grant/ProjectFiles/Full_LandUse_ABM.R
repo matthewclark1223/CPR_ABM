@@ -15,7 +15,7 @@ LU_AMB<-function(
   #specifics to this dataset
   stackRS<-raster::stack("./ProjectFiles/PembaFiresAndPredictors.tif")
   names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
-  rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
+  #rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
   
   #These will be used to assign working/fallow ag randomly
   FallowRechargeTime<-FallowTime
@@ -44,8 +44,13 @@ LU_AMB<-function(
   
   
   #stack all starting layers together
-  rstack<-stack(rProbBurn,rLndCvr2018 )
-  names(rstack)<-c("ProbBurn","LndCvr2018") #set the names
+  
+  #changed below for a diatance to road layer instead of prob of fire layer
+  #rstack<-stack(rProbBurn,rLndCvr2018 )
+  #names(rstack)<-c("ProbBurn","LndCvr2018") #set the names
+  
+  rstack<-stack(stackRS$roads_proximity,rLndCvr2018 )
+  names(rstack)<-c("roads_proximity","LndCvr2018") #set the names
   rstack$LndCvr2018[]<- as.integer(rstack$LndCvr2018)[] #this should be an integer. 1==ag,2==burnable, 3==fallow, 4==unburnable
   
   ######CROP for trialing
@@ -125,7 +130,7 @@ LU_AMB<-function(
     if(length(which(neighborCells %in% which(unburnablelayer[]==1)))>0){#only subtract if there's something to subtract!
       neighborCells<-neighborCells[-which(neighborCells %in% which(unburnablelayer[]==1))] }
     
-    #subtract our ag already
+    #subtract out ag already
     if(length(which(neighborCells %in% which(aglayer[]>=1)))>0){ #only subtract if there's something to subtract!
       neighborCells<-neighborCells[-which(neighborCells %in% which(aglayer[]>=1))] }
     
@@ -138,8 +143,15 @@ LU_AMB<-function(
     if(length(which(neighborCells %in% which(fallowlayer[]==FallowRechargeTime)))==0 & #if there's no fallowland nearby
        length(which(neighborCells %in% which(burnablelayer[]==1)))>0 ){ #and there IS burnable land
       #which one looks the best for burning
-      mostlikelyBurn<-neighborCells[which(rstack$ProbBurn[neighborCells] == max(rstack$ProbBurn[neighborCells]))]
+      #Replaced probability layer here with road proximity
+      #Substitute for distance to road layer based on small roads!
+      #mostlikelyBurn<-neighborCells[which(rstack$ProbBurn[neighborCells] == max(rstack$ProbBurn[neighborCells]))]
+      #rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+      
+      #remove below if using a probability of fire layer instead of distance to road!
+      mostlikelyBurn<-neighborCells[which(rstack$roads_proximity[neighborCells] == max(rstack$roads_proximity[neighborCells]))]
       rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+      
     }
     
     #add something here about moving somewhere new if there's nothing fallowed out or burnable around. Maybe?
@@ -182,9 +194,6 @@ LU_AMB<-function(
   
   }
   
-  
-
-
 outcomeLyrs<-length(Years) 
 Lyrs<-length(names(rstack))
 for(l in 1:outcomeLyrs){
@@ -194,7 +203,7 @@ for(l in 1:outcomeLyrs){
 
 newLyrnames<-c(paste0("LndCvr",Years))
 names(rstack)[(Lyrs+1):(Lyrs+outcomeLyrs)]<- newLyrnames 
-names(rstack[["NEWBurn.1"]])<-"NEWBurn"
+
   
 
  for(yr in 1:length(Years)){
@@ -208,14 +217,17 @@ names(rstack[["NEWBurn.1"]])<-"NEWBurn"
                                       ifelse(!is.na(rstack[[fllow]][]),3,
                                              ifelse(!is.na(rstack[[unbrnable]][]),4,NA))))
    
- } 
+ }
+nnb<-which(names(rstack)=="NEWBurn.1")
+names(rstack[[nnb]])<-"NEWBurn"
+rstack<<-rstack
 } 
-LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
+LU_AMB(YearsPast2018 = 3, #years (timesteps) to run model
        Wards = c("Kangagani"),  #character vector or wards to model. Default is full model
        FallowTime = 3, #time (in years) it takes for fallow land to recharge
        AgLimit = 2)
 
-  
+
  
   ###
   plotfun<-function(x){
@@ -230,10 +242,7 @@ LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
   cols<-c("#7f6000","#b6d7a8ff","#7f6000","#969696") #keep if all rotational ag should be the same color
   rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")}
   
-  plotfun(rstack$LndCvr2018)
-  plotfun(rstack$LndCvr2019)
-  plotfun(rstack$LndCvr2020)
-  plotfun(rstack$LndCvr2021)
+ 
   
   x<-stack(rstack$LndCvr2018,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
   animate(x,col.regions=cols, xlab="", ylab="")
@@ -250,3 +259,8 @@ names(rstack)
 raster::plot(rstack$burnable2019)
 raster::plot(rstack$burnable2020)
 raster::plot(rstack$burnable2021)
+
+
+
+
+
