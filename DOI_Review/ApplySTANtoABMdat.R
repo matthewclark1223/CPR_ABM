@@ -191,7 +191,7 @@ mod_time = stan_d$fake_ts
 df_sample = data.frame(sample_prop, sample_time)
 df_fit = data.frame(mod_median, mod_low, mod_high, mod_time)
 
-draws<-as_tibble(posts$fake_I[,,2])%>%add_column(draw=1:1000)
+draws<-as_tibble(posts$fake_I[,,2])%>%add_column(draw=1:4000)
 names(draws)[1:100]<-1:100
 
 draws <-  pivot_longer(draws, c(1:100) , names_to = "mod_time")
