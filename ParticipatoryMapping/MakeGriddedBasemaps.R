@@ -423,3 +423,65 @@ ggmap(map) +
                                     style = north_arrow_fancy_orienteering)+
   ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
                               pad_y = unit(0.3, "in"), )
+
+
+
+
+#Kilindi
+map <-get_googlemap(center = c(lon = 39.71, lat = -5.265),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Kilindi"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Kilindi"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+
+
+
+#Wesha
+map <- get_googlemap(center = c(lon = 39.735, lat = -5.221),scale=2, zoom=14, maptype = "hybrid")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Wesha"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Wesha"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+#Makangale
+map <- get_googlemap(center = c(lon = 39.702, lat = -4.902),scale=2, zoom=14, maptype = "satellite")
+map <- ggmap_bbox(map) #this function created above
+
+ggmap(map) + 
+  coord_sf(crs = st_crs(3857)) + # force the ggplot2 map to be in 3857
+  geom_sf(data = filter(Pemba_3857,NAME_3 =="Makangale"), 
+          color=alpha("white",0.6),size=1,fill=NA, inherit.aes = FALSE)+
+  geom_sf(data = filter(Fishnet,NAME_3 =="Makangale"), 
+          color=alpha("lightgrey",0.8),size=0.3,fill=NA, inherit.aes = FALSE)+
+  theme_void()+
+  ggspatial::annotation_north_arrow(location = "bl", which_north = "true", 
+                                    pad_x = unit(0., "in"), pad_y = unit(0.4, "in"), 
+                                    style = north_arrow_fancy_orienteering)+
+  ggspatial::annotation_scale(location = "bl", width_hint = 0.2, text_col= "white",
+                              pad_y = unit(0.3, "in"), )
+
+
+
+
