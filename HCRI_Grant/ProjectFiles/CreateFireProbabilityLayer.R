@@ -1,13 +1,7 @@
 library(raster)
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m_V2.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R3.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
-#Make function to reproject LC to the stack DF
-preprocess_raster<-function(raster,method){
-  if(method=="ngb"){ x<-raster::projectRaster(raster,crs=crs(stackRS),method="ngb")}
-  if(method=="bilinear"){ x<-raster::projectRaster(raster,crs=crs(stackRS))}
-  return(resample(x,stackRS,method=method))
-}
-Pem2018LC<-preprocess_raster(Pem2018LC,method="ngb")
+
 Pem2018LC<-mask(Pem2018LC,stackRS$PembaFiresAndPredictors.1)
 stackRS<-stack(stackRS,Pem2018LC)
 names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019","LandCover2018")
@@ -25,8 +19,8 @@ stdize<-function(x){
 #StackDF<-StackDF%>%filter(LandCover2018%in%c("5","1"))%>% #Only include burnable pixels
  # mutate(slope_std=stdize(slope),road_proximity_std=stdize(roads_proximity))
 
-#Only include high forest!
-StackDF<-StackDF%>%filter(LandCover2018%in%c("1"))%>% #Only include burnable pixels
+#Only include Coral Rag!
+StackDF<-StackDF%>%filter(LandCover2018%in%c("5"))%>% #Only include burnable pixels
   mutate(slope_std=stdize(slope),road_proximity_std=stdize(roads_proximity))
 
 

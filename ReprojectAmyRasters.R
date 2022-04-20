@@ -1,10 +1,13 @@
 library(raster)
+library(sf)
 #fires
-r_merged<-raster::raster("ESA_Small_Fires_2019_Pemba.tif")
+r_merged<-raster::raster("~/Pemba_Project/ESA_Small_Fires_2019_Pemba_CERTAIN.tif")
 #slope
 slope<-raster::raster("~/Pemba_Project/AmyData/slope.tif")
-#Distance to road
-RoadProx<-raster::raster("~/Pemba_Project/AmyData/roads_proximity.tif")
+
+#Distance to road NOT FROM AMY
+RoadProx<-raster::raster("~/Pemba_Project/PemmyDistRdsCLEAN.tif")
+
 #soils
 soils<-raster::raster("~/Pemba_Project/AmyData/soil_cat.tif")
 
@@ -15,10 +18,9 @@ preprocess_raster<-function(raster,method){
   return(resample(x,r_merged,method=method))
 }
 
-RoadProxRS<-preprocess_raster(raster=RoadProx,method="bilinear")
 SlopeRS<-preprocess_raster(slope,method="bilinear")
-#beginCluster()
+
 SoilRS<-preprocess_raster(soils,method="ngb")
-#endCluster()
-stackRS <- raster::stack(RoadProxRS, SlopeRS,SoilRS,r_merged)
+
+stackRS <- raster::stack(RoadProx, SlopeRS,SoilRS,r_merged)
 raster::writeRaster(stackRS,filename = "PembaFiresAndPredictors.tif",options="INTERLEAVE=BAND", overwrite=TRUE)

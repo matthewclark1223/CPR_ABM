@@ -5,28 +5,33 @@ library(tidyverse)
 
 LU_AMB<-function(
   YearsPast2018 = 3, #years (timesteps) to run model
-  Wards = "Kangagani",  #character vector or wards to model. Default is full model
-  FallowTime = 3, #time (in years) it takes for fallow land to recharge
-  AgLimit = 2 #Time (in years) land can be farmed in-between fallow periods
+  Wards = "Kojani",  #character vector or wards to model. Default is full model
+  FallowTime = 4, #time (in years) it takes for fallow land to recharge
+  AgLimit = 1 #Time (in years) land can be farmed in-between fallow periods
 ){
   
   Years<-(1:YearsPast2018)+2018
   
   #specifics to this dataset
-  stackRS<-raster::stack("./ProjectFiles/PembaFiresAndPredictors.tif")
+  stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
   names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
   #rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
   
   #These will be used to assign working/fallow ag randomly
   FallowRechargeTime<-FallowTime
   AgLimit<-AgLimit
-  propstrt<-AgLimit/FallowRechargeTime
+  
+  propstrt<-FallowRechargeTime/(AgLimit+FallowRechargeTime) #probability that any ag pixel is fallow at the start
+  
+  
+  
   
   #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R3.tif")
+  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
   
   rLndCvr2018<-Pem2018LC
-  rLndCvr2018<-Pem2018LC
+  
+  
   rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)), #assign 100 to Fallow 
                                                replace=T,prob=c(propstrt,1-propstrt)) #2 is productive ag
   #0 = Mangrove
@@ -63,7 +68,7 @@ LU_AMB<-function(
     PembaSUB <- Pemba
   }
   
-
+  
   r2 <- crop(rstack, extent(PembaSUB))
   rstack <- mask(r2, PembaSUB)
   
@@ -76,7 +81,7 @@ LU_AMB<-function(
   unburnable2018<-which(rstack$LndCvr2018[]==4) #unburnable from 2018 land cover layer
   rstack$ag2018<-NA #Make all NA to start
   rstack$ag2018[ag2018]<-sample(1:AgLimit,size=length(ag2018),replace=T) #equally assign all possible ag years
-
+  
   
   #Make starting fallow layer
   rstack$fallow2018<-NA #Make all NA to start
@@ -90,19 +95,19 @@ LU_AMB<-function(
   rstack$Unburnable2018<-NA
   rstack$Unburnable2018[unburnable2018]<-1
   
- NewLayersNum<-4*YearsPast2018 #4 here is ag, fallow, unurnable, & burnable
- for(l in 1:NewLayersNum){
-   rstack[[6+l]]<-NA
-   names(rstack[[6]])<-"Unburnable2018"
-   
- }
- 
- newlayernames<-c(paste0("ag",Years),paste0("fallow",Years),paste0("burnable",Years),paste0("Unburnable",Years))
- names(rstack)[7:(6+NewLayersNum)]<- newlayernames 
- 
- #make a container vector for the  burn predictions
- rstack$NEWBurn<-0 #create a 0's raster with same extent as existing for new conversions at each time step
- 
+  NewLayersNum<-4*YearsPast2018 #4 here is ag, fallow, unurnable
+  for(l in 1:NewLayersNum){
+    rstack[[6+l]]<-NA
+    names(rstack[[6]])<-"Unburnable2018"
+    
+  }
+  
+  newlayernames<-c(paste0("ag",Years),paste0("fallow",Years),paste0("burnable",Years),paste0("Unburnable",Years))
+  names(rstack)[7:(6+NewLayersNum)]<- newlayernames 
+  
+  #make a container vector for the  burn predictions
+  rstack$NEWBurn<-0 #create a 0's raster with same extent as existing for new conversions at each time step
+  
   for(y in 1:length(Years)){
     
     names(rstack)[7:(6+NewLayersNum)]<- newlayernames #Not sure why these keep changing
@@ -115,150 +120,150 @@ LU_AMB<-function(
     
     rstack$NEWBurn[]<-0
     
-  
-  NewFallow<-which(aglayer[]==2)#which ones are going fallow now?
-  
-  for(i in 1:length(NewFallow)){
     
-    neighborCells<-adjacent(rstack, cells=NewFallow[i], directions=8, pairs=TRUE)[,2] #Cells neighboring each new fallow cell
+    NewFallow<-which(aglayer[]==AgLimit)#which ones are going fallow now?
     
-    #subtract cells already burned this timestep
-    if(length(which(neighborCells %in% which(rstack$NEWBurn[]==1)))>0){#only subtract if there's something to subtract!
-      neighborCells<-neighborCells[-which(neighborCells %in% which(rstack$NEWBurn[]==1))] }
-    
-    #subtract out unburnable
-    if(length(which(neighborCells %in% which(unburnablelayer[]==1)))>0){#only subtract if there's something to subtract!
-      neighborCells<-neighborCells[-which(neighborCells %in% which(unburnablelayer[]==1))] }
-    
-    #subtract out ag already
-    if(length(which(neighborCells %in% which(aglayer[]>=1)))>0){ #only subtract if there's something to subtract!
-      neighborCells<-neighborCells[-which(neighborCells %in% which(aglayer[]>=1))] }
-    
-    #subtract out fallow under fallow recharge time
-    if(length(which(neighborCells %in% which(fallowlayer[]<FallowRechargeTime)))>0){ #only subtract if there's something to subtract!
-      neighborCells<-neighborCells[-which(neighborCells %in% which(fallowlayer[]<FallowRechargeTime))] }
-    
-    #If there's no plots nearby at the fallow limit, then we have to chop some trees if theyre around
-    
-    if(length(which(neighborCells %in% which(fallowlayer[]==FallowRechargeTime)))==0 & #if there's no fallowland nearby
-       length(which(neighborCells %in% which(burnablelayer[]==1)))>0 ){ #and there IS burnable land
-      #which one looks the best for burning
-      #Replaced probability layer here with road proximity
-      #Substitute for distance to road layer based on small roads!
-      #mostlikelyBurn<-neighborCells[which(rstack$ProbBurn[neighborCells] == max(rstack$ProbBurn[neighborCells]))]
-      #rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+    for(i in 1:length(NewFallow)){
       
-      #remove below if using a probability of fire layer instead of distance to road!
-      mostlikelyBurn<-neighborCells[which(rstack$roads_proximity[neighborCells] == max(rstack$roads_proximity[neighborCells]))]
-      rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+      neighborCells<-adjacent(rstack, cells=NewFallow[i], directions=8, pairs=TRUE)[,2] #Cells neighboring each new fallow cell
+      
+      #subtract cells already burned this timestep
+      if(length(which(neighborCells %in% which(rstack$NEWBurn[]==1)))>0){#only subtract if there's something to subtract!
+        neighborCells<-neighborCells[-which(neighborCells %in% which(rstack$NEWBurn[]==1))] }
+      
+      #subtract out unburnable
+      if(length(which(neighborCells %in% which(unburnablelayer[]==1)))>0){#only subtract if there's something to subtract!
+        neighborCells<-neighborCells[-which(neighborCells %in% which(unburnablelayer[]==1))] }
+      
+      #subtract out ag already
+      if(length(which(neighborCells %in% which(aglayer[]>=1)))>0){ #only subtract if there's something to subtract!
+        neighborCells<-neighborCells[-which(neighborCells %in% which(aglayer[]>=1))] }
+      
+      #subtract out fallow under fallow recharge time
+      if(length(which(neighborCells %in% which(fallowlayer[]<FallowRechargeTime)))>0){ #only subtract if there's something to subtract!
+        neighborCells<-neighborCells[-which(neighborCells %in% which(fallowlayer[]<FallowRechargeTime))] }
+      
+      #If there's no plots nearby at the fallow limit, then we have to chop some trees if theyre around
+      
+      if(length(which(neighborCells %in% which(fallowlayer[]==FallowRechargeTime)))==0 & #if there's no fallowland nearby
+         length(which(neighborCells %in% which(burnablelayer[]==1)))>0 ){ #and there IS burnable land
+        #which one looks the best for burning
+        #Replaced probability layer here with road proximity
+        #Substitute for distance to road layer based on small roads!
+        #mostlikelyBurn<-neighborCells[which(rstack$ProbBurn[neighborCells] == max(rstack$ProbBurn[neighborCells]))]
+        #rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+        
+        #remove below if using a probability of fire layer instead of distance to road!
+        mostlikelyBurn<-neighborCells[which(rstack$roads_proximity[neighborCells] == min(rstack$roads_proximity[neighborCells]))]
+        rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+        
+      }
+      
+      #add something here about moving somewhere new if there's nothing fallowed out or burnable around. Maybe?
+      
+      #Show progress
+      print((i/length(NewFallow))*100)
+      
       
     }
     
-    #add something here about moving somewhere new if there's nothing fallowed out or burnable around. Maybe?
+    #convert new burn to ag and advance ag/fallow cycles
+    z<-Years[y]
+    #rstack[[match(paste0("fallow",z),names(rstack))]][]<-fallowlayer[]
+    #rstack[[match(paste0("ag",z),names(rstack))]][]<-aglayer[]
     
-    #Show progress
-    print((i/length(NewFallow))*100)
+    rstack[[match(paste0("burnable",z),names(rstack))]][]<-burnablelayer[] #Copy over last year's burnable veg
+    rstack[[match(paste0("burnable",z),names(rstack))]][which(rstack$NEWBurn[]==1)]<-NA #Remove the ones that we predict burned
+    
+    if(AgLimit>=5){rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==4)]<-5L}
+    if(AgLimit>=4){rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==3)]<-4L}
+    if(AgLimit>=3){rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==2)]<-3L}
+    if(AgLimit>=2){rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==1)]<-2L} #Ag that were 1st year ag last year are now 2nd year ag
+    rstack[[match(paste0("ag",z),names(rstack))]][which(rstack$NEWBurn[]==1)]<-1L #make those ones into 1st year agriculture
+    
+    rstack[[match(paste0("ag",z),names(rstack))]][which(fallowlayer[]==FallowRechargeTime)]<-1L #Ones that were at the end of the fallow cycle last year are ag now
+    
+    
+    rstack[[match(paste0("Unburnable",z),names(rstack))]][]<-unburnablelayer[] #unconvertable stays unconvertable
+    
+    
+    
+    
+    
+    
+    #rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==3)]<-NA  
+    if(FallowRechargeTime>=5){rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==4)]<-5L}#NEW
+    if(FallowRechargeTime>=4){rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==3)]<-4L} #NEW
+    if(FallowRechargeTime>=3){rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==2)]<-3L} #2nd year fallow becomes 3rd year
+    if(FallowRechargeTime>=2){rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==1)]<-2L}
+    rstack[[match(paste0("fallow",z),names(rstack))]][which(aglayer[]==AgLimit)]<-1L #if they are at the end of the Ag limit, then they become fallow
+    
+    rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==FallowRechargeTime)]<-NA
+    rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==AgLimit)]<-NA
     
     
   }
   
-  #convert new burn to ag and advance ag/fallow cycles
-  z<-Years[y]
-  #rstack[[match(paste0("fallow",z),names(rstack))]][]<-fallowlayer[]
-  #rstack[[match(paste0("ag",z),names(rstack))]][]<-aglayer[]
-  
-  rstack[[match(paste0("burnable",z),names(rstack))]][]<-burnablelayer[] #Copy over last year's burnable veg
-  rstack[[match(paste0("burnable",z),names(rstack))]][which(rstack$NEWBurn[]==1)]<-NA #Remove the ones that we predict burned
-  rstack[[match(paste0("ag",z),names(rstack))]][which(rstack$NEWBurn[]==1)]<-1L #make those ones into 1st year agriculture
-  rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==1)]<-2L #ones that were 1st year ag last year are now 2nd year ag
-  rstack[[match(paste0("ag",z),names(rstack))]][which(fallowlayer[]==FallowRechargeTime)]<-1L #Ones that were at the end of the fallow cycle last year are ag now
-  
-  
-  rstack[[match(paste0("Unburnable",z),names(rstack))]][]<-unburnablelayer[]
-  
-  rstack[[match(paste0("fallow",z),names(rstack))]][which(aglayer[]==AgLimit)]<-1L
-  
-  
-  
-  
-  #rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==3)]<-NA  
-  
-  
-  rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==2)]<-3L
-  rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==1)]<-2L
-  
-  
-  rstack[[match(paste0("fallow",z),names(rstack))]][which(fallowlayer[]==FallowRechargeTime)]<-NA
-  rstack[[match(paste0("ag",z),names(rstack))]][which(aglayer[]==AgLimit)]<-NA
-  
-  
+  outcomeLyrs<-length(Years) 
+  Lyrs<-length(names(rstack))
+  for(l in 1:outcomeLyrs){
+    rstack[[Lyrs+l]]<-NA
+    
   }
   
-outcomeLyrs<-length(Years) 
-Lyrs<-length(names(rstack))
-for(l in 1:outcomeLyrs){
-  rstack[[Lyrs+l]]<-NA
+  newLyrnames<-c(paste0("LndCvr",Years))
+  names(rstack)[(Lyrs+1):(Lyrs+outcomeLyrs)]<- newLyrnames 
   
-}
-
-newLyrnames<-c(paste0("LndCvr",Years))
-names(rstack)[(Lyrs+1):(Lyrs+outcomeLyrs)]<- newLyrnames 
-
   
-
- for(yr in 1:length(Years)){
-   ag<-which(names(rstack)==paste0("ag",Years[yr]))
-   brnable<-which(names(rstack)==paste0("burnable",Years[yr]))
-   fllow<-which(names(rstack)==paste0("fallow",Years[yr]))
-   unbrnable<-which(names(rstack)==paste0("Unburnable",Years[yr]))
-   
-   rstack[[Lyrs+yr]][]<-ifelse(!is.na(rstack[[ag]][]),1,
-                               ifelse(!is.na(rstack[[brnable]][]),2,
-                                      ifelse(!is.na(rstack[[fllow]][]),3,
-                                             ifelse(!is.na(rstack[[unbrnable]][]),4,NA))))
-   
- }
-nnb<-which(names(rstack)=="NEWBurn.1")
-names(rstack[[nnb]])<-"NEWBurn"
-rstack<<-rstack
+  
+  for(yr in 1:length(Years)){
+    ag<-which(names(rstack)==paste0("ag",Years[yr]))
+    brnable<-which(names(rstack)==paste0("burnable",Years[yr]))
+    fllow<-which(names(rstack)==paste0("fallow",Years[yr]))
+    unbrnable<-which(names(rstack)==paste0("Unburnable",Years[yr]))
+    
+    rstack[[Lyrs+yr]][]<-ifelse(!is.na(rstack[[ag]][]),1,
+                                ifelse(!is.na(rstack[[brnable]][]),2,
+                                       ifelse(!is.na(rstack[[fllow]][]),3,
+                                              ifelse(!is.na(rstack[[unbrnable]][]),4,NA))))
+    
+  }
+  nnb<-which(names(rstack)=="NEWBurn.1")
+  names(rstack[[nnb]])<-"NEWBurn"
+  rstack<<-rstack
 } 
-LU_AMB(YearsPast2018 = 3, #years (timesteps) to run model
-       Wards = c("Kangagani"),  #character vector or wards to model. Default is full model
-       FallowTime = 3, #time (in years) it takes for fallow land to recharge
-       AgLimit = 2)
 
 
- 
-  ###
-  plotfun<-function(x){
-  r <- x
-  r[]<-as.factor(r[])
-  rat <- levels(r)[[1]]
-  rat[["landcover"]] <- c("Productive","Fallow","Convertable", "Non-convertable")
-  levels(r) <- rat
-  
-  ## Plot
-  cols<-c("#ffd966","#b6d7a8ff","#7f6000","#969696")
-  cols<-c("#7f6000","#b6d7a8ff","#7f6000","#969696") #keep if all rotational ag should be the same color
-  rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")}
-  
- 
-  
-  x<-stack(rstack$LndCvr2018,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
-  animate(x,col.regions=cols, xlab="", ylab="")
-  ###
+###
+#plotfun<-function(x){
+#r <- x
+#r[]<-as.factor(r[])
+#rat <- levels(r)[[1]]
+#rat[["landcover"]] <- c("Productive","Fallow","Convertable", "Non-convertable")
+#levels(r) <- rat
+
+## Plot
+#cols<-c("#ffd966","#b6d7a8ff","#7f6000","#969696")
+#cols<-c("#7f6000","#b6d7a8ff","#7f6000","#969696") #keep if all rotational ag should be the same color
+#rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")}
 
 
-LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
-       Wards = c("Makangale","Msuka Magharibi","Msuka Mashariki"),  #character vector or wards to model. Default is full model
-       FallowTime = 3, #time (in years) it takes for fallow land to recharge
-       AgLimit = 2
-  
-)
-names(rstack)
-raster::plot(rstack$burnable2019)
-raster::plot(rstack$burnable2020)
-raster::plot(rstack$burnable2021)
+
+#x<-stack(rstack$LndCvr2018,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
+#animate(x,col.regions=cols, xlab="", ylab="")
+###
+
+
+#LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
+#      Wards = c("Makangale","Msuka Magharibi","Msuka Mashariki"),  #character vector or wards to model. Default is full model
+#     FallowTime = 3, #time (in years) it takes for fallow land to recharge
+#    AgLimit = 2
+
+#)
+#names(rstack)
+#raster::plot(rstack$burnable2019)
+#raster::plot(rstack$burnable2020)
+#raster::plot(rstack$burnable2021)
 
 
 

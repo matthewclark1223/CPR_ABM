@@ -12,6 +12,8 @@ gadm3_3 <- readRDS("~/Pemba_Project/MapData/gadm36_TZA_3_sf.rds")
 Pemba <- st_crop(gadm3_3, xmin = 39.5, xmax = 39.9,
                  ymin = -5.6, ymax = -4.75)
 
+st_write(Pemba, "PembaShapeFile.shp")
+
 ggplot() + geom_sf(data = Pemba) + theme_bw()
 Pemba[Pemba$NAME_3 == "Mgogoni" & Pemba$NAME_2 =="Chake",]$NAME_3<-"Mgogoni_2" #duplicate "mgogni" ward Does NOT have Cofma
 

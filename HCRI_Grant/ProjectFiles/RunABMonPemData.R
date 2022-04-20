@@ -2,9 +2,10 @@ library(raster)
 library(sf)
 library(tidyverse)
 #specifics to this dataset
-stackRS<-raster::stack("PembaFiresAndPredictors.tif")
+setwd()
+stackRS<-raster::stack("./ProjectFiles/PembaFiresAndPredictors.tif")
 names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
-rProbBurn<-raster::raster("PredFire2019.tif")
+rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
 
 #These will be used to assign working/fallow ag randomly
 FallowRechargeTime<-3
@@ -12,19 +13,23 @@ AgLimit<-2
 propstrt<-AgLimit/FallowRechargeTime
 
 #Import 2018 Lc Data
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/Pem_2018_LC_20m.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R3.tif")
 
 rLndCvr2018<-Pem2018LC
-rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)),
-                                             replace=T,prob=c(propstrt,1-propstrt))
-####CORAL RAG BURNABLE
-#rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable", 
- #                            ifelse(rLndCvr2018[] == 2,"Agriculture",
-  #                                  ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
-### ONLY HF BURNABLE
-rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(1,5),"Burnable", 
-                                ifelse(rLndCvr2018[] == 2,"Agriculture",
-                                       ifelse(rLndCvr2018[] == 100,"Bare","Unburnable")))) #bare means fallow here
+rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)), #assign 100 to Fallow 
+                                             replace=T,prob=c(propstrt,1-propstrt)) #2 is productive ag
+#0 = Mangrove
+#1 = HF
+#2 = agriculture
+#3 = Urban
+#4 = Bare
+#5 = Coral rag
+#6 = OWV/agroforestry
+#7 = water
+### ONLY CORAL RAG BURNABLE
+rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(0,1,3,4,6,7),"Unburnable", #everything besides ag, fallow, and CR
+                                ifelse(rLndCvr2018[] == 2,"Agriculture", #productive ag
+                                       ifelse(rLndCvr2018[] == 100,"Fallow","Burnable")))) #Fallow and CR
 
 
 #stack all starting layers together
@@ -35,7 +40,7 @@ rstack$LndCvr2018<- as.integer(rstack$LndCvr2018) #this should be an integer
 ######CROP for trialing
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
 #PembaSUB <- Pemba%>%filter(NAME_3 %in% c("Makangale","Msuka Magharibi","Msuka Mashariki"))
-PembaSUB <- Pemba%>%dplyr::filter(NAME_2=="Micheweni")
+PembaSUB <- Pemba%>%dplyr::filter(NAME_3=="Kangagani")
 #ggplot() + geom_sf(data = PembaSUB)+ geom_sf_label(data=PembaSUB,aes(label=NAME_3),size=3)+ theme_bw()
 r2 <- crop(rstack, extent(PembaSUB))
 rstack <- mask(r2, PembaSUB)
@@ -44,7 +49,7 @@ rstack <- mask(r2, PembaSUB)
 
 ############### model copied from simple abm
 ag2018<-which(rstack$LndCvr2018[]==1) #ag from 2018 land cover layer
-burned2019<-which(rstack$Burn2019[]==1) #get cell numbers that burned in 2019
+#burned2019<-which(rstack$Burn2019[]==1) #get cell numbers that burned in 2019
 fallow2018<-which(rstack$LndCvr2018[]==2) #fallow/bare from 2018 land cover layer
 burnable2018<-which(rstack$LndCvr2018[]==3) #burnable from 2018 landcover layer
 unburnable2018<-which(rstack$LndCvr2018[]==4) #unburnable from 2018 land cover layer
