@@ -9,15 +9,15 @@ LU_AMB(YearsPast2018 = 1, #years (timesteps) to run model
        AgLimit = 2)
 
 #Clip to Project area to get rid of NAs outside
-kangagani<-filter(Pemba,NAME_3%in%c("Kangagani","Kojani"))
-NewBurn_clipped<- crop(rstack$NEWBurn, extent(kangagani))
-NewBurn_clipped <- mask(NewBurn_clipped, kangagani)
+ValidationArea<-filter(Pemba,NAME_3%in%c("Kangagani","Kojani"))
+NewBurn_clipped<- crop(rstack$NEWBurn, extent(ValidationArea))
+NewBurn_clipped <- mask(NewBurn_clipped, ValidationArea)
 
 #Load 2019 landcover
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
-LC2019<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2019.tif")
+LC2019<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif")
 #Load 2018 landcover
-LC2018<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
+LC2018<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
 #Make everything that's not Ag 0
 LC2019[]<-ifelse(LC2019[]==2,1,0)
 
@@ -27,13 +27,13 @@ LC2019[]<-ifelse(LC2019[]==1 & LC2018[]==5,1,0)
 
 
 #Clip to kanganani
-LC2019_clipped<- crop(LC2019, extent(kangagani))
-LC2019_clipped <- mask(LC2019_clipped, kangagani)
+LC2019_clipped<- crop(LC2019, extent(ValidationArea))
+LC2019_clipped <- mask(LC2019_clipped, ValidationArea)
 
 
 
-p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 20, sp=TRUE), byid=TRUE, width=0.005) 
-p<-crop(p, extent(kangagani))
+p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 100, sp=TRUE), byid=TRUE, width=0.003) 
+p<-crop(p, extent(ValidationArea))
 
 x<-st_as_sf(p)
 
@@ -47,9 +47,9 @@ NewBurn_df<-raster::as.data.frame(NewBurn_clipped, xy = TRUE)
 NewBurn_df<-na.omit(NewBurn_df)
 names(NewBurn_df)[3]<-"layer"
 
-ggplot(data = kangagani)+
+ggplot(data = ValidationArea)+
   geom_sf(fill=NA)+
-  geom_sf(data=x)+
+  #geom_sf(data=x)+
   geom_tile(data=filter(LC2019_clipped_df,layer==1),aes(x=x,y=y),fill="purple",alpha=0.5)+
   geom_tile(data=filter(NewBurn_df,layer==1),aes(x=x,y=y),fill="red",alpha=0.5)+
   theme_bw()
@@ -69,9 +69,9 @@ ggplot(df,aes(x=Obs,y=Pred))+
 cor(df$Obs,df$Pred)
 
 #Clip to kanganani
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
-LC_clipped<- crop(Pem2018LC, extent(kangagani))
-LC_clipped <- mask(LC_clipped, kangagani)
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
+LC_clipped<- crop(Pem2018LC, extent(ValidationArea))
+LC_clipped <- mask(LC_clipped, ValidationArea)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
 names(LC_clipped_df)[3]<-"layer"
 
@@ -81,7 +81,7 @@ LC_clipped_df<-na.omit(LC_clipped_df)
 #plot it
 cols <- c("0" = "#c7e9c0", "1" = "#00441b", "2" = "#fdbf6f", "3" = "#4d4d4d",
           "4"= "#ffffbf","5"="lightpink","6"="#41ab5d","7"="#4575b4")
-ggplot(data = kangagani)+
+ggplot(data = ValidationArea)+
   
   geom_tile(data = LC_clipped_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
@@ -92,15 +92,10 @@ ggplot(data = kangagani)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2018); Kojani")+
+  ggtitle("Landcover classification estimates (2018); ValidationArea")+
   
   theme_bw()
 
 
 
-z<-data.frame(real=fires_clipped_df$layer,pred=NewBurn_df$layer)
-cor(z$real,z$pred)
-ggplot(data=z,aes(x=real,y=pred))+geom_jitter()
 
-sum(z$real)
-sum(z$pred)

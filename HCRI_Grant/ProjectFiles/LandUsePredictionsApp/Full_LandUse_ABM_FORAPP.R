@@ -13,7 +13,7 @@ LU_AMB<-function(
   Years<-(1:YearsPast2018)+2018
   
   #specifics to this dataset
-  stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
+  stackRS<-raster::stack("PembaFiresAndPredictors.tif")
   names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
   #rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
   
@@ -27,7 +27,7 @@ LU_AMB<-function(
   
   
   #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
+  Pem2018LC<-raster::raster("pemmyRF2018_R5.tif")
   
   rLndCvr2018<-Pem2018LC
   
@@ -59,7 +59,7 @@ LU_AMB<-function(
   rstack$LndCvr2018[]<- as.integer(rstack$LndCvr2018)[] #this should be an integer. 1==ag,2==burnable, 3==fallow, 4==unburnable
   
   ######CROP for trialing
-  Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
+  Pemba <- read_sf("PembaShapeFile.shp")
   
   if(!is.null(Wards)){ #If wards isn't null, filter by selected wards
     PembaSUB <- Pemba%>%filter(NAME_3 %in% Wards)

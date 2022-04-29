@@ -1,5 +1,7 @@
 library(raster)
-Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/UnProcessed_pemmyRF2019.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018UnProcessed.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019UnProcessed.tif")
+Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2021UnProcessed.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -7,15 +9,26 @@ preprocess_raster<-function(raster,method){
   if(method=="bilinear"){ x<-raster::projectRaster(raster,crs=crs(fireRS))}
   return(resample(x,fireRS,method=method))
 }
+#2018
+Pem2018LC<-preprocess_raster(Pem2018LC,method="ngb")
+Pem2018LC<-raster::mask(Pem2018LC,stackRS$PembaFiresAndPredictors.1)
+
+#2019
 Pem2019LC<-preprocess_raster(Pem2019LC,method="ngb")
 Pem2019LC<-raster::mask(Pem2019LC,stackRS$PembaFiresAndPredictors.1)
-plot(Pem2019LC)
-raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2019.tif",overwrite=T)
 
+#2021
+Pem2021LC<-preprocess_raster(Pem2021LC,method="ngb")
+Pem2021LC<-raster::mask(Pem2021LC,stackRS$PembaFiresAndPredictors.1)
+
+
+raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif",overwrite=T)
+raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif",overwrite=T)
+raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2021.tif",overwrite=T)
 
 
 ###
-Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2019.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif")
 Pem2019LC_df<-raster::as.data.frame(Pem2019LC, xy = TRUE) 
 Pem2019LC_df<-na.omit(Pem2019LC_df)
 names(Pem2019LC_df)[3]<-"layer"
@@ -30,7 +43,7 @@ names(Pem2019LC_df)[3]<-"layer"
 cols <- c("0" = "#c7e9c0", "1" = "#00441b", "2" = "#fdbf6f", "3" = "#4d4d4d",
           "4"= "#ffffbf","5"="#e7298a","6"="#41ab5d","7"="#4575b4")
 Pemba <- sf::read_sf("~/Pemba_Project/PembaShapeFile.shp")
-library(tidyverse)
+#library(tidyverse)
 ggplot(data = Pemba)+
   geom_tile(data = Pem2019LC_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
@@ -46,7 +59,7 @@ ggplot(data = Pemba)+
 
 #Clip to kanganani
 kojani<-filter(Pemba,NAME_3=="Kojani")
-LC_clipped<- crop(Pem2019LC, extent(kojani))
+LC_clipped<- raster::crop(Pem2019LC, extent(kojani))
 LC_clipped <- mask(LC_clipped, kojani)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
 names(LC_clipped_df)[3]<-"layer"
@@ -55,7 +68,7 @@ LC_clipped_df<-na.omit(LC_clipped_df)
 
 
 #plot it
-ggplot(data = kojani)+
+ggplot(data =kojani)+
   
   geom_tile(data = LC_clipped_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
@@ -64,7 +77,32 @@ ggplot(data = kojani)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2019); Kojani")+
+  ggtitle("Landcover classification estimates (2019); Kiuyu Mbuyuni")+
+  
+  theme_bw()
+
+#kangagani
+#Clip to kanganani
+Kangagani<-filter(Pemba,NAME_3=="Kangagani")
+LC_clipped<- raster::crop(Pem2018LC, extent(Kangagani))
+LC_clipped <- mask(LC_clipped, Kangagani)
+LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
+names(LC_clipped_df)[3]<-"layer"
+
+LC_clipped_df<-na.omit(LC_clipped_df)
+
+
+#plot it
+ggplot(data =Kangagani)+
+  
+  geom_tile(data = LC_clipped_df , 
+            aes(x = x, y = y,fill=as.character(layer))) +
+  geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
+  scale_fill_manual(values = cols,labels = c("Mangrove","High Forest",
+                                             "Agriculture","Urban","Bare",
+                                             "Coral rag","Other woody veg &\nAgroforestry","Water"),
+                    name="Landcover")+
+  ggtitle("Landcover classification estimates (2018); Kangagani")+
   
   theme_bw()
 
@@ -91,3 +129,5 @@ ggplot(data = fundo)+
   ggtitle("Landcover classification estimates (2019); Fundo")+
   
   theme_bw()
+
+
