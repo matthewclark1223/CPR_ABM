@@ -6,8 +6,9 @@ library(tidyverse)
 LU_AMB<-function(
   YearsPast2018 = 3, #years (timesteps) to run model
   Wards = "Kojani",  #character vector or wards to model. Default is full model
-  FallowTime = 4, #time (in years) it takes for fallow land to recharge
-  AgLimit = 1 #Time (in years) land can be farmed in-between fallow periods
+  FallowTime = 3, #time (in years) it takes for fallow land to recharge
+  AgLimit = 2, #Time (in years) land can be farmed in-between fallow periods
+  IntrinsicExp = 3 #Intrinsic rate (percentage) of agricultural expansion into the CR forest (pop growth, market integration, etc)
 ){
   
   Years<-(1:YearsPast2018)+2018
@@ -23,7 +24,7 @@ LU_AMB<-function(
   
   propstrt<-FallowRechargeTime/(AgLimit+FallowRechargeTime) #probability that any ag pixel is fallow at the start
   
-  
+  IntrinsicExp=IntrinsicExp/100 # get this on a scale we can multiply by
   
   
   #Import 2018 Lc Data
@@ -154,8 +155,25 @@ LU_AMB<-function(
         #rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
         
         #remove below if using a probability of fire layer instead of distance to road!
-        mostlikelyBurn<-neighborCells[which(rstack$roads_proximity[neighborCells] == min(rstack$roads_proximity[neighborCells]))]
+        #just having distance to roads makes it "streaky".
+        #Need to have some way to first burn spots touching Ag land, then choose which is closest to the road. 
+        NC<-data.frame(Cell=rep(NA,length(neighborCells)),NumAg=rep(NA,length(neighborCells)))  #make df of neighbr cells
+        for(nc in 1:length(neighborCells)){ #for each of them
+          adj<-adjacent(rstack, cells=neighborCells[nc], directions=8, pairs=TRUE)[,2] ##what are the cells around it
+          #how many of those are ag in 2018. Should probably UPDATE to be most recent ag year!!
+          agSurr<-length(which(is.na(rstack[[3]][adj])==F)) 
+          NC[nc,1]<-neighborCells[nc] #keep naighbor cell number
+          NC[nc,2]<-agSurr} #add in the number of surroundign Ag pixels
+        NC<-NC[NC$NumAg==max(NC$NumAg,na.rm=T),] #only keep the ones that are equal to the max
+        
+        if(nrow(NC)>=2 & is.integer(NC$NumAg)==TRUE){
+          neighborCells<-NC$Cell} #reassign neighbor cells
+        
+        #Now choose which is closest to the road
+        mostlikelyBurn<-neighborCells[which(rstack$roads_proximity[neighborCells] == min(rstack$roads_proximity[neighborCells],na.rm=T))]
         rstack$NEWBurn[mostlikelyBurn]<-1 #burn it
+        
+        
         
       }
       
@@ -165,6 +183,39 @@ LU_AMB<-function(
       print((i/length(NewFallow))*100)
       
       
+    }
+    
+    
+    if(IntrinsicExp>0){
+      ###Now add in the intrinsic growth rate
+      numIntGrwth<-round(length(which(is.na(burnablelayer[])==FALSE))*IntrinsicExp) #how many should be converted
+      availIntGrwth<-which(rstack$NEWBurn[]==0 & is.na(burnablelayer[])==FALSE) #which ones are available 
+      availRDS<-data.frame(pix=availIntGrwth,val=rstack$roads_proximity[availIntGrwth],NBC=rep(NA,length(availIntGrwth))) # add these to the road distance values
+      
+      #get the number of ag neighbor cells for each one of these CR pixels THIS IS TOO SLOW
+      #This for loop has been replaced by the vectorized code with the xx below
+      #for(i in 1:nrow(availRDS)){
+       # cellz<-adjacent(aglayer, cells=availRDS[i ,]$pix, directions=8, pairs=TRUE)[,2]
+        #availRDS[i,]$NBC<-length(which(is.na(aglayer[cellz])==FALSE))
+    #  }
+      
+      ###
+      xx<-as.data.frame(adjacent(aglayer, cells=availRDS$pix, directions=8, pairs=TRUE))
+        
+      xx<-xx%>%filter(to %in%which(is.na(aglayer[])==FALSE))%>%
+        group_by(from)%>%count()%>%mutate(pix=from)
+        
+      xx<-base::merge(xx,availRDS,by="pix",all.y=TRUE)
+      xx[which(is.na(xx$n)==TRUE),]$n<-0
+      availRDS<-xx%>%select(pix,n,val)
+
+      availRDS<-dplyr::arrange(availRDS,desc(n),val ) #arrange first by the number of neighboring ag cells
+      #then by the road prox
+      
+      
+      IntGrwthConvert<-availRDS[1:numIntGrwth,]$pix #vector of the pixels to convert
+      rstack$NEWBurn[IntGrwthConvert]<-1 #convert them
+      ### end section of intrinsic growth
     }
     
     #convert new burn to ag and advance ag/fallow cycles

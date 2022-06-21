@@ -1,7 +1,7 @@
 library(raster)
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018UnProcessed.tif")
-Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019UnProcessed.tif")
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2021UnProcessed.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2018.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2019.tif")
+Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2021.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -45,9 +45,9 @@ cols <- c("0" = "#c7e9c0", "1" = "#00441b", "2" = "#fdbf6f", "3" = "#4d4d4d",
 Pemba <- sf::read_sf("~/Pemba_Project/PembaShapeFile.shp")
 #library(tidyverse)
 ggplot(data = Pemba)+
+  geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
   geom_tile(data = Pem2019LC_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
-  geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
   #geom_sf_label(aes(label=NAME_3))+
   scale_fill_manual(values = cols,labels = c("Mangrove","High Forest",
                                              "Agriculture","Urban","Bare",
@@ -129,5 +129,7 @@ ggplot(data = fundo)+
   ggtitle("Landcover classification estimates (2019); Fundo")+
   
   theme_bw()
+
+
 
 

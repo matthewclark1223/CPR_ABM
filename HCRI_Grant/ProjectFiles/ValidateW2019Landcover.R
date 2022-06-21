@@ -6,7 +6,8 @@ source("~/Pemba_Project/HCRI_Grant/ProjectFiles/Full_LandUse_ABM.R")
 LU_AMB(YearsPast2018 = 1, #years (timesteps) to run model
        Wards = c("Kangagani","Kojani"),  #character vector or wards to model. Default is full model
        FallowTime = 3, #time (in years) it takes for fallow land to recharge
-       AgLimit = 2)
+       AgLimit = 2,
+       IntrinsicExp = 1.5)
 
 #Clip to Project area to get rid of NAs outside
 ValidationArea<-filter(Pemba,NAME_3%in%c("Kangagani","Kojani"))
@@ -32,7 +33,7 @@ LC2019_clipped <- mask(LC2019_clipped, ValidationArea)
 
 
 
-p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 100, sp=TRUE), byid=TRUE, width=0.003) 
+p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 100, sp=TRUE), byid=TRUE, width=0.004)#50,6 
 p<-crop(p, extent(ValidationArea))
 
 x<-st_as_sf(p)
@@ -49,7 +50,7 @@ names(NewBurn_df)[3]<-"layer"
 
 ggplot(data = ValidationArea)+
   geom_sf(fill=NA)+
-  #geom_sf(data=x)+
+  geom_sf(data=x)+
   geom_tile(data=filter(LC2019_clipped_df,layer==1),aes(x=x,y=y),fill="purple",alpha=0.5)+
   geom_tile(data=filter(NewBurn_df,layer==1),aes(x=x,y=y),fill="red",alpha=0.5)+
   theme_bw()

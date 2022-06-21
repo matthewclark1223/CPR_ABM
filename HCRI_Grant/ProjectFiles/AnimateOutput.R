@@ -2,15 +2,16 @@ library(tidyverse)
 library(gganimate)
 library(gifski)
 source("~/Pemba_Project/HCRI_Grant/ProjectFiles/Full_LandUse_ABM.R")
-YearsPast2018 = 8
+YearsPast2018 = 3
 LU_AMB(YearsPast2018 = YearsPast2018, #years (timesteps) to run model
-       Wards = c("Kojani"),  #character vector or wards to model. Default is full model
-       FallowTime = 1, #time (in years) it takes for fallow land to recharge
-       AgLimit = 5)
+       Wards = c("Kangagani"),  #character vector or wards to model. Default is full model
+       FallowTime = 3, #time (in years) it takes for fallow land to recharge
+       AgLimit = 2,
+       IntrinsicExp = 2)
 
 
 LndCvr<-raster::stack(rstack[[c(2,(length(names(rstack))-YearsPast2018+1):length(names(rstack)))]])
-LC2018<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
+LC2018<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
 LC2018<- crop(LC2018, extent(LndCvr$LndCvr2018))
 LC2018 <- mask(LC2018, LndCvr$LndCvr2018)
 
@@ -63,18 +64,18 @@ for(i in 1:length(names(LndCvr))){
 cols <- c("0" = "#c7e9c0", "10" = "#00441b", "2" = "#e7298a", "30" = "#4d4d4d",
           "40"= "#ffffbf","1"="#fdbf6f","60"="#41ab5d","70"="#4575b4")
 
-ggplot(data = filter(z,year=="LndCvr2018"))+
+ggplot(data = filter(z,year=="LndCvr2026"))+
   
   geom_tile(aes(x = x, y = y,fill=as.character(layer))) +
-  scale_fill_manual(values = cols,labels = c("Mangrove","High Forest","Agriculture","Coral rag","Urban",
-                                             "Bare","Agroforestry & Other woody veg", "Water"),
+  scale_fill_manual(values = cols,labels = c("Mangrove","High Forest","Coral rag forest","Urban","Bare",
+                                             "Agriculture","Agroforestry & \nother woody veg", "Water"),
                     name="Landcover")+
   theme_bw()
 
 
 
 
-
+library(gganimate)
 plot<-ggplot(data = z)+
   
   geom_tile(aes(x = x, y = y,fill=as.character(layer))) +
