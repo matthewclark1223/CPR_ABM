@@ -60,7 +60,7 @@ mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_b
                 plot.title = element_text( size=18, color="black",face="bold"),
                 axis.title.x = element_text( size=18),
                 axis.title.y = element_text( size=18),
-                axis.text=(element_text(color="black", size=14)))
+                axis.text=(element_blank()))
 
 
 ggplot(df,aes(x=time,y=I))+geom_line(aes(by=as.character(rate),color=rate),size=1.5,alpha=0.9)+ 
@@ -83,6 +83,7 @@ ggplot(df2,aes(x=time,y=I))+geom_line(color="#3690c0",size=1.5,alpha=0.99)+
   annotate( "text", label = "S curve",x = 45, y = 0.52, size = 8, colour = "#3690c0")+
   annotate( "text", label = "R curve",x = 20, y = 0.75, size = 8, colour = "black")+
   theme(legend.position = "none")+xlab("Time")+ylab("Proportion Adopted")+mytheme+
+  theme(axis.ticks = element_blank())+
   scale_x_continuous(expand = c(0, 2)) + scale_y_continuous(expand = c(0, 0))
 
 

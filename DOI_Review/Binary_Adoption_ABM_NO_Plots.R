@@ -59,7 +59,7 @@ abm<-function(#Specified parameters
   
   ProtectPerDefect<-ifelse(NotEnrollNumStart ==0,as.integer(StartResourceProtected),as.integer(StartResourceProtected/NotEnrollNumStart)) #protected area resources per each individual harvesting there
   WorkingPerTotal<-as.integer(StartResourceWorking/Individuals) #working landscape resources per individual
-
+  
   
   for ( i in 1:nrow(agents)){  #fill the starting df percent payoff from the protected landscape is a function of the amount 
     agent2<-agents[i,]   #of resources there per individual searching there, and a random draw with a chance of success equal to time spent
@@ -69,7 +69,7 @@ abm<-function(#Specified parameters
     agents[i,4]<-ifelse(agents[i,4]>harvestMax-agents[i,5],harvestMax-agents[i,5],agents[i,4])
   } #see what they get from the working landscape first
   
-
+  
   agents$PayoffTotalLastTime<- agents$PayoffProtectedLastTime + agents$PayoffWorkingLastTime #total payoff is the sum of what they get from both areas
   
   
@@ -113,7 +113,7 @@ abm<-function(#Specified parameters
       if(sum(agentdf$Enrolled)==0){
         payMeanEnrl<-0}
       if(sum(agentdf$Enrolled)!=0){
-      payMeanEnrl<-mean(agentdf[agentdf$Enrolled==1,]$PayoffTotalLastTime)}
+        payMeanEnrl<-mean(agentdf[agentdf$Enrolled==1,]$PayoffTotalLastTime)}
       
       #meanPayoffUnenroll
       if(sum(agentdf$Enrolled)==nrow(agentdf)){
@@ -122,9 +122,9 @@ abm<-function(#Specified parameters
         payMeanNOTEnrl<-mean(agentdf[agentdf$Enrolled==0,]$PayoffTotalLastTime)} 
       
       probEnroll<-exp(BiasStrength*payMeanEnrl)/
-         (exp(BiasStrength*payMeanEnrl)+exp(BiasStrength*payMeanNOTEnrl))
-        
-        agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
+        (exp(BiasStrength*payMeanEnrl)+exp(BiasStrength*payMeanNOTEnrl))
+      
+      agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
       return(agentdf$Enrolled)
     }
     
@@ -136,63 +136,63 @@ abm<-function(#Specified parameters
       
       #success biased leaning accross the whole group
       #NewEnroll<-succLearn(LastTimeAgents)
-    #success biased learning within small groups
-    NewEnroll<-rep(NA,Individuals)
-    groups<-split(sample(1:Individuals),f=1:50)
+      #success biased learning within small groups
+      NewEnroll<-rep(NA,Individuals)
+      groups<-split(sample(1:Individuals),f=1:50)
+      
+      
+      for(j in 1:length(groups)){
+        group<-LastTimeAgents[groups[[j]],]      
+        groupEnroll<-succLearn(group)  
+        NewEnroll[groups[[j]]]<-groupEnroll
+      }
+      
+    } #end success biased learning
     
-
-    for(j in 1:length(groups)){
-      group<-LastTimeAgents[groups[[j]],]      
-      groupEnroll<-succLearn(group)  
-      NewEnroll[groups[[j]]]<-groupEnroll
-    }
-    
-  } #end success biased learning
-    
-  ###OLD one from Barrett. This does not model disease dynamics
+    ###OLD one from Barrett. This does not model disease dynamics
     #ConfLearn<-function(agentdf){
-      
-      
-      #probEnroll<-(length(which(agentdf$Enrolled==1)))^BiasStrength/
-        #((length(which(agentdf$Enrolled==1)))^BiasStrength+(length(which(agentdf$Enrolled==0)))^BiasStrength)
-      
-      #apply to ALL agents
-     # agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
-      
-      #apply to only unenrolled
-     # agentsdf$Enrolled<-ifelse(agentsdf$Enrolled == 0, rbinom(1,1, probEnroll),1)
-      
-      #return(agentdf$Enrolled)
+    
+    
+    #probEnroll<-(length(which(agentdf$Enrolled==1)))^BiasStrength/
+    #((length(which(agentdf$Enrolled==1)))^BiasStrength+(length(which(agentdf$Enrolled==0)))^BiasStrength)
+    
+    #apply to ALL agents
+    # agentdf$Enrolled<-rbinom(nrow(agentdf),1, probEnroll)
+    
+    #apply to only unenrolled
+    # agentsdf$Enrolled<-ifelse(agentsdf$Enrolled == 0, rbinom(1,1, probEnroll),1)
+    
+    #return(agentdf$Enrolled)
     #}
     
-#BETTER implementation. disease spread
+    #BETTER implementation. disease spread
     
     
     
-  #start conformist learning
-  if(LearningStrategy=="Conformist Bias"){
-    
-    spreadProb<-0.25 #0.25
-    recProb<-0.03 #0.01
-    
-    NewEnroll<-rep(NA,Individuals)
-  
-    
-    for(a in 1:nrow(LastTimeAgents)){
-      thisagent<-LastTimeAgents[a,]
-      otheragents<-LastTimeAgents[-a,]
-      pairagent<-otheragents[sample(1:nrow(otheragents),1),]
-      if(thisagent$Enrolled == 1){    NewEnroll[a]<-rbinom(1,1,1-recProb)}
-      if(thisagent$Enrolled == 0){    NewEnroll[a]<-ifelse(pairagent$Enrolled ==1,
-                                                           rbinom(1,1,spreadProb),0 )}
+    #start conformist learning
+    if(LearningStrategy=="Conformist Bias"){
+      
+      spreadProb<-0.25 #0.25
+      recProb<-0.03 #0.01
+      
+      NewEnroll<-rep(NA,Individuals)
+      
+      
+      for(a in 1:nrow(LastTimeAgents)){
+        thisagent<-LastTimeAgents[a,]
+        otheragents<-LastTimeAgents[-a,]
+        pairagent<-otheragents[sample(1:nrow(otheragents),1),]
+        if(thisagent$Enrolled == 1){    NewEnroll[a]<-rbinom(1,1,1-recProb)}
+        if(thisagent$Enrolled == 0){    NewEnroll[a]<-ifelse(pairagent$Enrolled ==1,
+                                                             rbinom(1,1,spreadProb),0 )}
+        
+      }
+      
+      
       
     }
     
-    
-    
-  }
-    
-  #end conformist learning
+    #end conformist learning
     
     PercTimeProtected = PercProtected*(1-NewEnroll) #percent of their foraging time each indv spends in the PA. For those not enrolled this is = the the % protected..Treat whole landscape equally
     #PercTimeProtected = output$NumResourcesProtect[t-1]/(output$NumResourcesProtect[t-1]+output$NumResourcesWorking[t-1])
@@ -273,133 +273,46 @@ abm<-function(#Specified parameters
     output$meanPayoff[t]  <- mean(agents$PayoffTotalLastTime)
     
   }
-  mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-                  plot.title = element_text( size=18, color="black",face="bold"),
-                  axis.title.x = element_text( size=18),
-                  axis.title.y = element_text( size=18),
-                  axis.text=(element_text(color="black", size=14)),
-                  legend.title = element_text(colour="black", size=18),
-                  legend.text = element_text( size = 14))
-  
-  p1<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=percCCProtect,color="Protected"),size=3)+
-    geom_line(aes(y=percCCWorking,color="Working"),size=3)+
-    theme_classic()+ylab("Carrying Capacity")+xlab("")+
-    scale_y_continuous(labels = scales::percent,limits = c(0,1.0) )+
-    scale_colour_manual(name = '', 
-                        values =c('Protected'='#b2df8a','Working'='#1f78b4'), labels = c('Conservation Area','Unconserved Area'))+
-    ggtitle("Resource Integrity")+mytheme +
-    theme(legend.position="bottom")
-  
-  
-  p2<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=meanPayoff),size=3,color="#993404")+xlab("")+
-    theme_classic()+ylab("Resource Units")+ylim(0,harvestMax+PaymentAmount)+
-    ggtitle("Mean Individual Payoff")+mytheme
-  
-  p3<-ggplot(data=output,aes(x=timeStep))+
-    geom_line(aes(y=Enrolled),size=3,color="#756bb1")+xlab("Time Step")+
-    theme_classic()+ylab("Individuals")+ylim(0,Individuals)+
-    ggtitle("Number Enrolled")+mytheme
-  
-  x<-gridExtra::grid.arrange(p1,p2,p3,ncol=1)
+
   
   
   return(output) 
 }
 
-
-set.seed(1) 
-
-#deqdatPOS_Conform<-abm(#Specified parameters
- # Individuals=100, #number of total resource users in a population
-#  TotalCarryingCapacity=100000, #total available resource units
- # StartPercCarryingCapacity = 0.25, #amount of resources available in the landscape at the start in proportion to CC
-  #PercProtected=0.2, #percent of the total resource that's in a protected area
-  #EnrollPercStart=0.01, #percent of individuals who start by following the rules at t0
-  #LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
-  #BiasStrength = 1.05,
-  #TimeSteps=100,
-  #ResourceRegenerationPerTimeStep=1.15,
-  #harvestMax=35,
-  #ProbOfMobility=0.9)
-
-
-#Threshold effect
-#set.seed(1)
-#SucBiasdat<-abm(#Specified parameters
-  #Individuals=100, #number of total resource users in a population
-  
-#  TotalCarryingCapacity=100000, #total available resource units
-  
-  #StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
-  
- # PaymentAmount = 5, #10
-  
-  
- # PercProtected=0.20, #percent of the total resource that's in a protected area
-  
- # EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
-  
-  #LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
-  
-  #BiasStrength = 1.1,
-  
-  #TimeSteps=100,
-  #ResourceRegenerationPerTimeStep=1.05, #.10
-  #harvestMax=10, #20
-  #ProbOfMobility=0.3)
-
-
-###### DropOff
+#####Playing around here thinking about reviewer comments
 set.seed(1)
-#stable dynamics
-SucBiasdat<-abm(#Specified parameters
-  Individuals=100, #number of total resource users in a population
-  
-  TotalCarryingCapacity=10000, #total available resource units
-  
-  StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
-  
-  PaymentAmount = 9, 
-  
-  
-  PercProtected=0.20, #percent of the total resource that's in a protected area
-  
-  EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
-  
-  LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
-  
-  BiasStrength = 1.1,
-  
-  TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.3, #.10
-  harvestMax=15, #20
-  ProbOfMobility=0.3)
 
-###### DropOff params + conform
-set.seed(1)
-#stable dynamics
-SucBiasdat<-abm(#Specified parameters
-  Individuals=100, #number of total resource users in a population
+runs<-3
+
+NrunDt<-data.frame()
+
+for(r in 1:runs){
+  x<-abm(#Specified parameters
+    Individuals=100, #number of total resource users in a population
+    
+    TotalCarryingCapacity=10000, #total available resource units
+    
+    StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
+    
+    PaymentAmount = 9, 
+    
+    
+    PercProtected=0.20, #percent of the total resource that's in a protected area
+    
+    EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
+    
+    LearningStrategy = "Success Bias", #options are Success Bias & Conformist...not implementing this...for now
+    
+    BiasStrength = 1.1,
+    
+    TimeSteps=100,
+    ResourceRegenerationPerTimeStep=1.3, #.10
+    harvestMax=15, #20
+    ProbOfMobility=0.3)
   
-  TotalCarryingCapacity=10000, #total available resource units
-  
-  StartPercCarryingCapacity = 0.20, #amount of resources available in the landscape at the start in proportion to CC
-  
-  PaymentAmount = 9, 
-  
-  
-  PercProtected=0.20, #percent of the total resource that's in a protected area
-  
-  EnrollPercStart=0.02, #percent of individuals who start by following the rules at t0
-  
-  LearningStrategy = "Conformist Bias", #options are Success Bias & Conformist...not implementing this...for now
-  
-  BiasStrength = 1.1,
-  
-  TimeSteps=100,
-  ResourceRegenerationPerTimeStep=1.3, #.10
-  harvestMax=15, #20
-  ProbOfMobility=0.3)
+  x$Run<-rep(r,nrow(x))
+  NrunDt<-rbind(NrunDt,x)
+  print(r)
+}
+
 
