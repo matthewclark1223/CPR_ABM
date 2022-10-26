@@ -1,6 +1,6 @@
 library(raster)
 Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2018.tif")
-Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2019.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2019updateSAR_unprocessed.tif")
 Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessedPemmyFinal2021.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
@@ -23,12 +23,13 @@ Pem2021LC<-raster::mask(Pem2021LC,stackRS$PembaFiresAndPredictors.1)
 
 
 raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif",overwrite=T)
-raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif",overwrite=T)
+raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019update.tif",overwrite=T)
+raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2019updateSAR.tif",overwrite=T)
 raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2021.tif",overwrite=T)
 
 
 ###
-Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019update.tif")
 Pem2019LC_df<-raster::as.data.frame(Pem2019LC, xy = TRUE) 
 Pem2019LC_df<-na.omit(Pem2019LC_df)
 names(Pem2019LC_df)[3]<-"layer"
@@ -83,7 +84,7 @@ ggplot(data =kojani)+
 
 #kangagani
 #Clip to kanganani
-Kangagani<-filter(Pemba,NAME_3=="Kangagani")
+Kangagani<-filter(Pemba,NAME_3=="Fundo")
 LC_clipped<- raster::crop(Pem2018LC, extent(Kangagani))
 LC_clipped <- mask(LC_clipped, Kangagani)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
@@ -102,7 +103,7 @@ ggplot(data =Kangagani)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2018); Kangagani")+
+  ggtitle("Landcover classification estimates (2019); Kangagani")+
   
   theme_bw()
 

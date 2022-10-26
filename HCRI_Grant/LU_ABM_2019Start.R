@@ -28,7 +28,7 @@ LU_AMB<-function(
   
   
   #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
+  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif")
   
   rLndCvr2018<-Pem2018LC
   
@@ -195,20 +195,20 @@ LU_AMB<-function(
       #get the number of ag neighbor cells for each one of these CR pixels THIS IS TOO SLOW
       #This for loop has been replaced by the vectorized code with the xx below
       #for(i in 1:nrow(availRDS)){
-       # cellz<-adjacent(aglayer, cells=availRDS[i ,]$pix, directions=8, pairs=TRUE)[,2]
-        #availRDS[i,]$NBC<-length(which(is.na(aglayer[cellz])==FALSE))
-    #  }
+      # cellz<-adjacent(aglayer, cells=availRDS[i ,]$pix, directions=8, pairs=TRUE)[,2]
+      #availRDS[i,]$NBC<-length(which(is.na(aglayer[cellz])==FALSE))
+      #  }
       
       ###
       xx<-as.data.frame(adjacent(aglayer, cells=availRDS$pix, directions=8, pairs=TRUE))
-        
+      
       xx<-xx%>%filter(to %in%which(is.na(aglayer[])==FALSE))%>%
         group_by(from)%>%count()%>%mutate(pix=from)
-        
+      
       xx<-base::merge(xx,availRDS,by="pix",all.y=TRUE)
       xx[which(is.na(xx$n)==TRUE),]$n<-0
-      availRDS<-xx%>%dplyr::select(pix,n,val)
-
+      availRDS<-xx%>%select(pix,n,val)
+      
       availRDS<-dplyr::arrange(availRDS,desc(n),val ) #arrange first by the number of neighboring ag cells
       #then by the road prox
       

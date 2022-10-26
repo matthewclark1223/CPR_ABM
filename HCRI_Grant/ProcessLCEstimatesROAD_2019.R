@@ -1,6 +1,5 @@
 library(raster)
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessed_pemmyRF2021UPDATE.tif")
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2021updateSAR_unprocessed.tif")
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2019rd_Unprocessed.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -8,18 +7,30 @@ preprocess_raster<-function(raster,method){
   if(method=="bilinear"){ x<-raster::projectRaster(raster,crs=crs(fireRS))}
   return(resample(x,fireRS,method=method))
 }
-Pem2021LC<-preprocess_raster(Pem2021LC,method="ngb")
-Pem2021LC<-raster::mask(Pem2021LC,stackRS$PembaFiresAndPredictors.1)
-plot(Pem2021LC)
-raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles//LandCoverLayers/pemmyRF2021UPDATE.tif",overwrite=T)
-raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2021updateSAR.tif",overwrite=T)
+Pem2019LC<-preprocess_raster(Pem2019LC,method="ngb")
+Pem2019LC<-raster::mask(Pem2019LC,stackRS$PembaFiresAndPredictors.1)
+plot(Pem2019LC)
+raster::writeRaster(Pem2019LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2019rd.tif",overwrite=T)
 
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2019rd.tif")
+#Plot it
+r <- as.factor(Pem2019LC)
+
+## Add a landcover column to the Raster Attribute Table
+rat <- levels(r)[[1]]
+rat[["landcover"]] <- c("Mangrove","High Forest","Ag", "Urban","Bare","Coral rag","Woody veg &\nagroforestry","Water")
+levels(r) <- rat
+
+## Plot
+#cols<-c("#a6cee3","#33a02c","#fb9a99","#1f78b4","darkgrey","#b2df8a","white")
+#rasterVis::levelplot(r, col.regions=terrain.colors(8), xlab="", ylab="")
+#rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")
 
 ###
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyRF2021UPDATE.tif")
-Pem2021LC_df<-raster::as.data.frame(Pem2021LC, xy = TRUE) 
-Pem2021LC_df<-na.omit(Pem2021LC_df)
-names(Pem2021LC_df)[3]<-"layer"
+Pem2019LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2019rd.tif")
+Pem2019LC_df<-raster::as.data.frame(Pem2019LC, xy = TRUE) 
+Pem2019LC_df<-na.omit(Pem2019LC_df)
+names(Pem2019LC_df)[3]<-"layer"
 #0 = Mangrove
 #1 = HF
 #2 = agriculture
@@ -33,7 +44,7 @@ cols <- c("0" = "#c7e9c0", "1" = "#00441b", "2" = "#fdbf6f", "3" = "#4d4d4d",
 Pemba <- sf::read_sf("~/Pemba_Project/PembaShapeFile.shp")
 library(tidyverse)
 ggplot(data = Pemba)+
-  geom_tile(data = Pem2021LC_df , 
+  geom_tile(data = Pem2019LC_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
   geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
   #geom_sf_label(aes(label=NAME_3))+
@@ -41,13 +52,13 @@ ggplot(data = Pemba)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2021); Pemba")+
+  ggtitle("Landcover classification estimates (2019); Pemba")+
   
   theme_bw()
 
 #Clip to kanganani
 kojani<-filter(Pemba,NAME_3=="Kojani")
-LC_clipped<- crop(Pem2021LC, extent(kojani))
+LC_clipped<- crop(Pem2019LC, extent(kojani))
 LC_clipped <- mask(LC_clipped, kojani)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
 names(LC_clipped_df)[3]<-"layer"
@@ -65,13 +76,13 @@ ggplot(data = kojani)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2021); Kojani")+
+  ggtitle("Landcover classification estimates (2019); Kojani")+
   
   theme_bw()
 
 #Clip to fundo
-fundo<-filter(Pemba,NAME_3=="Maziwa Ng'ombe")
-LC_clipped<- crop(Pem2021LC, extent(fundo))
+fundo<-filter(Pemba,NAME_3=="Fundo")
+LC_clipped<- crop(Pem2019LC, extent(fundo))
 LC_clipped <- mask(LC_clipped, fundo)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 
 names(LC_clipped_df)[3]<-"layer"
@@ -89,6 +100,6 @@ ggplot(data = fundo)+
                                              "Agriculture","Urban","Bare",
                                              "Coral rag","Other woody veg &\nAgroforestry","Water"),
                     name="Landcover")+
-  ggtitle("Landcover classification estimates (2021); Fundo")+
+  ggtitle("Landcover classification estimates (2019); Fundo")+
   
   theme_bw()

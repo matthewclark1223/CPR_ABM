@@ -94,3 +94,10 @@ ggplot(data=z,aes(x=real,y=pred))+geom_jitter()
 
 sum(z$real)
 sum(z$pred)
+
+
+
+#############pasteing some new code here that might be better!
+d<-Pemba%>%st_union()
+grid<-st_make_grid(Pemba,cellsize = 0.01)
+ggplot(data=d)+geom_sf()+geom_sf(data=grid,fill=NA)

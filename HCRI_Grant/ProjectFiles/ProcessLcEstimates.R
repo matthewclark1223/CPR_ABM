@@ -1,5 +1,7 @@
 library(raster)
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/UnProcessed_pemmyRF2018_R5.tif")
+#Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/UnProcessed_pemmyRF2018_R5.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessed_pemmyLC2018update.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2018updateSAR_unprocessed.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -10,8 +12,9 @@ preprocess_raster<-function(raster,method){
 Pem2018LC<-preprocess_raster(Pem2018LC,method="ngb")
 Pem2018LC<-raster::mask(Pem2018LC,stackRS$PembaFiresAndPredictors.1)
 plot(Pem2018LC)
-raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif",overwrite=T)
-
+#raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif",overwrite=T)
+raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018update.tif",overwrite=T)
+raster::writeRaster(Pem2018LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2018updateSAR.tif",overwrite=T)
 Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
 #Plot it
 r <- as.factor(Pem2018LC)
@@ -27,7 +30,7 @@ levels(r) <- rat
 #rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")
 
 ###
-Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/pemmyRF2018_R5.tif")
+Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018update.tif")
 Pem2018LC_df<-raster::as.data.frame(Pem2018LC, xy = TRUE) 
 Pem2018LC_df<-na.omit(Pem2018LC_df)
 names(Pem2018LC_df)[3]<-"layer"
@@ -44,9 +47,10 @@ cols <- c("0" = "#c7e9c0", "1" = "#00441b", "2" = "#fdbf6f", "3" = "#4d4d4d",
 Pemba <- sf::read_sf("~/Pemba_Project/PembaShapeFile.shp")
 library(tidyverse)
 ggplot(data = Pemba)+
+  geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
   geom_tile(data = Pem2018LC_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
-  geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
+  
   #geom_sf_label(aes(label=NAME_3))+
   scale_fill_manual(values = cols,labels = c("Mangrove","High Forest",
                                              "Agriculture","Urban","Bare",
@@ -81,7 +85,7 @@ ggplot(data = kojani)+
   theme_bw()
 
 #Clip to fundo
-fundo<-filter(Pemba,NAME_3=="Fundo")
+fundo<-filter(Pemba,NAME_3=="Maziwa Ng'ombe")
 LC_clipped<- crop(Pem2018LC, extent(fundo))
 LC_clipped <- mask(LC_clipped, fundo)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 

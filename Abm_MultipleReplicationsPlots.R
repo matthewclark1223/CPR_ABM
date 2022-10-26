@@ -223,7 +223,7 @@ abm<-function(#Specified parameters
     }
     
     #% CC time working
-    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "Effort in Working Landscape", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Average effort in working (coop)")
+    plot(rowMeans(outputmeanTimeWorking), type = 'l', ylab = "Effort in Working Landscape", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Average Effort in Working (coop)")
     
     for (j in 1:Runs) {  
       
@@ -232,7 +232,7 @@ abm<-function(#Specified parameters
     }
     
     #% CC protected
-    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "Carrying Capacity", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Protected")
+    plot(rowMeans(outputpercCCProtect), type = 'l', ylab = "Carrying Capacity", xlab = "Timestep", ylim=c(0,1), lwd = 3, main = "Percent CC Conservation")
     
     for (j in 1:Runs) {  
       
@@ -276,13 +276,13 @@ abm<-function(#Specified parameters
 }
 
 abm(Runs=5,Individuals = 100,TotalCarryingCapacity=10000,
-    StartPercCarryingCapacity = 1.00,
-    PercProtected = 0.8, 
+    StartPercCarryingCapacity = 0.8,
+    PercProtected = 0.5, 
     ProbOfMobility = 1.00,CoopPercStart=0.95, 
     LearningStrategy = "Success Bias",
     TimeSteps=30,
     ResourceRegenerationPerTimeStep=1.2,
-    harvestMax=25)
+    harvestMax=14)
 
 #fill a dataframe with the means
 

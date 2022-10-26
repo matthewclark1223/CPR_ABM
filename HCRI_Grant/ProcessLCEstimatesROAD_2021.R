@@ -1,6 +1,5 @@
 library(raster)
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/UnProcessed_pemmyRF2021UPDATE.tif")
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2021updateSAR_unprocessed.tif")
+Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2021rd_Unprocessed.tif")
 fireRS<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/PredFire2019.tif")
 stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
 preprocess_raster<-function(raster,method){
@@ -11,12 +10,24 @@ preprocess_raster<-function(raster,method){
 Pem2021LC<-preprocess_raster(Pem2021LC,method="ngb")
 Pem2021LC<-raster::mask(Pem2021LC,stackRS$PembaFiresAndPredictors.1)
 plot(Pem2021LC)
-raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles//LandCoverLayers/pemmyRF2021UPDATE.tif",overwrite=T)
-raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2021updateSAR.tif",overwrite=T)
+raster::writeRaster(Pem2021LC,"~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2021rd.tif",overwrite=T)
 
+Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2021rd.tif")
+#Plot it
+r <- as.factor(Pem2021LC)
+
+## Add a landcover column to the Raster Attribute Table
+rat <- levels(r)[[1]]
+rat[["landcover"]] <- c("Mangrove","High Forest","Ag", "Urban","Bare","Coral rag","Woody veg &\nagroforestry","Water")
+levels(r) <- rat
+
+## Plot
+#cols<-c("#a6cee3","#33a02c","#fb9a99","#1f78b4","darkgrey","#b2df8a","white")
+#rasterVis::levelplot(r, col.regions=terrain.colors(8), xlab="", ylab="")
+#rasterVis::levelplot(r, col.regions=cols, xlab="", ylab="")
 
 ###
-Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyRF2021UPDATE.tif")
+Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/Rd/pemmyLC2021rd.tif")
 Pem2021LC_df<-raster::as.data.frame(Pem2021LC, xy = TRUE) 
 Pem2021LC_df<-na.omit(Pem2021LC_df)
 names(Pem2021LC_df)[3]<-"layer"
@@ -70,7 +81,7 @@ ggplot(data = kojani)+
   theme_bw()
 
 #Clip to fundo
-fundo<-filter(Pemba,NAME_3=="Maziwa Ng'ombe")
+fundo<-filter(Pemba,NAME_3=="Fundo")
 LC_clipped<- crop(Pem2021LC, extent(fundo))
 LC_clipped <- mask(LC_clipped, fundo)
 LC_clipped_df<-raster::as.data.frame(LC_clipped, xy = TRUE) 

@@ -2,7 +2,7 @@ library(tidyverse)
 library(gganimate)
 library(gifski)
 source("~/Pemba_Project/HCRI_Grant/ProjectFiles/Full_LandUse_ABM.R")
-YearsPast2018 = 3
+YearsPast2018 = 1
 LU_AMB(YearsPast2018 = YearsPast2018, #years (timesteps) to run model
        Wards = c("Kangagani"),  #character vector or wards to model. Default is full model
        FallowTime = 3, #time (in years) it takes for fallow land to recharge

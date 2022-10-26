@@ -5,18 +5,18 @@ abm<-function(#Specified parameters
   
   TotalCarryingCapacity=10000, #total available resource units
   
-  StartPercCarryingCapacity = 0.7, #amount of resources available in the landscape at the start in proportion to CC
+  StartPercCarryingCapacity = 0.4, #amount of resources available in the landscape at the start in proportion to CC
   
-  PercProtected=0.3, #percent of the total resource that's in a protected area
+  PercProtected=0.6, #percent of the total resource that's in a protected area
   
   CoopPercStart=0.9, #percent of individuals who start by following the rules at t0
   
   LearningStrategy = "Success Bias", #options are Success Bias & Conformist
   
   TimeSteps=20,
-  ResourceRegenerationPerTimeStep=1.15,
-  harvestMax=25,
-  ProbOfMobility=0.2){
+  ResourceRegenerationPerTimeStep=1.65,
+  harvestMax=17,
+  ProbOfMobility=0.7){
   
   ## Set parameters
   PercWorking= 1-PercProtected #percent of resource in a working landscape
@@ -210,7 +210,7 @@ abm<-function(#Specified parameters
 
 
 
-abm(LearningStrategy = "Conformist",CoopPercStart=0.5)
+abm(LearningStrategy = ,CoopPercStart=0.8)
 
 
 #animation practice
@@ -239,11 +239,13 @@ ggplot(.,aes(x=PercTimeProtected,y=PayoffTotalLastTime))+
 
 
 
-ggplot(AllData,aes(x=PercTimeProtected,y=PayoffTotalLastTime))+
-  geom_image(aes(image=Image),position = "jitter", size=.02)+
+p<-ggplot(AllData,aes(x=PercTimeProtected,y=PayoffTotalLastTime))+
+  geom_image(aes(image=Image),position = "jitter", size=.02)+theme_bw()+
   transition_time(t) +
   labs(title = 'Timestep: {frame_time}', x = 'Percent of Time Harvesting from Protected Area', y = 'Individual Payoff') +
   ease_aes('linear')
+
+animate(p, fps=2)
 
 anim_save(filename = "Trial.gif") 
 

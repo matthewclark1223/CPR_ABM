@@ -3,19 +3,28 @@ library(sf)
 library(tidyverse)
 set.seed(1)
 source("~/Pemba_Project/HCRI_Grant/ProjectFiles/Full_LandUse_ABM.R")
+
+studyShehia<-c("Fundo","Kangagani","Kojani","Shumba Mjini","Maziwa Ng'ombe","Mjini Ole","Ole",
+               "Uwandani","Vitongoji","Kibokoni","Mvumoni","Pujini","Dodo","Chambani",
+               "Jombwe","Shamiani","Muambe","Kiwani","Mjini Wingwi")
+
+studyShehia<-"Dodo"
+
 LU_AMB(YearsPast2018 = 1, #years (timesteps) to run model
-       Wards = c("Kangagani","Kojani"),  #character vector or wards to model. Default is full model
+       Wards = c(studyShehia),  #character vector or wards to model. Default is full model
        FallowTime = 3, #time (in years) it takes for fallow land to recharge
        AgLimit = 2,
        IntrinsicExp = 1.5)
 
+Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
+
 #Clip to Project area to get rid of NAs outside
-ValidationArea<-filter(Pemba,NAME_3%in%c("Kangagani","Kojani"))
+ValidationArea<-filter(Pemba,NAME_3%in%c(studyShehia))
 NewBurn_clipped<- crop(rstack$NEWBurn, extent(ValidationArea))
 NewBurn_clipped <- mask(NewBurn_clipped, ValidationArea)
 
 #Load 2019 landcover
-Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
+
 LC2019<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2019.tif")
 #Load 2018 landcover
 LC2018<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
@@ -33,7 +42,7 @@ LC2019_clipped <- mask(LC2019_clipped, ValidationArea)
 
 
 
-p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 100, sp=TRUE), byid=TRUE, width=0.004)#50,6 
+p <- rgeos::gBuffer(sampleRandom(LC2019_clipped, 500, sp=TRUE), byid=TRUE, width=0.004)#50,6 
 p<-crop(p, extent(ValidationArea))
 
 x<-st_as_sf(p)
@@ -50,7 +59,7 @@ names(NewBurn_df)[3]<-"layer"
 
 ggplot(data = ValidationArea)+
   geom_sf(fill=NA)+
-  geom_sf(data=x)+
+  #geom_sf(data=x)+
   geom_tile(data=filter(LC2019_clipped_df,layer==1),aes(x=x,y=y),fill="purple",alpha=0.5)+
   geom_tile(data=filter(NewBurn_df,layer==1),aes(x=x,y=y),fill="red",alpha=0.5)+
   theme_bw()
@@ -87,7 +96,7 @@ ggplot(data = ValidationArea)+
   geom_tile(data = LC_clipped_df , 
             aes(x = x, y = y,fill=as.character(layer))) +
   geom_tile(data=filter(NewBurn_df,layer==1),aes(x=x,y=y),fill="red")+
-  geom_tile(data=filter(LC2019_clipped_df,layer==1),aes(x=x,y=y),fill="yellow")+
+  geom_tile(data=filter(LC2019_clipped_df,layer==1),aes(x=x,y=y),fill="yellow",alpha=0.6)+
   geom_sf(color="#f0f0f0",fill=NA, size=0.3) + 
   scale_fill_manual(values = cols,labels = c("Mangrove","High Forest",
                                              "Agriculture","Urban","Bare",

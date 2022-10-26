@@ -4,14 +4,14 @@ library(tidyverse)
 
 
 LU_AMB<-function(
-  YearsPast2018 = 3, #years (timesteps) to run model
+  YearsPast2021 = 3, #years (timesteps) to run model
   Wards = "Kojani",  #character vector or wards to model. Default is full model
   FallowTime = 3, #time (in years) it takes for fallow land to recharge
   AgLimit = 2, #Time (in years) land can be farmed in-between fallow periods
   IntrinsicExp = 3 #Intrinsic rate (percentage) of agricultural expansion into the CR forest (pop growth, market integration, etc)
 ){
   
-  Years<-(1:YearsPast2018)+2018
+  Years<-(1:YearsPast2021)+2021
   
   #specifics to this dataset
   stackRS<-raster::stack("~/Pemba_Project/HCRI_Grant/ProjectFiles/PembaFiresAndPredictors.tif")
@@ -27,13 +27,13 @@ LU_AMB<-function(
   IntrinsicExp=IntrinsicExp/100 # get this on a scale we can multiply by
   
   
-  #Import 2018 Lc Data
-  Pem2018LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/pemmyLC2018.tif")
+  #Import 2021 Lc Data
+  Pem2021LC<-raster::raster("~/Pemba_Project/HCRI_Grant/ProjectFiles/LandCoverLayers/SARLayers/pemmyLC2021updateSAR.tif")
   
-  rLndCvr2018<-Pem2018LC
+  rLndCvr2021<-Pem2021LC
   
   
-  rLndCvr2018[which(rLndCvr2018[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2018[]==2)), #assign 100 to Fallow 
+  rLndCvr2021[which(rLndCvr2021[]==2)]<-sample(c(100,2),size=length(which(rLndCvr2021[]==2)), #assign 100 to Fallow 
                                                replace=T,prob=c(propstrt,1-propstrt)) #2 is productive ag
   #0 = Mangrove
   #1 = HF
@@ -44,20 +44,20 @@ LU_AMB<-function(
   #6 = OWV/agroforestry
   #7 = water
   ### ONLY CORAL RAG BURNABLE
-  rLndCvr2018[]<-as.factor(ifelse(rLndCvr2018[] %in% c(0,1,3,4,6,7),"Unburnable", #everything besides ag, fallow, and CR
-                                  ifelse(rLndCvr2018[] == 2,"Agriculture", #productive ag
-                                         ifelse(rLndCvr2018[] == 100,"Fallow","Burnable")))) #Fallow and CR 
+  rLndCvr2021[]<-as.factor(ifelse(rLndCvr2021[] %in% c(0,1,3,4,6,7),"Unburnable", #everything besides ag, fallow, and CR
+                                  ifelse(rLndCvr2021[] == 2,"Agriculture", #productive ag
+                                         ifelse(rLndCvr2021[] == 100,"Fallow","Burnable")))) #Fallow and CR 
   
   
   #stack all starting layers together
   
   #changed below for a diatance to road layer instead of prob of fire layer
-  #rstack<-stack(rProbBurn,rLndCvr2018 )
-  #names(rstack)<-c("ProbBurn","LndCvr2018") #set the names
+  #rstack<-stack(rProbBurn,rLndCvr2021 )
+  #names(rstack)<-c("ProbBurn","LndCvr2021") #set the names
   
-  rstack<-stack(stackRS$roads_proximity,rLndCvr2018 )
-  names(rstack)<-c("roads_proximity","LndCvr2018") #set the names
-  rstack$LndCvr2018[]<- as.integer(rstack$LndCvr2018)[] #this should be an integer. 1==ag,2==burnable, 3==fallow, 4==unburnable
+  rstack<-stack(stackRS$roads_proximity,rLndCvr2021 )
+  names(rstack)<-c("roads_proximity","LndCvr2021") #set the names
+  rstack$LndCvr2021[]<- as.integer(rstack$LndCvr2021)[] #this should be an integer. 1==ag,2==burnable, 3==fallow, 4==unburnable
   
   ######CROP for trialing
   Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
@@ -76,30 +76,30 @@ LU_AMB<-function(
   
   
   ############### model copied from simple abm
-  ag2018<-which(rstack$LndCvr2018[]==1) #ag from 2018 land cover layer
-  fallow2018<-which(rstack$LndCvr2018[]==3) #fallow/bare from 2018 land cover layer
-  burnable2018<-which(rstack$LndCvr2018[]==2) #burnable from 2018 landcover layer
-  unburnable2018<-which(rstack$LndCvr2018[]==4) #unburnable from 2018 land cover layer
-  rstack$ag2018<-NA #Make all NA to start
-  rstack$ag2018[ag2018]<-sample(1:AgLimit,size=length(ag2018),replace=T) #equally assign all possible ag years
+  ag2021<-which(rstack$LndCvr2021[]==1) #ag from 2021 land cover layer
+  fallow2021<-which(rstack$LndCvr2021[]==3) #fallow/bare from 2021 land cover layer
+  burnable2021<-which(rstack$LndCvr2021[]==2) #burnable from 2021 landcover layer
+  unburnable2021<-which(rstack$LndCvr2021[]==4) #unburnable from 2021 land cover layer
+  rstack$ag2021<-NA #Make all NA to start
+  rstack$ag2021[ag2021]<-sample(1:AgLimit,size=length(ag2021),replace=T) #equally assign all possible ag years
   
   
   #Make starting fallow layer
-  rstack$fallow2018<-NA #Make all NA to start
-  rstack$fallow2018[fallow2018]<-sample(1:FallowRechargeTime,size=length(fallow2018),replace=T) #equally assign all possible fallow years
+  rstack$fallow2021<-NA #Make all NA to start
+  rstack$fallow2021[fallow2021]<-sample(1:FallowRechargeTime,size=length(fallow2021),replace=T) #equally assign all possible fallow years
   
   #Make starting burnable layer
-  rstack$burnable2018<-NA #make allNA to start
-  rstack$burnable2018[burnable2018]<-1 #make 1 if burnable
+  rstack$burnable2021<-NA #make allNA to start
+  rstack$burnable2021[burnable2021]<-1 #make 1 if burnable
   
   #Make starting UNburnable layer
-  rstack$Unburnable2018<-NA
-  rstack$Unburnable2018[unburnable2018]<-1
+  rstack$Unburnable2021<-NA
+  rstack$Unburnable2021[unburnable2021]<-1
   
-  NewLayersNum<-4*YearsPast2018 #4 here is ag, fallow, unurnable
+  NewLayersNum<-4*YearsPast2021 #4 here is ag, fallow, unurnable
   for(l in 1:NewLayersNum){
     rstack[[6+l]]<-NA
-    names(rstack[[6]])<-"Unburnable2018"
+    names(rstack[[6]])<-"Unburnable2021"
     
   }
   
@@ -160,7 +160,7 @@ LU_AMB<-function(
         NC<-data.frame(Cell=rep(NA,length(neighborCells)),NumAg=rep(NA,length(neighborCells)))  #make df of neighbr cells
         for(nc in 1:length(neighborCells)){ #for each of them
           adj<-adjacent(rstack, cells=neighborCells[nc], directions=8, pairs=TRUE)[,2] ##what are the cells around it
-          #how many of those are ag in 2018. Should probably UPDATE to be most recent ag year!!
+          #how many of those are ag in 2021. Should probably UPDATE to be most recent ag year!!
           agSurr<-length(which(is.na(rstack[[3]][adj])==F)) 
           NC[nc,1]<-neighborCells[nc] #keep naighbor cell number
           NC[nc,2]<-agSurr} #add in the number of surroundign Ag pixels
@@ -180,7 +180,7 @@ LU_AMB<-function(
       #add something here about moving somewhere new if there's nothing fallowed out or burnable around. Maybe?
       
       #Show progress
-      print((i/length(NewFallow))*100)
+      
       
       
     }
@@ -195,20 +195,20 @@ LU_AMB<-function(
       #get the number of ag neighbor cells for each one of these CR pixels THIS IS TOO SLOW
       #This for loop has been replaced by the vectorized code with the xx below
       #for(i in 1:nrow(availRDS)){
-       # cellz<-adjacent(aglayer, cells=availRDS[i ,]$pix, directions=8, pairs=TRUE)[,2]
-        #availRDS[i,]$NBC<-length(which(is.na(aglayer[cellz])==FALSE))
-    #  }
+      # cellz<-adjacent(aglayer, cells=availRDS[i ,]$pix, directions=8, pairs=TRUE)[,2]
+      #availRDS[i,]$NBC<-length(which(is.na(aglayer[cellz])==FALSE))
+      #  }
       
       ###
       xx<-as.data.frame(adjacent(aglayer, cells=availRDS$pix, directions=8, pairs=TRUE))
-        
+      
       xx<-xx%>%filter(to %in%which(is.na(aglayer[])==FALSE))%>%
         group_by(from)%>%count()%>%mutate(pix=from)
-        
+      
       xx<-base::merge(xx,availRDS,by="pix",all.y=TRUE)
       xx[which(is.na(xx$n)==TRUE),]$n<-0
       availRDS<-xx%>%dplyr::select(pix,n,val)
-
+      
       availRDS<-dplyr::arrange(availRDS,desc(n),val ) #arrange first by the number of neighboring ag cells
       #then by the road prox
       
@@ -284,7 +284,7 @@ LU_AMB<-function(
   
   #add a total burn layer
   rstack$TotalBurn<-0
-  rstack$TotalBurn[which(rstack[["burnable2018"]][]==1 &is.na(rstack[[which(names(rstack)==paste0("burnable",YearsPast2018+2018))]][])==TRUE)]<-1L
+  rstack$TotalBurn[which(rstack[["burnable2021"]][]==1 &is.na(rstack[[which(names(rstack)==paste0("burnable",YearsPast2021+2021))]][])==TRUE)]<-1L
   
   
   rstack<<-rstack
@@ -306,12 +306,12 @@ LU_AMB<-function(
 
 
 
-#x<-stack(rstack$LndCvr2018,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
+#x<-stack(rstack$LndCvr2021,rstack$LndCvr2019,rstack$LndCvr2020,rstack$LndCvr2021)
 #animate(x,col.regions=cols, xlab="", ylab="")
 ###
 
 
-#LU_AMB(YearsPast2018 = 2, #years (timesteps) to run model
+#LU_AMB(YearsPast2021 = 2, #years (timesteps) to run model
 #      Wards = c("Makangale","Msuka Magharibi","Msuka Mashariki"),  #character vector or wards to model. Default is full model
 #     FallowTime = 3, #time (in years) it takes for fallow land to recharge
 #    AgLimit = 2

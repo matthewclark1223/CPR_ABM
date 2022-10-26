@@ -11,9 +11,9 @@ gadm3_3 <- readRDS("~/Pemba_Project/MapData/gadm36_TZA_3_sf.rds")
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
 
 
-d<-read.csv("CommunitySamplingDatasheet.csv")
-Sampled<-d[!is.na(d$Sampled),]$Shehia
-NeedToSample<-d[is.na(d$Sampled),]$Shehia
+d<-read.csv("~/Pemba_Project/ParticipatoryMapping/Community Sampling Datasheet.csv")
+Sampled<-d[d$Sampled==1,]$Shehia
+NeedToSample<-d[d$Sampled==0,]$Shehia
 which(Sampled %in% Pemba$NAME_3==F)
 which(NeedToSample %in% Pemba$NAME_3==F)
 
@@ -60,4 +60,6 @@ smallMap<-ggplot() + geom_sf(data = Tz, fill="#bdbdbd")+
 cowplot::ggdraw() +
   cowplot::draw_plot(bigMap) +
   cowplot::draw_plot(smallMap, x = 0.21, y = 0.68, width = 0.3, height = 0.3)
+
+
 
