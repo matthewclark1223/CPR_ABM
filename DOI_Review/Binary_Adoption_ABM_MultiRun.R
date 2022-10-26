@@ -283,7 +283,7 @@ abm<-function(#Specified parameters
 # success bias
 set.seed(1)
 
-runs<-100
+runs<-5
 
 NrunDt<-data.frame()
 
@@ -317,11 +317,11 @@ for(r in 1:runs){
 
 mytheme<- theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
                 plot.title = element_text( size=18, color="black",face="bold"),
-                axis.title.x = element_text( size=12),
-                axis.title.y = element_text( size=12),
-                axis.text=(element_text(color="black", size=10)),
-                legend.title = element_text(colour="black", size=14),
-                legend.text = element_text( size = 12))
+                axis.title.x = element_text( size=18),
+                axis.title.y = element_text( size=18),
+                axis.text=(element_text(color="black", size=14)),
+                legend.title = element_text(colour="black", size=18),
+                legend.text = element_text( size = 14))
 
 p1<-ggplot(data=NrunDt,aes(x=timeStep))+
   geom_line(aes(y=percCCProtect,color="Protected",group=Run),size=0.2,alpha=0.6)+

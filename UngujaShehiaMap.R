@@ -7,6 +7,9 @@ Unguja_vector <- st_crop(gadm3_3, xmin = 39.1, xmax = 41.0,
 
 Unguja_vector = sf::st_cast(Unguja_vector, "MULTIPOLYGON")
 
+#st_write(Unguja_vector, "~/Pemba_Project/UngujaShapefile.shp")
+
+
 p<- ggplot() + geom_sf(data = Unguja_vector,aes(fill=NAME_2)) + 
   geom_sf_text(data=Unguja_vector,aes(label=NAME_3),size=3)+ theme_bw()
 

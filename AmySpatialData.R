@@ -28,6 +28,10 @@ raster::plot(FC2017)
 HumanDens<-raster::raster("~/Pemba_Project/AmyData/human_density.tif")
 raster::plot(HumanDens)
 
+#Human Density
+HumanPopGrow<-raster::raster("~/Pemba_Project/AmyData/human_popn_growth_rate.tif")
+raster::plot(HumanPopGrow)
+
 #Distance to road
 RoadProx<-raster::raster("~/Pemba_Project/AmyData/roads_proximity.tif")
 raster::plot(RoadProx)
