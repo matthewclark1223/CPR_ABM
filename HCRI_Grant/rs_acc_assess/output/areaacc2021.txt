@@ -1,0 +1,19 @@
+% latex table generated in R 3.6.3 by xtable 1.8-4 package
+% Tue Oct  4 11:21:17 2022
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrr}
+  \hline
+ & km² & km²± & PA & PA± & UA & UA± & OA & OA± \\ 
+  \hline
+Mangrove & 108.81 & 7.11 & 91.61 & 5.99 & 100.00 & 0.00 & 95.93 & 2.95 \\ 
+  High Forest & 18.26 & 8.21 & 100.00 & 0.00 & 50.00 & 22.48 &  &  \\ 
+  Agriculture & 284.02 & 30.30 & 96.20 & 3.79 & 95.00 & 9.80 &  &  \\ 
+  Urban & 35.47 & 6.70 & 100.00 & 0.00 & 85.00 & 16.06 &  &  \\ 
+  Bare & 25.96 & 28.19 & 44.61 & 48.43 & 100.00 & 0.00 &  &  \\ 
+  Coral rag & 89.76 & 10.16 & 95.93 & 5.28 & 95.00 & 9.80 &  &  \\ 
+  Other woody veg & 474.45 & 5.86 & 98.85 & 1.22 & 100.00 & 0.00 &  &  \\ 
+  Water & 29.30 & 0.00 & 100.00 & 0.00 & 100.00 & 0.00 &  &  \\ 
+   \hline
+\end{tabular}
+\end{table}

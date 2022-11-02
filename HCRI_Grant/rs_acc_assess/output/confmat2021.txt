@@ -1,0 +1,19 @@
+% latex table generated in R 3.6.3 by xtable 1.8-4 package
+% Tue Oct  4 11:21:17 2022
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrrrrrr}
+  \hline
+ & Mangrove & High Forest & Agriculture & Urban & Bare & Coral rag & Other woody veg & Water \\ 
+  \hline
+Mangrove &  20 &   0 &   0 &   0 &   0 &   0 &   0 &   0 \\ 
+  High Forest &   5 &  10 &   0 &   0 &   0 &   2 &   3 &   0 \\ 
+  Agriculture &   0 &   0 &  19 &   0 &   1 &   0 &   0 &   0 \\ 
+  Urban &   0 &   0 &   3 &  17 &   0 &   0 &   0 &   0 \\ 
+  Bare &   0 &   0 &   0 &   0 &  20 &   0 &   0 &   0 \\ 
+  Coral rag &   0 &   0 &   1 &   0 &   0 &  19 &   0 &   0 \\ 
+  Other woody veg &   0 &   0 &   0 &   0 &   0 &   0 &  20 &   0 \\ 
+  Water &   0 &   0 &   0 &   0 &   0 &   0 &   0 &  20 \\ 
+   \hline
+\end{tabular}
+\end{table}
