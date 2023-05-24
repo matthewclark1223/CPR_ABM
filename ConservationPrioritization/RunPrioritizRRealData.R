@@ -109,7 +109,7 @@ s1_df<-na.omit(s1_df)
 
 both<-ggplot(data=Pemba)+geom_sf(color="grey",fill="white")+
   geom_tile(data = s1_df, aes(x = x, y = y,fill=as.character(layer)),alpha=0.99)+
-  scale_fill_manual(values =c("#6a51a3"),name="Conservation\npriority areas",
+  scale_fill_manual(values =c("#984ea3"),name="Conservation\npriority areas",
                     labels=c(""))+
   theme_void()+
   theme(panel.background = element_rect(fill="white",color="white"),
@@ -147,7 +147,7 @@ s1_df<-na.omit(s1_df)
 
 SatOnly<-ggplot(data=Pemba)+geom_sf(color="grey",fill="white")+
   geom_tile(data = s1_df, aes(x = x, y = y,fill=as.character(layer)),alpha=0.99)+
-  scale_fill_manual(values =c("#238b45"),name="Conservation\npriority areas",
+  scale_fill_manual(values =c("#e41a1c"),name="Conservation\npriority areas",
                     labels=c(""))+
   theme_void()+
   #ggtitle("satellite")+
@@ -184,7 +184,7 @@ s1_df<-na.omit(s1_df)
 
 ComOnly<-ggplot(data=Pemba)+geom_sf(color="grey",fill="white")+
   geom_tile(data = s1_df, aes(x = x, y = y,fill=as.character(layer)),alpha=0.99)+
-  scale_fill_manual(values =c("#238b45"),name="Restoration priority areas",
+  scale_fill_manual(values =c("#377eb8"),name="Restoration priority areas",
                     labels=c(""))+
   theme_void()+#ggtitle("Community")+
   theme(panel.background = element_rect(fill="white",color="white"),

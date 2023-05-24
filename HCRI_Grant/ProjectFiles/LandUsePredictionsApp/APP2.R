@@ -22,7 +22,7 @@ ui <- fluidPage(
     sidebarPanel(
       
       h4("Welcome!"),
-      h5("This application allows users to use the model presented in Clark et al (*in prep*)
+      h5("This application allows users to use the model presented in Clark et al. (in review)
          to predict coral rag forest cover for 19 wards (Shehia) in Pemba Island, Tanzania for the years
          2021 through 2025."),
      
@@ -64,8 +64,14 @@ ui <- fluidPage(
                            focused on community-based conservation. "),
                          br(),
                          
-                         p("This aplication relies on the model shown in PAPER TITLE AND LINK. . 
-                             ")))
+                         p("This aplication relies on the model shown in 'Causal attribution of
+agricultural expansion in a small island system using approximate Bayesian computation' currently in review at Land Use Policy. Preprint
+found here: https://www.biorxiv.org/content/10.1101/2023.01.20.524853v1."),
+                         br(),
+                         p("Full citation is:  Clark, M., Andrews, J., Kolarik, N., Omar, M., Hillis, V. (In review). Causal attribution of
+agricultural expansion in a small island system using approximate Bayesian computation. Land
+Use Policy. https://www.biorxiv.org/content/10.1101/2023.01.20.524853v1.
+")))
     )
    
       

@@ -46,6 +46,8 @@ ggplot(Rstack_df,aes(x=ComChange,y=Satellite))+
   geom_smooth(method="lm")
 
 
+cor(Rstack_df$ComChange,Rstack_df$Satellite)
+
 summary(lm(Satellite~ComChange,data=Rstack_df))
 summary(lm(Satellite~stdize(Biomass)+ComChange,data=Rstack_df))
 

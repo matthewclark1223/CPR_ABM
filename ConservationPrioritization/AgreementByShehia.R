@@ -35,6 +35,43 @@ PemSamp<-Pemba%>%filter(NAME_3%in%Sampled)
 MangCen$Shehia<-st_nearest_feature(MangCen, PemSamp)
 MangCen$Shehia<-PemSamp[MangCen$Shehia,]$NAME_3
 
+
+#Corplot/shehia
+
+mytheme=theme(legend.position = "right", plot.background = element_rect(fill = "white", colour = NA),
+              axis.text=element_text(color="black",size=15),panel.background = element_rect(fill = "white"),
+              strip.background = element_rect(fill = "white", color = "white", size = 1),
+              strip.text = element_text(colour = "black",face="bold",size=20),axis.title = element_text(color="black",size=20),
+              axis.line = element_line(colour = "black", size = 1),
+              legend.background = element_rect(fill="white"),legend.text = element_text(color="black",size=12),
+              legend.title = element_text(color="black",size=15))
+
+ggplot(MangCen,aes(x=MeanValue,y=SatelliteSUM))+
+  geom_jitter(size=2,alpha=0.9,shape=21,color="black",fill="#969696",width=0.2,height=0.2 )+
+  #geom_smooth(color=alpha("black",0.5),aes(by=Shehia),method="lm",se=F)+
+  geom_smooth(aes(color=Shehia),method="lm",se=F)+
+  geom_smooth(method="lm",se=F,size=1.5,alpha=0.75,linetype=2,color="black")+
+  #geom_smooth(method="lm",se=F,size=1.5,alpha=0.99,linetype=2,color="blue")+
+  ggthemes::theme_clean()+mytheme+xlab("Average community response")+
+  ylab("Net satellite observed pixel change")+
+  theme(legend.position = "none")+scale_color_viridis_d(alpha=0.8,option="H")
+  
+SelShe<-MangCen%>%filter(Shehia%in%c("Tibirinzi","Kengeja","Kisiwani","Ziwani"))
+ggplot(MangCen,aes(x=MeanValue,y=SatelliteSUM))+
+  geom_jitter(size=2,alpha=0.65,shape=21,color="black",fill="#969696",width=0.2,height=0.2)+
+  #geom_jitter(data=SelShe,aes(color=Shehia),size=2,alpha=0.99,width=0.2,height=0.2 )+
+  geom_smooth(color=alpha("black",0.3),aes(by=Shehia),method="lm",se=F,size=0.6)+
+  #geom_smooth(method="lm",se=F,size=1,linetype=2,color=alpha("blue",0.8))+
+  geom_smooth(data=SelShe,aes(color=Shehia),method="lm",se=F,size=2)+
+  #geom_jitter(data=SelShe,aes(color=Shehia), width=0.2,height=0.2,size=2)+
+  #geom_smooth(method="lm",se=F,size=1.5,alpha=0.99,linetype=2,color="blue")+
+  ggthemes::theme_clean()+mytheme+xlab("Average community response")+
+  ylab("Net satellite observed pixel change")+
+  theme(legend.position = "right")+scale_color_viridis_d(alpha=0.99,option="H",begin=0.1) #H
+
+
+
+
 ggplot(Pemba)+
   #geom_sf(data=Mang,fill="green")+
   geom_sf(data=MangCen,aes(color=Shehia ),size=1)+
