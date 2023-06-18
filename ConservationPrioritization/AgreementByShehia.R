@@ -65,7 +65,7 @@ ggplot(MangCen,aes(x=MeanValue,y=SatelliteSUM))+
   geom_smooth(data=SelShe,aes(color=Shehia),method="lm",se=F,size=2)+
   #geom_jitter(data=SelShe,aes(color=Shehia), width=0.2,height=0.2,size=2)+
   #geom_smooth(method="lm",se=F,size=1.5,alpha=0.99,linetype=2,color="blue")+
-  ggthemes::theme_clean()+mytheme+xlab("Average community response")+
+  ggthemes::theme_clean()+mytheme+xlab("Mean perceived change")+
   ylab("Net satellite observed pixel change")+
   theme(legend.position = "right")+scale_color_viridis_d(alpha=0.99,option="H",begin=0.1) #H
 
