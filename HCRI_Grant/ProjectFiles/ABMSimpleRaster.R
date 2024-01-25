@@ -3,11 +3,12 @@
 #-Probability of burn (based off of regression on soil type, slope, & distance to road)
 #-2018 Land cover data (aggregated classes are Burnable, Agriculture, Bare land/fallow, Unburnable)
 
-#
 
 #
 
+#
 
+library(raster)
 
 
 mBurn2019<-matrix(sample(size=10000,0:1,replace=T,prob=c(0.9,0.1)),nrow=10)
@@ -76,7 +77,7 @@ if(length(which(neighborCells %in% which(rstack$predBurn2020[]==1)))>0){#only su
 if(length(which(neighborCells %in% which(rstack$Unburnable2019[]==1)))>0){#only subtract if there's something to subtract!
 neighborCells<-neighborCells[-which(neighborCells %in% which(rstack$Unburnable2019[]==1))] }
 
-#subtract our ag already
+#subtract out ag already
 if(length(which(neighborCells %in% which(rstack$ag2019[]>=1)))>0){ #only subtract if there's something to subtract!
 neighborCells<-neighborCells[-which(neighborCells %in% which(rstack$ag2019[]>=1))] }
 
@@ -109,7 +110,7 @@ plot(rstack)
 rstackNAs<-rstack
 rstackNAs[rstackNAs<=0]<-NA
 r_df<-raster::as.data.frame(rstackNAs, xy = TRUE) 
-
+library(tidyverse)
 ggplot(data=r_df,aes(x=x,y=y))+
   geom_tile(data = na.omit(r_df%>%dplyr::select(Burn2019,x,y)) , 
             aes(x = x, y = y),fill="red") +
