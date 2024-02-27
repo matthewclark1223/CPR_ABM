@@ -16,7 +16,7 @@ LU_AMB<-function(
   
   #specifics to this dataset
   stackRS<-raster::stack("./PembaFiresAndPredictors.tif")
-  names(stackRS)<-c("roads_proximity","slope","soil_cat","fires2019")
+  names(stackRS)<-c("roads_proximity","soil_cat")
   #rProbBurn<-raster::raster("./ProjectFiles/PredFire2019.tif")
   
   #These will be used to assign working/fallow ag randomly
