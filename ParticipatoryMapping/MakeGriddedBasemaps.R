@@ -2,7 +2,7 @@ library(ggmap)
 library(sf)
 library(tidyverse)
 library(ggspatial)
-register_google(key="AIzaSyCh-KGA6T9qaPF-wjfnBV8hb7zzGYMlGTw")
+register_google(key="REMOVED")
 
 Pemba <- read_sf("~/Pemba_Project/PembaShapeFile.shp")
 
