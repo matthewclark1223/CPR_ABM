@@ -63,9 +63,10 @@ ggplot(., aes(y=Shehia, x=EndogenousRate, xend=ConvertedPercentYearly)) +
          axis.title.y = element_text(face = "italic"))
 
 
-mean(ObsData$ConvertedPercentYearly)
+range(ObsData$ConvertedPercentYearly)
 range(ObsData$EndogenousRate)
+mean(ObsData$EndogenousRate)
 mean(ObsData$ExtrinsicRates)
-
+range(ObsData$ExtrinsicRates)
 
 
